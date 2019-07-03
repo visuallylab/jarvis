@@ -2,7 +2,9 @@
 const withTypescript = require('@zeit/next-typescript');
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
-const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 require('dotenv').config();
 

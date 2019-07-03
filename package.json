@@ -21,12 +21,12 @@
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@next/bundle-analyzer": "^8.1.0",
     "@types/next": "^8.0.5",
     "@types/react": "^16.8.22",
     "@types/styled-components": "^4.1.16",
     "@types/styled-jsx": "^2.2.8",
     "@visuallylab/tslint-config-frontend": "^1.0.11",
-    "@zeit/next-bundle-analyzer": "^0.1.2",
     "@zeit/next-typescript": "^1.1.1",
     "babel-plugin-import": "^1.12.0",
     "babel-plugin-module-resolver": "^3.2.0",
