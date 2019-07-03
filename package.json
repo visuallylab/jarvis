@@ -1,0 +1,60 @@
+{
+  "name": "jarvis",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "export": "next build && next export",
+    "deploy:github": "NODE_ENV=production DEPLOY_ENV=github yarn export && touch out/.nojekyll && gh-pages -t -d out",
+    "clean": "rm -rf node_modules/.cache && rm -rf node_modules/gh-pages/.cache"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "next": "^8.1.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.3.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@types/next": "^8.0.5",
+    "@types/react": "^16.8.22",
+    "@types/styled-components": "^4.1.16",
+    "@types/styled-jsx": "^2.2.8",
+    "@visuallylab/tslint-config-frontend": "^1.0.11",
+    "@zeit/next-bundle-analyzer": "^0.1.2",
+    "@zeit/next-typescript": "^1.1.1",
+    "babel-plugin-import": "^1.12.0",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-styled-components": "^1.10.4",
+    "compression": "^1.7.3",
+    "dotenv-webpack": "^1.5.7",
+    "gh-pages": "^2.0.1",
+    "husky": "^2.7.0",
+    "lint-staged": "^8.2.1",
+    "tslint": "^5.18.0",
+    "tslint-react-hooks": "^2.1.1",
+    "typescript": "^3.5.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "jsxSingleQuote": false,
+    "trailingComma": "all"
+  },
+  "license": "ISC"
+}
