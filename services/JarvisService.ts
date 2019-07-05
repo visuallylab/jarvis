@@ -60,7 +60,7 @@ export default class JarvisService {
     this.recognition.onerror = this.onerror;
 
     // default enable jarvis service
-    // this.enable();
+    this.enable();
   }
 
   initialize() {
