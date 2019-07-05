@@ -17,19 +17,18 @@ const MainLayout: React.FunctionComponent<TProps> = ({
   children,
   title = SITE_TITLE,
 }) => {
-  const { enabled, start, stop, responseList } = useContext(
-    JarvisContext,
-  );
+  const { enabled, jarvis, status, response } = useContext(JarvisContext);
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
       <Header />
-      <button onClick={() => (enabled ? stop() : start())}>
-        {enabled ? 'stop' : 'start'}
+      <div>Jarvis: {response.message}</div>
+      <button onClick={() => (enabled ? jarvis!.disable() : jarvis!.enable())}>
+        {enabled ? 'disable jarvis' : 'enable jarvis'}
       </button>
-      <p>responses: {responseList.length}</p>
+      <p>state: {status}</p>
       {children}
       <Footer />
       <NormalizeStyles />
