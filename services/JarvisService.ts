@@ -42,7 +42,7 @@ export default class JarvisService {
     this.recognition.onerror = this.onerror;
 
     // default enable jarvis service
-    this.enable();
+    // this.enable();
   }
 
   initialize() {
@@ -56,8 +56,8 @@ export default class JarvisService {
       <listening> = <hey>* <Jarvis>;
     `;
 
-      // @ts-ignore
       const SpeechGrammarList =
+        // @ts-ignore
         window.SpeechGrammarList || webkitSpeechGrammarList;
       const speechGrammarList = new SpeechGrammarList();
       speechGrammarList.addFromString(grammar, 10);
@@ -100,7 +100,10 @@ export default class JarvisService {
 
   onstart = () => this.props.setEnabled(true);
 
-  onend = () => this.props.setEnabled(false);
+  onend = () => {
+    this.props.setEnabled(false);
+    this.props.setRefStatus(JarvisStatus.Idle);
+  };
 
   onerror = (event: any) => {
     console.error('error', event);
@@ -112,6 +115,5 @@ export default class JarvisService {
 
   disable() {
     this.recognition.stop();
-    this.props.setRefStatus(JarvisStatus.Idle);
   }
 }

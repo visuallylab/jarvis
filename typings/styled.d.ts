@@ -2,8 +2,18 @@ import 'styled-components';
 
 export interface Theme {
   colors: {
-    main: string;
-    secondary: string;
+    smokyBlack: string;
+    smokyWhite: string;
+    spaceGray: string;
+    grey: string;
+  };
+
+  borderRadius: string;
+
+  z: {
+    bigger: number;
+    high: number;
+    superHigh: bumber;
   };
 }
 

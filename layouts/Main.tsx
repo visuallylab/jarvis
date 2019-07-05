@@ -3,6 +3,7 @@ import Head from 'next/head';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Jarvis from '@/components/Jarvis';
 import GlobalStyles from '@/themes/GlobalStyles';
 import NormalizeStyles from '@/themes/NormalizeStyles';
 import { SITE_TITLE } from '@/constants';
@@ -17,7 +18,7 @@ const MainLayout: React.FunctionComponent<TProps> = ({
   children,
   title = SITE_TITLE,
 }) => {
-  const { enabled, jarvis, status, response } = useContext(JarvisContext);
+  const { status, response } = useContext(JarvisContext);
   return (
     <>
       <Head>
@@ -25,11 +26,9 @@ const MainLayout: React.FunctionComponent<TProps> = ({
       </Head>
       <Header />
       <div>Jarvis: {response.message}</div>
-      <button onClick={() => (enabled ? jarvis!.disable() : jarvis!.enable())}>
-        {enabled ? 'disable jarvis' : 'enable jarvis'}
-      </button>
       <p>state: {status}</p>
       {children}
+      <Jarvis />
       <Footer />
       <NormalizeStyles />
       <GlobalStyles />
