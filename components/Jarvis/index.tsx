@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   min-width: 200px;
   height: 50vh;
   z-index: ${p => p.theme.z.high};
-  border: solid 1px black;
 `;
 
 const Jarvis: FC = () => {

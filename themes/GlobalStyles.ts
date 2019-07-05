@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 
 export default createGlobalStyle`
   body {
-    background-color: ${p => p.theme.colors.spaceGray};
+    background-color: ${p => p.theme.colors.smokyBlack};
     color: ${p => p.theme.colors.smokyWhite};
     font-size: 14px;
   }

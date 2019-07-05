@@ -16,7 +16,25 @@ export type TJarvisResponse = {
 
 const regexp = {
   HEY_JARVIS: /[J|T|G|D]arv/g,
-  STOP: /stop/g,
+  STOP: /(thank you)|(stop)/g,
+};
+
+const grammars = {
+  heyJarvis: `
+    #JSGF V1.0 utf-8 en;
+    grammar heyJarvis;
+
+    <hey> = /10/ hey | /0.2/ Hey | /0.2/ Hi | /0.2/ hi;
+    public <Jarvis> = /100/ Jarvis | /1/ Travis | /0/ Carlos | /0/ Bobby | /0/ drop it | /0/ Gabby | /0/ gummies;
+    <listening> = <hey>* <Jarvis>;
+  `,
+  stop: `
+    #JSGF V1.0 utf-8 en;
+    grammar stop;
+
+    <stop> = stop <Jarvis>*;
+    <thank you> = thank you <Jarvis>*;
+    `,
 };
 
 type TJarvisServiceProps = {
@@ -47,20 +65,7 @@ export default class JarvisService {
 
   initialize() {
     if (this.recognition) {
-      const grammar = `
-      #JSGF V1.0 utf-8 en;
-      grammar test;
-      
-      <hey> = /10/ hey | /0.2/ Hey | /0.2/ Hi | /0.2/ hi;
-      <Jarvis> = /100/ Jarvis | /1/ Jarvy | /1/ Travis | /0/ Carlos | /0/ Bobby | /0/ drop it;
-      <listening> = <hey>* <Jarvis>;
-    `;
-
-      const SpeechGrammarList =
-        // @ts-ignore
-        window.SpeechGrammarList || webkitSpeechGrammarList;
-      const speechGrammarList = new SpeechGrammarList();
-      speechGrammarList.addFromString(grammar, 10);
+      const speechGrammarList = this.generateGrammarList();
 
       this.recognition.grammars = speechGrammarList;
       this.recognition.lang = 'en-US';
@@ -69,11 +74,22 @@ export default class JarvisService {
     }
   }
 
+  generateGrammarList() {
+    const SpeechGrammarList =
+      // @ts-ignore
+      window.SpeechGrammarList || webkitSpeechGrammarList;
+    const speechGrammarList = new SpeechGrammarList();
+    Object.values(grammars).forEach(grammar =>
+      speechGrammarList.addFromString(grammar, 10),
+    );
+    return speechGrammarList;
+  }
+
   // tslint:disable
   onresult = debounce(event => {
     const { status, setRefStatus, setResponse } = this.props;
     const target = event.results[event.resultIndex];
-
+    console.log(event);
     if (regexp.STOP.exec(target[0].transcript) && target.isFinal) {
       setRefStatus(JarvisStatus.Idle);
       return;
