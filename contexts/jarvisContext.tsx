@@ -39,7 +39,7 @@ export const JarvisProvider: FC = props => {
     setJarvis(
       new JarvisService({
         status,
-        setRefStatus,
+        setStatus: setRefStatus,
         setEnabled,
         setResponse,
       }),

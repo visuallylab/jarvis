@@ -39,7 +39,7 @@ const grammars = {
 
 type TJarvisServiceProps = {
   status: MutableRefObject<JarvisStatus>;
-  setRefStatus: TSetRefState<JarvisStatus>;
+  setStatus: TSetRefState<JarvisStatus>;
   setEnabled: TSetRefState<boolean>;
   setResponse: TSetRefState<TJarvisResponse>;
 };
@@ -87,11 +87,11 @@ export default class JarvisService {
 
   // tslint:disable
   onresult = debounce(event => {
-    const { status, setRefStatus, setResponse } = this.props;
+    const { status, setStatus, setResponse } = this.props;
     const target = event.results[event.resultIndex];
     console.log(event);
     if (regexp.STOP.exec(target[0].transcript) && target.isFinal) {
-      setRefStatus(JarvisStatus.Idle);
+      setStatus(JarvisStatus.Idle);
       return;
     }
 
@@ -99,7 +99,7 @@ export default class JarvisService {
       status.current === JarvisStatus.Idle &&
       regexp.HEY_JARVIS.exec(target[0].transcript)
     ) {
-      setRefStatus(JarvisStatus.Listening);
+      setStatus(JarvisStatus.Listening);
     } else if (status.current === JarvisStatus.Listening) {
       // listening
       // recognize
@@ -118,7 +118,7 @@ export default class JarvisService {
 
   onend = () => {
     this.props.setEnabled(false);
-    this.props.setRefStatus(JarvisStatus.Idle);
+    this.props.setStatus(JarvisStatus.Idle);
   };
 
   onerror = (event: any) => {
