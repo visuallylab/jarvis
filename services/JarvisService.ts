@@ -51,6 +51,7 @@ type TJarvisServiceProps = {
 export default class JarvisService {
   public props: TJarvisServiceProps;
   private recognition: SpeechRecognition;
+  private recognizing: boolean = false;
 
   constructor(props: TJarvisServiceProps) {
     this.props = props;
@@ -63,9 +64,8 @@ export default class JarvisService {
     this.recognition.onend = this.onend;
     this.recognition.onerror = this.onerror;
 
-    // default enable jarvis service
+    // enable jarvis service on DEFAULT
     this.enable();
-    // setTimeout(() => this.props.setStatus(JarvisStatus.Active), 1000);
   }
 
   initialize() {
@@ -92,40 +92,41 @@ export default class JarvisService {
 
   // tslint:disable
   onresult = debounce(event => {
-    const { status, setStatus, setResponse } = this.props;
-    const target = event.results[event.resultIndex];
+    if (!this.recognizing) {
+      this.recognizing = true;
+      const { status, setStatus, setResponse } = this.props;
+      const target = event.results[event.resultIndex];
 
-    // run before anything when matches "stop grammar",
-    // set jarvis status to "Idle"
-    if (regexp.STOP.exec(target[0].transcript) && target.isFinal) {
-      setStatus(JarvisStatus.Idle);
-      return;
-    }
-
-    switch (status.current) {
-      case JarvisStatus.Idle: {
-        if (regexp.HEY_JARVIS.exec(target[0].transcript)) {
-          console.log('setste');
-          setStatus(JarvisStatus.Active);
-        }
-        break;
+      // run before anything when matches "stop grammar",
+      // set jarvis status to "Idle"
+      if (regexp.STOP.exec(target[0].transcript)) {
+        setStatus(JarvisStatus.Idle);
+        return;
       }
 
-      case JarvisStatus.Listening: {
-        if (regexp.HEY_JARVIS.exec(target[0].transcript)) {
-          setStatus(JarvisStatus.Active);
+      switch (status.current) {
+        case JarvisStatus.Idle: {
+          if (regexp.HEY_JARVIS.exec(target[0].transcript)) {
+            console.log('setste');
+            setStatus(JarvisStatus.Active);
+          }
+          break;
         }
-        // listening suggestion
-        console.log('listening');
-        break;
+
+        case JarvisStatus.Listening: {
+          // listening suggestion
+          console.log('listening');
+          break;
+        }
       }
+
+      setResponse({
+        message: target[0].transcript,
+        confidence: target[0].confidence,
+        isFinal: target.isFinal,
+      });
+      this.recognizing = false;
     }
-    console.log(event);
-    setResponse({
-      message: target[0].transcript,
-      confidence: target[0].confidence,
-      isFinal: target.isFinal,
-    });
   }, 100);
 
   onstart = () => this.props.setEnabled(true);

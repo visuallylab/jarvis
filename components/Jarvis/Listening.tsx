@@ -25,6 +25,9 @@ const Wrapper = styled(animated.div)`
   }
 `;
 
+// TODO:
+// [refactor] (1): when stop we couldn't stop and setAmplitude(0) bug
+
 const ListeningJarvis: FC = () => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const jarvisWave = useRef<any>(null);
@@ -35,19 +38,21 @@ const ListeningJarvis: FC = () => {
 
   useEffect(() => {
     if (jarvisWave.current) {
-      if (status === JarvisStatus.Active && !jarvisWave.current.run) {
-        // when jarvis dialog show up, start listening
-        jarvisWave.current.setSpeed(0.2);
-        jarvisWave.current.setAmplitude(3);
-        jarvisWave.current.start();
-        setStatus(JarvisStatus.Listening);
-        return;
-      }
-
-      if (status === JarvisStatus.Idle) {
-        jarvisWave.current.stop();
-        jarvisWave.current.setAmplitude(0);
-        return;
+      switch (status) {
+        case JarvisStatus.Active: {
+          // when jarvis dialog show up, start listening
+          jarvisWave.current.setSpeed(0.2);
+          jarvisWave.current.setAmplitude(3);
+          jarvisWave.current.start();
+          setStatus(JarvisStatus.Listening);
+          return;
+        }
+        case JarvisStatus.Idle: {
+          jarvisWave.current.setSpeed(0);
+          jarvisWave.current.setAmplitude(0);
+          jarvisWave.current.stop();
+          return;
+        }
       }
     }
   }, [status]);
@@ -63,9 +68,10 @@ const ListeningJarvis: FC = () => {
         autostart: true,
       });
 
-      // siriwave has some bug so we need to autostart then stop immediately
+      // siriwave.js has some bug,
+      // so we need to autostart then stop immediately
       jarvisWave.current.stop();
-      jarvisWave.current.setAmplitude(0);
+      jarvisWave.current.setAmplitude(3);
     }
   }, []);
 
