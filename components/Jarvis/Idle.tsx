@@ -37,7 +37,7 @@ const Button = styled.div`
 const IdleJarvis = () => {
   const { jarvis, enabled, status } = useContext(JarvisContext);
   const style = useSpring({
-    opacity: status === JarvisStatus.Listening ? 0 : 1,
+    opacity: status === JarvisStatus.Idle ? 1 : 0,
   });
   return (
     <Wrapper style={style}>

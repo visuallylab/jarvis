@@ -1,5 +1,5 @@
-import React, { createContext, FC, useRef, useEffect, useState } from 'react';
-import useRefState from '@/hooks/useRefState';
+import React, { createContext, FC, useEffect, useState } from 'react';
+import useRefState, { TSetRefState } from '@/hooks/useRefState';
 import JarvisService, {
   JarvisStatus,
   TJarvisResponse,
@@ -8,6 +8,7 @@ import JarvisService, {
 export type TJarvisContext = {
   jarvis?: JarvisService;
   status: JarvisStatus;
+  setStatus: TSetRefState<JarvisStatus>;
   enabled: boolean;
   response: TJarvisResponse;
 };
@@ -21,6 +22,9 @@ const defaultJarvisRes: TJarvisResponse = {
 const createDefaultJarvis: () => TJarvisContext = () => ({
   jarvis: undefined,
   status: JarvisStatus.Idle,
+  setStatus: () => {
+    return;
+  },
   enabled: false,
   response: defaultJarvisRes,
 });
@@ -51,6 +55,7 @@ export const JarvisProvider: FC = props => {
       value={{
         jarvis,
         status: status.current,
+        setStatus: setRefStatus,
         enabled,
         response,
       }}

@@ -4,7 +4,8 @@ import { TSetRefState } from '@/hooks/useRefState';
 
 export enum JarvisStatus {
   Idle = 'IDLE',
-  Listening = 'LISTENING',
+  Active = 'ACTIVE', // show up jarvis dialog (from screen right)
+  Listening = 'LISTENING', // start listening (show animation)
   Recognizing = 'RECOGNIZING',
 }
 
@@ -44,6 +45,9 @@ type TJarvisServiceProps = {
   setResponse: TSetRefState<TJarvisResponse>;
 };
 
+// TODO:
+// [refactor]: handle if recognition is undefined
+
 export default class JarvisService {
   public props: TJarvisServiceProps;
   private recognition: SpeechRecognition;
@@ -61,6 +65,7 @@ export default class JarvisService {
 
     // default enable jarvis service
     this.enable();
+    // setTimeout(() => this.props.setStatus(JarvisStatus.Active), 1000);
   }
 
   initialize() {
@@ -89,24 +94,33 @@ export default class JarvisService {
   onresult = debounce(event => {
     const { status, setStatus, setResponse } = this.props;
     const target = event.results[event.resultIndex];
-    console.log(event);
+
+    // run before anything when matches "stop grammar",
+    // set jarvis status to "Idle"
     if (regexp.STOP.exec(target[0].transcript) && target.isFinal) {
       setStatus(JarvisStatus.Idle);
       return;
     }
 
-    if (
-      status.current === JarvisStatus.Idle &&
-      regexp.HEY_JARVIS.exec(target[0].transcript)
-    ) {
-      setStatus(JarvisStatus.Listening);
-    } else if (status.current === JarvisStatus.Listening) {
-      // listening
-      // recognize
-      // listening suggestion
-      console.log('listening');
-    }
+    switch (status.current) {
+      case JarvisStatus.Idle: {
+        if (regexp.HEY_JARVIS.exec(target[0].transcript)) {
+          console.log('setste');
+          setStatus(JarvisStatus.Active);
+        }
+        break;
+      }
 
+      case JarvisStatus.Listening: {
+        if (regexp.HEY_JARVIS.exec(target[0].transcript)) {
+          setStatus(JarvisStatus.Active);
+        }
+        // listening suggestion
+        console.log('listening');
+        break;
+      }
+    }
+    console.log(event);
     setResponse({
       message: target[0].transcript,
       confidence: target[0].confidence,

@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import SiriWave from 'siriwave';
@@ -26,26 +26,51 @@ const Wrapper = styled(animated.div)`
 `;
 
 const ListeningJarvis: FC = () => {
-  const { status, response } = useContext(JarvisContext);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const jarvisWave = useRef<any>(null);
+  const { status, response, setStatus } = useContext(JarvisContext);
   const props = useSpring({
-    transform: `translateX(${
-      status === JarvisStatus.Listening ? '0%' : '150%'
-    })`,
+    transform: `translateX(${status === JarvisStatus.Idle ? '150%' : '0%'})`,
   });
 
   useEffect(() => {
-    const siri = new SiriWave({
-      container: document.getElementById('jarvis-wave'),
-      width: 300,
-      height: 50,
-      amplitude: 3,
-      style: 'ios9',
-      autostart: true,
-    });
+    if (jarvisWave.current) {
+      if (status === JarvisStatus.Active && !jarvisWave.current.run) {
+        // when jarvis dialog show up, start listening
+        jarvisWave.current.setSpeed(0.2);
+        jarvisWave.current.setAmplitude(3);
+        jarvisWave.current.start();
+        setStatus(JarvisStatus.Listening);
+        return;
+      }
+
+      if (status === JarvisStatus.Idle) {
+        jarvisWave.current.stop();
+        jarvisWave.current.setAmplitude(0);
+        return;
+      }
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (wrapperRef.current) {
+      jarvisWave.current = new SiriWave({
+        container: document.getElementById('jarvis-wave'),
+        width: wrapperRef.current.offsetWidth * 0.8,
+        height: 40,
+        style: 'ios9',
+        amplitude: 3,
+        autostart: true,
+      });
+
+      // siriwave has some bug so we need to autostart then stop immediately
+      jarvisWave.current.stop();
+      jarvisWave.current.setAmplitude(0);
+    }
   }, []);
 
   return (
-    <Wrapper style={props}>
+    <Wrapper style={props} ref={wrapperRef}>
       <p>
         <b>What can I help you ?...</b>
       </p>
