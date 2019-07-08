@@ -1,19 +1,5 @@
 import { SFC } from 'react';
-import Link from 'next/link';
 
-
-const Header: SFC = () => (
-  <header>
-    <nav>
-      <Link href="/">
-        <a>Home</a>
-      </Link>{' '}
-      |{' '}
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </nav>
-  </header>
-);
+const Header: SFC = () => <header>我是 Header 讚讚</header>;
 
 export default Header;

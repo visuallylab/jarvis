@@ -1,89 +1,58 @@
-import React, { createContext, FC, useState, useRef, useEffect } from 'react';
+import React, { createContext, FC, useRef, useEffect, useState } from 'react';
+import useRefState from '@/hooks/useRefState';
+import JarvisService, {
+  JarvisStatus,
+  TJarvisResponse,
+} from '@/services/JarvisService';
 
 export type TJarvisContext = {
-  recognition?: SpeechRecognition;
-  state: string;
+  jarvis?: JarvisService;
+  status: JarvisStatus;
   enabled: boolean;
-  responseList: any[];
-  start: () => void;
-  stop: () => void;
+  response: TJarvisResponse;
+};
+
+const defaultJarvisRes: TJarvisResponse = {
+  confidence: 0,
+  message: '',
+  isFinal: true,
 };
 
 const createDefaultJarvis: () => TJarvisContext = () => ({
-  recognition: undefined,
-  state: 'idle',
+  jarvis: undefined,
+  status: JarvisStatus.Idle,
   enabled: false,
-  responseList: [],
-  start: () => {
-    return;
-  },
-  stop: () => {
-    return;
-  },
+  response: defaultJarvisRes,
 });
 
 export const JarvisContext = createContext<TJarvisContext>(
   createDefaultJarvis(),
 );
 
-// TODO:
-// onResult -> parse encode, useJarvis -> receive status and command
-
 export const JarvisProvider: FC = props => {
+  const [jarvis, setJarvis] = useState<JarvisService | undefined>(undefined);
+  const [status, setRefStatus] = useRefState<JarvisStatus>(JarvisStatus.Idle);
   const [enabled, setEnabled] = useState<boolean>(false);
-  const [responseList, setResponseList] = useState<any[]>([]);
-  const recognition = useRef<SpeechRecognition>();
+  const [response, setResponse] = useState<TJarvisResponse>(defaultJarvisRes);
 
   useEffect(() => {
-    // @ts-ignore
-    const Recognition = window.SpeechRecognition || webkitSpeechRecognition;
-    recognition.current = new Recognition() as SpeechRecognition;
-
-    const rec = recognition.current;
-    rec.continuous = true;
-    rec.lang = 'en-US';
-    rec.interimResults = true;
-
-    rec.onresult = (event: any) => {
-      setResponseList(s => [...s, event]);
-    };
-
-    rec.onstart = () => {
-      setEnabled(true);
-      alert('開始聽了喔');
-    };
-
-    rec.onend = () => {
-      setEnabled(false);
-      alert('結束監聽');
-    };
-
-    rec.onerror = (event: any) => {
-      console.error('error', event);
-    };
+    setJarvis(
+      new JarvisService({
+        status,
+        setRefStatus,
+        setEnabled,
+        setResponse,
+      }),
+    );
   }, []);
-
-  const start = () => {
-    if (recognition.current) {
-      recognition.current.start();
-    }
-  };
-
-  const stop = () => {
-    if (recognition.current) {
-      recognition.current.stop();
-    }
-  };
 
   return (
     <JarvisContext.Provider
       value={{
-        recognition: recognition.current,
-        state: 'idle',
+        jarvis,
+        status: status.current,
         enabled,
-        responseList,
-        start,
-        stop,
+        response,
       }}
     >
       {props.children}

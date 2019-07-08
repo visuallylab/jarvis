@@ -1,10 +1,11 @@
 import MainLayout from '@/layouts/Main';
+import { SITE_TITLE } from '@/constants';
 
 const Index = () => {
   return (
-    <MainLayout title="Home">
-      <h1>Hello Next.js 👋</h1>
-      這裡是 index 喔喔喔喔！
+    <MainLayout title={'AI City Dashboard |' + SITE_TITLE}>
+      <h1>City Dashboard</h1>
+      <p>Say: Hey Jarvis!</p>
     </MainLayout>
   );
 };
