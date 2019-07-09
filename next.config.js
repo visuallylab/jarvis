@@ -21,10 +21,9 @@ module.exports = withBundleAnalyzer(
     // exportPathMap: function() {
     //   return {
     //     '/': { page: '/' },
-    //     '/about': { page: '/about' },
     //   };
     // },
-    // assetPrefix: GITHUB ? `/${PROJ_NAME}/` : '',
+    assetPrefix: GITHUB ? `/${PROJ_NAME}/` : '',
     analyzeServer: ['server', 'both'].includes(process.env.BUNDLE_ANALYZE),
     analyzeBrowser: ['browser', 'both'].includes(process.env.BUNDLE_ANALYZE),
     bundleAnalyzerConfig: {

@@ -14,4 +14,4 @@ export const GITHUB =
     }
   })();
 
-export const PROJ_NAME = GITHUB ? env('PROJ_NAME') : '';
+export const PROJ_NAME = env('PROJ_NAME');
