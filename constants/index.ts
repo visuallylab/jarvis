@@ -7,3 +7,7 @@ export const SITE_URL = 'localhost';
 export const FAVICON_PATH = getRelativePath('/static/favicon.ico');
 export const LARGE_ICON_PATH = getRelativePath('/static/large-icon.png');
 export const NAV_TITLE = 'nav title';
+
+/* Traffic animation config */
+export const frames = 10;
+export const accidentFrames = 30;

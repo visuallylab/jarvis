@@ -22,6 +22,7 @@
     "noImplicitThis": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
-    "outDir": "build"
+    "outDir": "build",
+    "resolveJsonModule": true
   }
 }
