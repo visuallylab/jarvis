@@ -3,7 +3,20 @@ import JarvisService, {
   TJarvisResponse,
 } from '@/services/JarvisService';
 
-import { TJarvisAction } from './index';
+interface IAction<T, P> {
+  type: T;
+  payload: P;
+}
+
+export type TJarvisAction =
+  | IAction<Actions.InitJarvisService, { jarvis: JarvisService }>
+  | IAction<Actions.StartWebSpeech, { enabled: boolean; status: JarvisStatus }>
+  | IAction<Actions.StopWebSpeech, { enabled: boolean; status: JarvisStatus }>
+  | IAction<
+      Actions.SetResponse,
+      { response: TJarvisResponse; status?: JarvisStatus }
+    >
+  | IAction<Actions.SetStatus, { status: JarvisStatus }>;
 
 enum Actions {
   InitJarvisService = 'INIT_JARVIS_SERVICE',

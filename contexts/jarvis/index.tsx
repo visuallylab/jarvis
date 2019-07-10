@@ -11,7 +11,7 @@ import JarvisService, {
   TJarvisResponse,
 } from '@/services/JarvisService';
 
-import Actions, { initJarvisService } from './actions';
+import { initJarvisService, TJarvisAction } from './actions';
 import reducer from './reducer';
 
 type TJarvisBaseState = {
@@ -20,7 +20,7 @@ type TJarvisBaseState = {
   response: TJarvisResponse;
 };
 
-type TJarvisState = TJarvisBaseState & {
+export type TJarvisState = TJarvisBaseState & {
   status: MutableRefObject<JarvisStatus>;
 };
 
@@ -32,6 +32,11 @@ export type TJarvisContext = TJarvisPayload & {
   dispatch: React.Dispatch<TJarvisAction>;
 };
 
+export type TJarvisReducer = (
+  state: TJarvisState,
+  action: TJarvisAction,
+) => TJarvisState;
+
 const defaultJarvisRes: TJarvisResponse = {
   confidence: 0,
   message: '',
@@ -40,23 +45,14 @@ const defaultJarvisRes: TJarvisResponse = {
 
 type TInitArgs = { status: MutableRefObject<JarvisStatus> };
 
-function initState(init: TInitArgs) {
+function init(args: TInitArgs) {
   return {
     jarvis: undefined,
     enabled: false,
-    status: init.status,
+    status: args.status,
     response: defaultJarvisRes,
   };
 }
-
-export type TJarvisAction = {
-  type: Actions;
-  payload: Partial<TJarvisPayload>;
-};
-export type TJarvisReducer = (
-  state: TJarvisState,
-  action: TJarvisAction,
-) => TJarvisState;
 
 export const JarvisContext = createContext<TJarvisContext>({
   jarvis: undefined,
@@ -71,7 +67,7 @@ export const JarvisProvider: FC = props => {
   const [state, dispatch] = useReducer<TJarvisReducer, TInitArgs>(
     reducer,
     { status },
-    initState,
+    init,
   );
 
   useEffect(() => {

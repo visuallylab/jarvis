@@ -3,14 +3,15 @@ import { TJarvisReducer } from './index';
 
 // @ts-ignore
 const reducer: TJarvisReducer = (state, action) => {
-  // status are ref object,
-  // we update when it be set
+  // [CAUTION]: status are ref object,
+  // we update by set `status.current`
   switch (action.type) {
     case Actions.InitJarvisService: {
-      return { ...state, jarvis: action.payload.jarvis };
+      return { ...state, ...action.payload };
     }
     case Actions.StartWebSpeech:
     case Actions.StopWebSpeech: {
+      state.status.current = action.payload.status;
       return { ...state, enabled: action.payload.enabled };
     }
     case Actions.SetResponse: {

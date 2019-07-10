@@ -1,11 +1,10 @@
 import { MutableRefObject } from 'react';
 import debounce from 'lodash/debounce';
-
-import { TJarvisAction } from '@/contexts/jarvis';
 import {
   startWebSpeech,
   stopWebSpeech,
   setResponse,
+  TJarvisAction,
 } from '@/contexts/jarvis/actions';
 
 export enum JarvisStatus {
