@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import SiriWave from 'siriwave';
 
-import { JarvisContext } from '@/contexts/jarvisContext';
 import { JarvisStatus } from '@/services/JarvisService';
+import { JarvisContext } from '@/contexts/jarvis';
+import { setStatus } from '@/contexts/jarvis/actions';
 
 const Wrapper = styled(animated.div)`
   position: absolute;
@@ -31,7 +32,7 @@ const Wrapper = styled(animated.div)`
 const ListeningJarvis: FC = () => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const jarvisWave = useRef<any>(null);
-  const { status, response, setStatus } = useContext(JarvisContext);
+  const { status, response, dispatch } = useContext(JarvisContext);
   const props = useSpring({
     transform: `translateX(${status === JarvisStatus.Idle ? '150%' : '0%'})`,
   });
@@ -44,7 +45,7 @@ const ListeningJarvis: FC = () => {
           jarvisWave.current.setSpeed(0.2);
           jarvisWave.current.setAmplitude(3);
           jarvisWave.current.start();
-          setStatus(JarvisStatus.Listening);
+          dispatch(setStatus(JarvisStatus.Listening));
           return;
         }
         case JarvisStatus.Idle: {

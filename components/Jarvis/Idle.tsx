@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import styled from 'styled-components';
 import { useSpring, animated } from 'react-spring';
-import { JarvisContext } from '@/contexts/jarvisContext';
+import { JarvisContext } from '@/contexts/jarvis';
 import { JarvisStatus } from '@/services/JarvisService';
 
 const Wrapper = styled(animated.div)`
@@ -39,6 +39,7 @@ const IdleJarvis = () => {
   const style = useSpring({
     opacity: status === JarvisStatus.Idle ? 1 : 0,
   });
+
   return (
     <Wrapper style={style}>
       <p>Jarvis: </p>

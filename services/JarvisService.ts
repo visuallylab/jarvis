@@ -1,11 +1,17 @@
 import { MutableRefObject } from 'react';
 import debounce from 'lodash/debounce';
-import { TSetRefState } from '@/hooks/useRefState';
+
+import { TJarvisAction } from '@/contexts/jarvis';
+import {
+  startWebSpeech,
+  stopWebSpeech,
+  setResponse,
+} from '@/contexts/jarvis/actions';
 
 export enum JarvisStatus {
-  Idle = 'IDLE',
-  Active = 'ACTIVE', // show up jarvis dialog (from screen right)
-  Listening = 'LISTENING', // start listening (show animation)
+  Idle = 'IDLE', // hide
+  Active = 'ACTIVE', // show dialog (from screen right)
+  Listening = 'LISTENING', // start listening (start wave animation)
   Recognizing = 'RECOGNIZING',
 }
 
@@ -40,9 +46,7 @@ const grammars = {
 
 type TJarvisServiceProps = {
   status: MutableRefObject<JarvisStatus>;
-  setStatus: TSetRefState<JarvisStatus>;
-  setEnabled: TSetRefState<boolean>;
-  setResponse: TSetRefState<TJarvisResponse>;
+  dispatch: React.Dispatch<TJarvisAction>;
 };
 
 // TODO:
@@ -55,6 +59,7 @@ export default class JarvisService {
 
   constructor(props: TJarvisServiceProps) {
     this.props = props;
+
     // @ts-ignore
     const Recognition = window.SpeechRecognition || webkitSpeechRecognition;
     this.recognition = new Recognition() as SpeechRecognition;
@@ -64,7 +69,7 @@ export default class JarvisService {
     this.recognition.onend = this.onend;
     this.recognition.onerror = this.onerror;
 
-    // enable jarvis service on DEFAULT
+    // DEFAULT: enable jarvis service
     this.enable();
   }
 
@@ -94,21 +99,25 @@ export default class JarvisService {
   onresult = debounce(event => {
     if (!this.recognizing) {
       this.recognizing = true;
-      const { status, setStatus, setResponse } = this.props;
+      const { dispatch, status } = this.props;
       const target = event.results[event.resultIndex];
+      const response = {
+        message: target[0].transcript,
+        confidence: target[0].confidence,
+        isFinal: target.isFinal,
+      };
 
       // run before anything when matches "stop grammar",
       // set jarvis status to "Idle"
       if (regexp.STOP.exec(target[0].transcript)) {
-        setStatus(JarvisStatus.Idle);
+        dispatch(setResponse(response, JarvisStatus.Idle));
         return;
       }
 
       switch (status.current) {
         case JarvisStatus.Idle: {
           if (regexp.HEY_JARVIS.exec(target[0].transcript)) {
-            console.log('setste');
-            setStatus(JarvisStatus.Active);
+            dispatch(setResponse(response, JarvisStatus.Active));
           }
           break;
         }
@@ -116,25 +125,21 @@ export default class JarvisService {
         case JarvisStatus.Listening: {
           // listening suggestion
           console.log('listening');
+          dispatch(setResponse(response));
           break;
         }
-      }
 
-      setResponse({
-        message: target[0].transcript,
-        confidence: target[0].confidence,
-        isFinal: target.isFinal,
-      });
+        default: {
+          dispatch(setResponse(response));
+        }
+      }
       this.recognizing = false;
     }
   }, 100);
 
-  onstart = () => this.props.setEnabled(true);
+  onstart = () => this.props.dispatch(startWebSpeech());
 
-  onend = () => {
-    this.props.setEnabled(false);
-    this.props.setStatus(JarvisStatus.Idle);
-  };
+  onend = () => this.props.dispatch(stopWebSpeech());
 
   onerror = (event: any) => {
     console.error('error', event);
