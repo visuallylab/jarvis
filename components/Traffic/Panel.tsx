@@ -2,29 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Indicator from './Indicator';
 import { TrafficStatus, IndicatorMessage, IndicatorColor } from '@/constants';
-import Traffic from '@/pages/traffic';
-
-const Button = styled.button`
-  margin: 24px 12px 12px 24px;
-  padding: 8px 24px;
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0);
-  border: 1px solid #666;
-  font-weight: 100;
-  color: rgba(0, 217, 255, 0.8);
-  letter-spacing: 1px;
-  transition: 0.05s;
-
-  :hover {
-    transform: scale(1.2);
-    background-color: rgba(255, 255, 255, 0.3);
-    cursor: pointer;
-  }
-  :active {
-    color: whitesmoke;
-    transform: scale(1.1);
-  }
-`;
+import Button from './Button';
 
 const Container = styled.div`
   position: absolute;
@@ -32,6 +10,7 @@ const Container = styled.div`
   left: 0;
   width: 100%;
   padding: 64px 64px 36px 24px;
+  pointer-events: none;
 `;
 
 const Info = styled.p<{ large?: boolean }>`
@@ -45,6 +24,14 @@ const Info = styled.p<{ large?: boolean }>`
 const FlexWrapper = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  margin-left: 24px;
+  flex: 1;
+  max-width: 1300px;
+  justify-content: space-between;
 `;
 
 type TButton = {
@@ -80,11 +67,13 @@ const Panel: React.FC<TProps> = React.memo(
       {infos.map(info => (
         <Info key={info}>{info}</Info>
       ))}
-      {buttonConfigs.map(config => (
-        <Button key={config.text} onClick={config.onClick}>
-          {config.text}
-        </Button>
-      ))}
+      <ButtonWrapper>
+        {buttonConfigs.map(config => (
+          <Button key={config.text} onClick={config.onClick}>
+            {config.text}
+          </Button>
+        ))}
+      </ButtonWrapper>
     </Container>
   ),
 );

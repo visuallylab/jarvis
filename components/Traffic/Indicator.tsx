@@ -32,13 +32,13 @@ const Indicator: React.FC<TIndicator> = ({
   );
   const props = useSpring({
     from: {
-      opacity: 0.5,
+      opacity: 0.8,
       color: darkerColor,
       marginLeft: 24,
       border: `0.75px solid ${darkerColor}`,
     },
     to: {
-      opacity: running ? 1 : 0.5,
+      opacity: running ? 1 : 0.8,
       color,
       marginLeft: 24,
       border: `0.75px solid ${color}`,
