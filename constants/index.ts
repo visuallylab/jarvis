@@ -10,7 +10,7 @@ export const NAV_TITLE = 'nav title';
 
 /* Traffic animation config */
 export const frames = 10;
-export const accidentFrames = 30;
+export const accidentFrames = 15;
 export enum TrafficStatus {
   normal = 'normal',
   warning = 'warning',

@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { TProps as TPanelProps } from '../components/Traffic/Panel';
-import { TrafficStatus } from '@/constants';
 import { MapStatus } from '@/components/Traffic/Map';
 
 type TProps = {
-  status: TrafficStatus;
   mapState: MapStatus;
+  setMapState: (state: MapStatus) => void;
   trafficJamCount: number;
   trafficJamLength: number;
   transportation: Array<{
@@ -20,17 +19,17 @@ type TProps = {
 };
 
 const usePanelProps = ({
-  status,
   mapState,
+  setMapState,
   transportation,
   trafficJamCount,
   trafficJamLength,
 }: TProps) => {
   const [panelProps, setPanelProps] = useState<TPanelProps>({
-    status,
     title: '',
     infos: [],
     buttonConfigs: [],
+    trafficFlowData: [],
   });
   const [showInfo, setShowInfo] = useState(false);
 
@@ -119,7 +118,7 @@ const usePanelProps = ({
             busDesc,
             trafficJamDesc,
           ]
-        : mapState === MapStatus.TrafficJam
+        : mapState === MapStatus.TrafficJam || mapState === MapStatus.Accident
         ? [trafficJamDesc, busDesc]
         : [];
 

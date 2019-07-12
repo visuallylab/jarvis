@@ -61,7 +61,7 @@ export type TProps = {
   infos: string[];
   buttonConfigs: TButton[];
   status: TrafficStatus;
-  trafficFlowData: TTrafficFlow;
+  trafficFlowData?: TTrafficFlow;
 };
 
 const Panel: React.FC<TProps> = React.memo(

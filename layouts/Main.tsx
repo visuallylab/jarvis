@@ -1,7 +1,7 @@
 import Head from 'next/head';
 
 import Section from '@/components/Section';
-import Jarvis from '@/components/Jarvis';
+import Jarvis from '@/components/Jarvis/Jarvis';
 import GlobalStyles from '@/themes/GlobalStyles';
 import NormalizeStyles from '@/themes/NormalizeStyles';
 import { SITE_TITLE } from '@/constants';
@@ -20,8 +20,8 @@ const MainLayout: React.FunctionComponent<TProps> = ({
       <Head>
         <title>{title}</title>
       </Head>
-      {children}
       <Jarvis />
+      {children}
       <NormalizeStyles />
       <GlobalStyles />
     </Section>

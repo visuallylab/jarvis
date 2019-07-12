@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import DeckGL from '@deck.gl/react';
-import { ViewState, Popup, FlyToInterpolator, StaticMap } from 'react-map-gl';
+import { ViewState, FlyToInterpolator, StaticMap } from 'react-map-gl';
 import useLineLayer from '@/hooks/useLineLayer';
 import useTripLayers from '@/hooks/useTripLayers';
 import useAccidentLayers from '@/hooks/useAccidentLayer';
@@ -14,7 +14,6 @@ import traffic from 'static/traffic.json';
 import accidents from 'static/accidents.json';
 import Panel, { TTrafficFlow } from './Panel';
 import Tooltip from './Tooltip';
-import CarInfoPopup from './CarInfoPopup';
 import {
   getBuildingLayer,
   getLightEffect,
@@ -25,7 +24,6 @@ import cogoToast from 'cogo-toast';
 import './toast.css';
 import Button from '@/components/Traffic/Button';
 import usePanelProps from '@/hooks/usePanelProps';
-import LineChart from './LineChart';
 
 export enum MapStatus {
   Overview,
@@ -74,9 +72,9 @@ const Map = () => {
   } = useLineLayer(mapState === MapStatus.TrafficJam);
   const { timestamps, transportation } = useTransportationData(true, traffic);
   const [trafficFlowData, setTrafficFlowData] = useState<TTrafficFlow>();
-  const { panelProps, showInfo } = usePanelProps({
-    status: trafficStatus,
+  const { panelProps } = usePanelProps({
     mapState,
+    setMapState,
     transportation,
     trafficJamCount,
     trafficJamLength,
@@ -90,17 +88,6 @@ const Map = () => {
     mapState === MapStatus.Accident,
     accidents,
   );
-
-  const Popups = transportation
-    .slice(0, 1)
-    .map((d, i) => (
-      <CarInfoPopup
-        key={d.id}
-        lat={d.latlng[1]}
-        lng={d.latlng[0]}
-        texts={[` 車牌: ${d.vehicleId} #${i}`, `時速:${d.speed} km/h`]}
-      />
-    ));
 
   const getLayers = () => {
     let result;
@@ -160,15 +147,14 @@ const Map = () => {
      *
      * [v]auto zoom to the pick traffic jam area
      * [v]Line layer
-     * []when zoom over the threshold
-     * []show cars layer only in the screen
-     * []show the area 流量圖 with accident
+     * [v]when zoom over the threshold
+     * [v]show the area 流量圖 with accident
      */
 
     /**
      * 觀看車禍原因
      *
-     * []重現車禍路徑
+     * [v]重現車禍路徑
      * []車禍雙方車輛資訊與原因
      */
 
@@ -182,8 +168,6 @@ const Map = () => {
     /**
      * 回到交通概覽
      *
-     * []建議疏導的路線
-     * []建議指派的人員、位置與動作
      */
 
     const showTrafficJamPrompt = () => {
@@ -260,9 +244,8 @@ const Map = () => {
         },
         renderIcon: () => <Button>顯示資訊</Button>,
       });
-    }, 300);
-
-    setTrafficStatus(TrafficStatus.warning);
+      setTrafficStatus(TrafficStatus.warning);
+    }, 3000);
   }, []);
 
   return (
@@ -275,28 +258,61 @@ const Map = () => {
         viewState={viewState}
         onViewStateChange={({ viewState: newViewState }: any) => {
           setViewState(newViewState);
-          if (newViewState.zoom >= 18 && !trafficFlowData) {
+          if (
+            newViewState.zoom >= 18 &&
+            !trafficFlowData &&
+            mapState === MapStatus.TrafficJam
+          ) {
             setTrafficFlowData(createTrafficFlowData(new Date()));
+            cogoToast.warn('可能由於一起車禍導致塞車', {
+              onClick: hide => {
+                setMapState(MapStatus.Accident);
+                // @ts-ignore
+                hide();
+                setTimeout(() => {
+                  cogoToast.warn('建議指派一位員警到此路口指揮交通', {
+                    onClick: hide => {
+                      setMapState(MapStatus.Overview);
+                      setTrafficFlowData(undefined);
+                      setViewState(prev => ({
+                        ...prev,
+                        zoom: 15,
+                        transitionDuration: 500,
+                        transitionInterpolator: new FlyToInterpolator(),
+                      }));
+                      // @ts-ignore
+                      hide();
+                    },
+                    hideAfter: 15,
+                    position: 'top-right',
+                    bar: {
+                      size: '0px',
+                    },
+                    renderIcon: () => <Button>我知道了</Button>,
+                  });
+                }, 2000);
+              },
+              hideAfter: 15,
+              position: 'top-right',
+              bar: {
+                size: '0px',
+              },
+              renderIcon: () => <Button>顯示資訊</Button>,
+            });
           }
           if (newViewState.zoom < 18 && trafficFlowData) {
             setTrafficFlowData(undefined);
+            setMapState(MapStatus.Overview);
           }
         }}
       >
-        <StaticMap {...GLMapProps}>
-          {showInfo && Popups}
-          {mapState === MapStatus.Accident && (
-            <Popup
-              longitude={120.2063817400933}
-              latitude={22.99229346995837}
-              closeButton={false}
-            >
-              💥
-            </Popup>
-          )}
-        </StaticMap>
+        <StaticMap {...GLMapProps} />
       </DeckGL>
-      <Panel {...panelProps} trafficFlowData={trafficFlowData} />
+      <Panel
+        {...panelProps}
+        trafficFlowData={trafficFlowData}
+        status={trafficStatus}
+      />
       {hoverData.object && (
         <Tooltip left={hoverData.x} top={hoverData.y}>
           塞車
