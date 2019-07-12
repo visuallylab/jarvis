@@ -38,6 +38,7 @@
     "react-dom": "^16.8.6",
     "react-map-gl": "^5.0.4",
     "react-spring": "^8.0.27",
+    "recharts": "^1.6.2",
     "siriwave": "^1.2.4",
     "styled-components": "^4.3.2"
   },
@@ -54,6 +55,7 @@
     "@types/next": "^8.0.5",
     "@types/react": "^16.8.22",
     "@types/react-map-gl": "^5.0.0",
+    "@types/recharts": "^1.1.19",
     "@types/styled-components": "^4.1.16",
     "@types/styled-jsx": "^2.2.8",
     "@visuallylab/tslint-config-frontend": "^1.0.11",

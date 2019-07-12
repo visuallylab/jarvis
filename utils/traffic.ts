@@ -42,3 +42,17 @@ export const getLightEffect = () => {
   const pointLight = new PointLight(layerConfig.pointLight);
   return new LightingEffect({ ambientLight, pointLight });
 };
+
+export const createTrafficFlowData = (current: Date) => {
+  const data = [];
+  for (let i = 0; i < 12; i++) {
+    const time = new Date(current);
+    time.setHours(current.getHours() - 12 + i);
+    data.push({
+      time: `${time.getHours()}時`,
+      value: Math.round(20 + Math.random() * 10 + Math.random() * i * i * 2), // cars per minute
+    });
+  }
+
+  return data;
+};
