@@ -25,7 +25,7 @@ enum MapStatus {
 }
 
 const GLMapProps = {
-  width: '100%',
+  width: '100vw',
   height: '100vh',
   mapboxApiAccessToken:
     'pk.eyJ1IjoiY2hpbmc1NiIsImEiOiJjaXNiZmYydGMwMTN1MnpwbnNqNWVqM2plIn0.k7h-PUGX7Tl5xLwDH3Qpsg',

@@ -27,7 +27,6 @@ export enum FocusStatus {
 export enum DataType {
   // Electricity
   E_BackupCapacity = 'E_BACKUPCAPACITY',
-  E_BackupCapacityRatio = 'E_BACKUPCAPACITY_RATIO',
   E_TransferValue = 'E_TRANSFER_VALUE',
   E_GeneratedValue = 'E_GENERATED_VALUE',
   E_UsageRatio = 'E_USAGE_RATIO',

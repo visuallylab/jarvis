@@ -26,43 +26,48 @@ export function getActionType(action: string | null) {
   }
 }
 
-export function getTemplateType(
-  data: string[],
-): {
-  templateType: TemplateType | '';
-  dataTypes: DataType[];
-} {
+export function getTemplateType(data: string | null): TemplateType | '' {
   let templateType: TemplateType | '' = '';
-  const dataTypes: DataType[] = [];
+  switch (data) {
+    case 'status': {
+      templateType = TemplateType.Realtime;
+      break;
+    }
+    case 'statistics': {
+      templateType = TemplateType.Statistics;
+      break;
+    }
+    case 'traffic status': {
+      templateType = TemplateType.T_Realtime;
+      break;
+    }
+    case 'traffic statistics': {
+      templateType = TemplateType.T_Statistics;
+      break;
+    }
+  }
+  return templateType;
+}
 
+export function getDataTypes(data: string[]) {
+  const dataTypes: DataType[] = [];
   data.forEach(cur => {
     switch (cur) {
-      // switch specific template
-      case 'traffic realtime':
-      case 'traffic status': {
-        templateType = TemplateType.T_Realtime;
+      case 'backup capacity': {
+        dataTypes.push(DataType.E_BackupCapacity);
+        break;
       }
-      default: {
-        const { dataType, template } = getDataType(cur);
-        if (!templateType) {
-          templateType = template;
-        }
-        dataTypes.push(dataType);
+      case 'electricity transfer value': {
+        dataTypes.push(DataType.E_TransferValue);
+        break;
+      }
+      case 'electricity generated value': {
+        dataTypes.push(DataType.E_GeneratedValue);
+        break;
       }
     }
   });
-
-  return {
-    templateType,
-    dataTypes,
-  };
-}
-
-export function getDataType(data: string) {
-  return {
-    dataType: DataType.E_UsageRatio,
-    template: TemplateType.Statistics,
-  };
+  return dataTypes;
 }
 
 export function getFocus(status: string | null): Focus[] {

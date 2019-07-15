@@ -5,7 +5,7 @@ import SiriWave from 'siriwave';
 
 import { JarvisStatus } from '@/services/JarvisService';
 import { JarvisContext } from '@/contexts/jarvis';
-import { setStatus, resetIdle } from '@/contexts/jarvis/actions';
+import { setListening, resetIdle } from '@/contexts/jarvis/actions';
 
 const Wrapper = styled(animated.div)`
   position: absolute;
@@ -56,7 +56,7 @@ const ListeningJarvis: FC = () => {
           // when show up animation over, let user know they can speak
           setTimeout(() => {
             startWave();
-            dispatch(setStatus(JarvisStatus.Listening, "I'm listening..."));
+            dispatch(setListening());
           }, 1300);
           return;
         }
@@ -69,7 +69,7 @@ const ListeningJarvis: FC = () => {
           stopWave();
           setTimeout(() => {
             startWave();
-            dispatch(setStatus(JarvisStatus.Listening, "I'm listening..."));
+            dispatch(setListening());
           }, 1000);
           break;
         }

@@ -1,7 +1,7 @@
 import React, { createContext, FC, useReducer } from 'react';
 
 import reducer from './reducer';
-import { TActionRouterAction } from './actions';
+import { TActionRouterAction, backRoute } from './actions';
 import {
   ActionType,
   TemplateType,
@@ -26,7 +26,7 @@ export type TActionRoute = {
 };
 
 export type TActionRouterState = {
-  routes: TActionRoute[];
+  history: TActionRoute[];
   currentIndex: number;
 };
 
@@ -41,8 +41,17 @@ export type TActionRouterReducer = (
 ) => TActionRouterState;
 
 const initialState = {
-  currentIndex: -1,
-  routes: [],
+  currentIndex: 0,
+  history: [
+    {
+      actionType: ActionType.Show,
+      templateType: TemplateType.Home,
+      dataTypes: [],
+      times: [],
+      focus: [],
+      extraProps: {},
+    },
+  ],
   back: () => ({}),
   dispatch: () => ({}),
 };
@@ -60,11 +69,9 @@ export const ActionRouterProvider: FC = props => {
   return (
     <ActionRouterContext.Provider
       value={{
-        routes: state.routes,
+        history: state.history,
         currentIndex: state.currentIndex,
-        back: () => {
-          alert('back');
-        },
+        back: () => dispatch(backRoute()),
         dispatch,
       }}
     >
