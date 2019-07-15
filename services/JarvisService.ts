@@ -127,7 +127,7 @@ export default class JarvisService {
         }
 
         case JarvisStatus.Listening: {
-          if (target.isFinal && !matchHeyJarvis(target[0].transcript)) {
+          if (target.isFinal) {
             dispatch(
               setResponse(response, JarvisStatus.Recognizing, 'Recognizing...'),
             );

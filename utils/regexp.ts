@@ -5,7 +5,7 @@ const regexp = {
   HEY_JARVIS: /[J|T|G|D]arvis/i,
   STOP: /thank you|stop/i,
   PARSE_ACTION: /show|tell|see|analyze|compare|find|focus/i,
-  PARSE_DATA: /[t|d]raffic (status|jam)|electricity/gi,
+  PARSE_DATA: /traffic (status|jam)|electricity/gi,
   PARSE_TIME: /(this|last) (year|month)|from (June|A) to (July|B)/i,
   PARSE_STATUS: /alert|report|max value|minimum value/i,
 };

@@ -103,7 +103,15 @@ export const activeJarvis = (): TJarvisAction => ({
 });
 
 export const setError = (): TJarvisAction =>
-  setStatus(JarvisStatus.Error, 'Sorry, I can not understand...');
+  setResponse(
+    {
+      message: '',
+      confidence: 1,
+      isFinal: true,
+    },
+    JarvisStatus.Error,
+    'Sorry, I can not understand...',
+  );
 
 export const setSuccess = (): TJarvisAction =>
   setStatus(JarvisStatus.Success, 'Thank you 😉');
