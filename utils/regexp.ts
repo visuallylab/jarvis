@@ -5,7 +5,8 @@ const regexp = {
   HEY_JARVIS: /[J|T|G|D]arvis/i,
   STOP: /thank you|stop/i,
   PARSE_ACTION: /show|tell|see|analyze|compare|find|focus/i,
-  PARSE_DATA: /traffic (status|jam)|electricity/gi,
+  PARSE_TEMPLATE: /home|status|statistics|traffic (status|statistics)|electricity (status|statistics)/i,
+  PARSE_DATA: /backup capacity|electricity usage|electricity generated value|electricity transfer value/gi,
   PARSE_TIME: /(this|last) (year|month)|from (June|A) to (July|B)/i,
   PARSE_STATUS: /alert|report|max value|minimum value/i,
 };
@@ -17,6 +18,11 @@ export const matchHeyJarvis = (transcript: string) =>
 
 export const matchAction = (transcript: string) => {
   const result = regexp.PARSE_ACTION.exec(transcript);
+  return result ? result[0].toLowerCase() : null;
+};
+
+export const matchTemplate = (transcript: string) => {
+  const result = regexp.PARSE_TEMPLATE.exec(transcript);
   return result ? result[0].toLowerCase() : null;
 };
 

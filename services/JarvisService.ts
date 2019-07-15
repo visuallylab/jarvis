@@ -9,10 +9,12 @@ import {
   activeJarvis,
   setError,
   setSuccess,
+  setListening,
 } from '@/contexts/jarvis/actions';
 import {
   TActionRouterAction,
   pushRoute,
+  backRoute,
 } from '@/contexts/actionRouter/actions';
 import { JarvisSuggestion } from '@/contexts/jarvis';
 import { ActionType, TemplateType, DataType } from '@/constants/actionRouter';
@@ -24,9 +26,15 @@ import {
   matchData,
   matchTimes,
   matchStatus,
+  matchTemplate,
 } from '@/utils/regexp';
 
-import { getActionType, getFocus, getTemplateType } from '@/utils/jarvis';
+import {
+  getActionType,
+  getFocus,
+  getTemplateType,
+  getDataTypes,
+} from '@/utils/jarvis';
 import { Time, Focus, TActionRoute } from '@/contexts/actionRouter';
 
 export enum JarvisStatus {
@@ -131,13 +139,28 @@ export default class JarvisService {
             dispatch(
               setResponse(response, JarvisStatus.Recognizing, 'Recognizing...'),
             );
+
+            // back route
+            if (target[0].transcript.trim() === 'back') {
+              actionRouterDispatch(backRoute());
+              dispatch(setListening());
+              console.log(target[0].transcript.trim(), 1236666);
+              break;
+            }
+            console.log(target[0].transcript.trim(), 123);
+
             const encoded = this.encoded(target[0]);
-            if (!encoded.actionType || !encoded.templateType) {
-              dispatch(setError());
+            if (!encoded.actionType) {
+              const isStatistics =
+                encoded.templateType === TemplateType.Statistics;
+              if (
+                !encoded.templateType ||
+                (isStatistics && !encoded.dataTypes.length)
+              ) {
+                dispatch(setError());
+              }
             } else if (encoded.suggestions.length) {
               dispatch(setSuggestions(encoded.suggestions));
-              // TODO:
-              // when click ui -> turn to listening...
             } else {
               actionRouterDispatch(pushRoute(encoded as TActionRoute));
               dispatch(setSuccess());
@@ -181,11 +204,12 @@ export default class JarvisService {
     suggestions: JarvisSuggestion[];
     extraProps: { [key: string]: any };
   } {
-    const { action, data, times, status } = this.parseTranscript(
+    const { action, template, data, times, status } = this.parseTranscript(
       src.transcript,
     );
     const actionType = getActionType(action);
-    const { templateType, dataTypes } = getTemplateType(data);
+    const templateType = getTemplateType(template);
+    const dataTypes = getDataTypes(data);
     const focus = getFocus(status);
 
     const suggestions: JarvisSuggestion[] = [];
@@ -206,11 +230,13 @@ export default class JarvisService {
   // show me traffic status this year
   parseTranscript(transcript: string) {
     const action = matchAction(transcript);
+    const template = matchTemplate(transcript);
     const data = matchData(transcript);
     const times = matchTimes(transcript);
     const status = matchStatus(transcript);
     return {
       action,
+      template,
       data,
       times,
       status,

@@ -116,4 +116,15 @@ export const setError = (): TJarvisAction =>
 export const setSuccess = (): TJarvisAction =>
   setStatus(JarvisStatus.Success, 'Thank you 😉');
 
+export const setListening = (): TJarvisAction =>
+  setResponse(
+    {
+      message: '',
+      confidence: 1,
+      isFinal: true,
+    },
+    JarvisStatus.Listening,
+    "I'm listening...",
+  );
+
 export default Actions;
