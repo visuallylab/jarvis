@@ -3,9 +3,16 @@ import JarvisService, {
   TJarvisResponse,
 } from '@/services/JarvisService';
 
-interface IAction<T, P> {
-  type: T;
-  payload: P;
+import { JarvisSuggestion } from './index';
+
+enum Actions {
+  InitJarvisService = 'INIT_JARVIS_SERVICE',
+  StartWebSpeech = 'START_WEB_SPEECH',
+  StopWebSpeech = 'STOP_WEB_SPEECH',
+  SetResponse = 'SET_RESPONSE',
+  SetStatus = 'SET_STATUS',
+  SetSuggestion = 'SET_SUGGESTION',
+  ResetIdle = 'RESET_IDLE',
 }
 
 export type TJarvisAction =
@@ -14,17 +21,14 @@ export type TJarvisAction =
   | IAction<Actions.StopWebSpeech, { enabled: boolean; status: JarvisStatus }>
   | IAction<
       Actions.SetResponse,
-      { response: TJarvisResponse; status?: JarvisStatus }
+      { response: TJarvisResponse; status?: JarvisStatus; title?: string }
     >
-  | IAction<Actions.SetStatus, { status: JarvisStatus }>;
-
-enum Actions {
-  InitJarvisService = 'INIT_JARVIS_SERVICE',
-  StartWebSpeech = 'START_WEB_SPEECH',
-  StopWebSpeech = 'STOP_WEB_SPEECH',
-  SetResponse = 'SET_RESPONSE',
-  SetStatus = 'SET_STATUS',
-}
+  | IAction<Actions.SetStatus, { status: JarvisStatus; title?: string }>
+  | IAction<
+      Actions.SetSuggestion,
+      { suggestions: JarvisSuggestion[]; status?: JarvisStatus }
+    >
+  | IAction<Actions.ResetIdle, { title?: string }>;
 
 export const initJarvisService = (jarvis: JarvisService): TJarvisAction => ({
   type: Actions.InitJarvisService,
@@ -37,7 +41,7 @@ export const startWebSpeech = (): TJarvisAction => ({
   type: Actions.StartWebSpeech,
   payload: {
     enabled: true,
-    status: JarvisStatus.Active,
+    status: JarvisStatus.Idle,
   },
 });
 
@@ -52,18 +56,42 @@ export const stopWebSpeech = (): TJarvisAction => ({
 export const setResponse = (
   res: TJarvisResponse,
   status?: JarvisStatus,
+  title?: string,
 ): TJarvisAction => ({
   type: Actions.SetResponse,
   payload: {
     response: res,
     status,
+    title,
   },
 });
 
-export const setStatus = (status: JarvisStatus): TJarvisAction => ({
+export const setStatus = (
+  status: JarvisStatus,
+  title?: string,
+): TJarvisAction => ({
   type: Actions.SetStatus,
   payload: {
     status,
+    title,
+  },
+});
+
+export const setSuggestions = (
+  suggestions: JarvisSuggestion[],
+  status?: JarvisStatus,
+): TJarvisAction => ({
+  type: Actions.SetSuggestion,
+  payload: {
+    suggestions,
+    status,
+  },
+});
+
+export const resetIdle = (title?: string): TJarvisAction => ({
+  type: Actions.ResetIdle,
+  payload: {
+    title,
   },
 });
 

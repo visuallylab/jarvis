@@ -1,7 +1,10 @@
 import { JarvisProvider } from './jarvis';
+import { ActionRouterProvider } from './actionRouter';
 
 const GlobalStateProvider: React.FC = ({ children }) => (
-  <JarvisProvider>{children}</JarvisProvider>
+  <ActionRouterProvider>
+    <JarvisProvider>{children}</JarvisProvider>
+  </ActionRouterProvider>
 );
 
 export default GlobalStateProvider;

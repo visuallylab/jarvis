@@ -32,7 +32,7 @@ const Wrapper = styled(animated.div)`
 const ListeningJarvis: FC = () => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const jarvisWave = useRef<any>(null);
-  const { status, response, dispatch } = useContext(JarvisContext);
+  const { status, response, dispatch, title } = useContext(JarvisContext);
   const props = useSpring({
     transform: `translateX(${status === JarvisStatus.Idle ? '150%' : '0%'})`,
   });
@@ -41,11 +41,13 @@ const ListeningJarvis: FC = () => {
     if (jarvisWave.current) {
       switch (status) {
         case JarvisStatus.Active: {
-          // when jarvis dialog show up, start listening
-          jarvisWave.current.setSpeed(0.2);
-          jarvisWave.current.setAmplitude(3);
-          jarvisWave.current.start();
-          dispatch(setStatus(JarvisStatus.Listening));
+          // when show up animation over, let user know they can speak
+          setTimeout(() => {
+            jarvisWave.current.setSpeed(0.2);
+            jarvisWave.current.setAmplitude(3);
+            jarvisWave.current.start();
+            dispatch(setStatus(JarvisStatus.Listening, "I'm listening..."));
+          }, 1000);
           return;
         }
         case JarvisStatus.Idle: {
@@ -79,7 +81,7 @@ const ListeningJarvis: FC = () => {
   return (
     <Wrapper style={props} ref={wrapperRef}>
       <p>
-        <b>What can I help you ?...</b>
+        <b>{title}</b>
       </p>
       <div id="jarvis-wave" />
       <p>{response.message}</p>
