@@ -5,10 +5,10 @@ import {
   startWebSpeech,
   stopWebSpeech,
   setResponse,
-  setStatus,
   setSuggestions,
-  resetIdle,
   activeJarvis,
+  setError,
+  setSuccess,
 } from '@/contexts/jarvis/actions';
 import {
   TActionRouterAction,
@@ -34,6 +34,8 @@ export enum JarvisStatus {
   Active = 'ACTIVE', // show dialog (from screen right)
   Listening = 'LISTENING', // start listening (start wave animation)
   Recognizing = 'RECOGNIZING',
+  Success = 'SUCCESS',
+  Error = 'Error',
 }
 
 export type TJarvisResponse = {
@@ -50,6 +52,7 @@ type TJarvisServiceProps = {
 
 // TODO:
 // [refactor]: handle if recognition is undefined
+// [grammar]: add match grammar
 
 export default class JarvisService {
   public props: TJarvisServiceProps;
@@ -124,28 +127,20 @@ export default class JarvisService {
         }
 
         case JarvisStatus.Listening: {
-          if (target.isFinal) {
+          if (target.isFinal && !matchHeyJarvis(target[0].transcript)) {
             dispatch(
               setResponse(response, JarvisStatus.Recognizing, 'Recognizing...'),
             );
             const encoded = this.encoded(target[0]);
             if (!encoded.actionType || !encoded.templateType) {
-              dispatch(
-                setStatus(
-                  JarvisStatus.Listening,
-                  'Sorry, I can not understand...',
-                ),
-              );
+              dispatch(setError());
             } else if (encoded.suggestions.length) {
-              dispatch(
-                setSuggestions(encoded.suggestions, JarvisStatus.Listening),
-              );
+              dispatch(setSuggestions(encoded.suggestions));
               // TODO:
-              // keep recognizing
               // when click ui -> turn to listening...
             } else {
               actionRouterDispatch(pushRoute(encoded as TActionRoute));
-              dispatch(resetIdle('Thank you 😉'));
+              dispatch(setSuccess());
             }
           } else {
             dispatch(setResponse(response));

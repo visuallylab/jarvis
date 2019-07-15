@@ -1,11 +1,11 @@
-import { FC, useContext, useEffect, useRef } from 'react';
+import { FC, useContext, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import SiriWave from 'siriwave';
 
 import { JarvisStatus } from '@/services/JarvisService';
 import { JarvisContext } from '@/contexts/jarvis';
-import { setStatus } from '@/contexts/jarvis/actions';
+import { setStatus, resetIdle } from '@/contexts/jarvis/actions';
 
 const Wrapper = styled(animated.div)`
   position: absolute;
@@ -37,23 +37,44 @@ const ListeningJarvis: FC = () => {
     transform: `translateX(${status === JarvisStatus.Idle ? '150%' : '0%'})`,
   });
 
+  const startWave = useCallback(() => {
+    jarvisWave.current.setSpeed(0.2);
+    jarvisWave.current.setAmplitude(3);
+    jarvisWave.current.start();
+  }, [jarvisWave.current]);
+
+  const stopWave = useCallback(() => {
+    jarvisWave.current.setSpeed(0);
+    jarvisWave.current.setAmplitude(0);
+    jarvisWave.current.stop();
+  }, [jarvisWave.current]);
+
   useEffect(() => {
     if (jarvisWave.current) {
       switch (status) {
         case JarvisStatus.Active: {
           // when show up animation over, let user know they can speak
           setTimeout(() => {
-            jarvisWave.current.setSpeed(0.2);
-            jarvisWave.current.setAmplitude(3);
-            jarvisWave.current.start();
+            startWave();
             dispatch(setStatus(JarvisStatus.Listening, "I'm listening..."));
           }, 1300);
           return;
         }
+        case JarvisStatus.Success: {
+          stopWave();
+          setTimeout(() => dispatch(resetIdle()), 1000);
+          break;
+        }
+        case JarvisStatus.Error: {
+          stopWave();
+          setTimeout(() => {
+            startWave();
+            dispatch(setStatus(JarvisStatus.Listening, "I'm listening..."));
+          }, 1000);
+          break;
+        }
         case JarvisStatus.Idle: {
-          jarvisWave.current.setSpeed(0);
-          jarvisWave.current.setAmplitude(0);
-          jarvisWave.current.stop();
+          stopWave();
           return;
         }
       }

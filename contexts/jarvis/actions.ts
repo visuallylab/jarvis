@@ -102,4 +102,10 @@ export const activeJarvis = (): TJarvisAction => ({
   payload: {},
 });
 
+export const setError = (): TJarvisAction =>
+  setStatus(JarvisStatus.Error, 'Sorry, I can not understand...');
+
+export const setSuccess = (): TJarvisAction =>
+  setStatus(JarvisStatus.Success, 'Thank you 😉');
+
 export default Actions;
