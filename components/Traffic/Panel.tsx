@@ -49,7 +49,7 @@ const ButtonWrapper = styled.div`
   justify-content: space-between;
 `;
 
-type TButton = {
+export type TButton = {
   text: string;
   onClick: () => void;
 };

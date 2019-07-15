@@ -245,7 +245,7 @@ const Map = () => {
         renderIcon: () => <Button>顯示資訊</Button>,
       });
       setTrafficStatus(TrafficStatus.warning);
-    }, 3000);
+    }, 6000);
   }, []);
 
   return (
@@ -258,11 +258,7 @@ const Map = () => {
         viewState={viewState}
         onViewStateChange={({ viewState: newViewState }: any) => {
           setViewState(newViewState);
-          if (
-            newViewState.zoom >= 18 &&
-            !trafficFlowData &&
-            mapState === MapStatus.TrafficJam
-          ) {
+          if (newViewState.zoom >= 18 && mapState === MapStatus.TrafficJam) {
             setTrafficFlowData(createTrafficFlowData(new Date()));
             cogoToast.warn('可能由於一起車禍導致塞車', {
               onClick: hide => {
@@ -300,7 +296,11 @@ const Map = () => {
               renderIcon: () => <Button>顯示資訊</Button>,
             });
           }
-          if (newViewState.zoom < 18 && trafficFlowData) {
+          if (
+            newViewState.zoom < 18 &&
+            mapState !== MapStatus.TrafficJam &&
+            trafficFlowData
+          ) {
             setTrafficFlowData(undefined);
             setMapState(MapStatus.Overview);
           }

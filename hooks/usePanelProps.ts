@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TProps as TPanelProps } from '../components/Traffic/Panel';
+import { TButton, TTrafficFlow } from '../components/Traffic/Panel';
 import { MapStatus } from '@/components/Traffic/Map';
 
 type TProps = {
@@ -18,6 +18,13 @@ type TProps = {
   }>;
 };
 
+type TStates = {
+  title: string;
+  infos: string[];
+  buttonConfigs: TButton[];
+  trafficFlowData?: TTrafficFlow;
+};
+
 const usePanelProps = ({
   mapState,
   setMapState,
@@ -25,7 +32,7 @@ const usePanelProps = ({
   trafficJamCount,
   trafficJamLength,
 }: TProps) => {
-  const [panelProps, setPanelProps] = useState<TPanelProps>({
+  const [panelProps, setPanelProps] = useState<TStates>({
     title: '',
     infos: [],
     buttonConfigs: [],
@@ -54,33 +61,33 @@ const usePanelProps = ({
       mapState === MapStatus.Overview
         ? [
             {
-              text: '顯示車輛資料',
-              onClick: () => setShowInfo(prev => !prev),
-            },
-            {
               text: '交通概況',
               onClick: () => setMapState(MapStatus.Overview),
-            },
-            {
-              text: '塞車分佈',
-              onClick: () => setMapState(MapStatus.TrafficJam),
-            },
-            {
-              text: '車禍路徑紀錄',
-              onClick: () => setMapState(MapStatus.Accident),
             },
             {
               text: '公車站牌等候人次',
               onClick: () => setMapState(MapStatus.BusCapacityUtilization),
             },
             {
-              text: '顯示地點車輛流量',
-              onClick: () => alert('not implemetnt yet'),
-            },
-            {
               text: '顯示上個月的統計資料',
               onClick: () => alert('not implemetnt yet'),
             },
+            // {
+            //   text: '顯示車輛資料',
+            //   onClick: () => setShowInfo(prev => !prev),
+            // },
+            // {
+            //   text: '塞車分佈',
+            //   onClick: () => setMapState(MapStatus.TrafficJam),
+            // },
+            // {
+            //   text: '車禍路徑紀錄',
+            //   onClick: () => setMapState(MapStatus.Accident),
+            // },
+            // {
+            //   text: '顯示地點車輛流量',
+            //   onClick: () => alert('not implemetnt yet'),
+            // },
           ]
         : [];
     setPanelProps(prev => ({
