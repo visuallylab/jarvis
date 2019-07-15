@@ -14,7 +14,7 @@ import JarvisService, {
 
 import { initJarvisService, TJarvisAction } from './actions';
 import reducer from './reducer';
-import { ActionRouterContext } from '../actionRouter';
+import { ActionRouterContext } from '@/contexts/actionRouter';
 
 export type JarvisSuggestion = {
   message: string;

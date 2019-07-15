@@ -1,4 +1,4 @@
-import { ActionType, TemplateType, DataType } from '@/constants';
+import { ActionType, TemplateType, DataType } from '@/constants/actionRouter';
 import { Focus } from '@/contexts/actionRouter';
 
 export function getActionType(action: string | null) {

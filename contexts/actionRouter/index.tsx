@@ -2,7 +2,12 @@ import React, { createContext, FC, useReducer } from 'react';
 
 import reducer from './reducer';
 import { TActionRouterAction } from './actions';
-import { ActionType, TemplateType, DataType, FocusStatus } from '@/constants';
+import {
+  ActionType,
+  TemplateType,
+  DataType,
+  FocusStatus,
+} from '@/constants/actionRouter';
 
 export type Focus = {
   type: FocusStatus | DataType;

@@ -15,7 +15,8 @@ import {
   pushRoute,
 } from '@/contexts/actionRouter/actions';
 import { JarvisSuggestion } from '@/contexts/jarvis';
-import { grammars, ActionType, TemplateType, DataType } from '@/constants';
+import { ActionType, TemplateType, DataType } from '@/constants/actionRouter';
+import { grammars } from '@/constants/jarvis';
 import {
   matchHeyJarvis,
   matchStop,

@@ -1,17 +1,3 @@
-import { getRelativePath } from '@/utils';
-
-/* head meta tag data */
-export const SITE_TITLE = 'Visually Lab';
-export const SITE_DESC = 'visualize everything';
-export const SITE_URL = 'localhost';
-export const FAVICON_PATH = getRelativePath('/static/favicon.ico');
-export const LARGE_ICON_PATH = getRelativePath('/static/large-icon.png');
-export const NAV_TITLE = 'nav title';
-
-/* Traffic animation config */
-export const frames = 10;
-export const accidentFrames = 30;
-
 // actionRouter
 export enum ActionType {
   Show = 'SHOW', // 顯示、跳轉
@@ -48,22 +34,3 @@ export enum DataType {
   E_MaxValue = 'E_MAX_VALUE',
   E_EstimateMaxValue = 'E_ESTIMATE_MAX_VALUE',
 }
-
-// jarvis
-export const grammars = {
-  heyJarvis: `
-    #JSGF V1.0 utf-8 en;
-    grammar heyJarvis;
-
-    <hey> = /10/ hey | /0.2/ Hey | /0.2/ Hi | /0.2/ hi;
-    public <Jarvis> = /100/ Jarvis | /1/ Travis | /0/ Carlos | /0/ Bobby | /0/ drop it | /0/ Gabby | /0/ gummies;
-    <listening> = <hey>* <Jarvis>;
-  `,
-  stop: `
-    #JSGF V1.0 utf-8 en;
-    grammar stop;
-
-    <stop> = stop <Jarvis>*;
-    <thank you> = thank you <Jarvis>*;
-    `,
-};
