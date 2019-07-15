@@ -47,7 +47,7 @@ const ListeningJarvis: FC = () => {
             jarvisWave.current.setAmplitude(3);
             jarvisWave.current.start();
             dispatch(setStatus(JarvisStatus.Listening, "I'm listening..."));
-          }, 1000);
+          }, 1300);
           return;
         }
         case JarvisStatus.Idle: {
