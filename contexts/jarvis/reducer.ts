@@ -44,7 +44,7 @@ const reducer: TJarvisReducer = (state, action) => {
         ...state,
         suggestions: action.payload.suggestions,
         response: {
-          message: 'Um... could these help you? 😉',
+          message: 'Um... are you mean? 😉',
           confidence: 1,
           isFinal: true,
         },
@@ -63,6 +63,21 @@ const reducer: TJarvisReducer = (state, action) => {
         },
       };
     }
+
+    case Actions.ActiveJarvis: {
+      state.status.current = JarvisStatus.Active;
+      return {
+        ...state,
+        title: 'What can I help you ?',
+        suggestions: [],
+        response: {
+          message: '',
+          confidence: 1,
+          isFinal: true,
+        },
+      };
+    }
+
     default:
       throw new Error();
   }

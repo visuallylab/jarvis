@@ -13,6 +13,7 @@ enum Actions {
   SetStatus = 'SET_STATUS',
   SetSuggestion = 'SET_SUGGESTION',
   ResetIdle = 'RESET_IDLE',
+  ActiveJarvis = 'ACTIVE_JARVIS',
 }
 
 export type TJarvisAction =
@@ -28,7 +29,8 @@ export type TJarvisAction =
       Actions.SetSuggestion,
       { suggestions: JarvisSuggestion[]; status?: JarvisStatus }
     >
-  | IAction<Actions.ResetIdle, { title?: string }>;
+  | IAction<Actions.ResetIdle, { title?: string }>
+  | IAction<Actions.ActiveJarvis>;
 
 export const initJarvisService = (jarvis: JarvisService): TJarvisAction => ({
   type: Actions.InitJarvisService,
@@ -93,6 +95,11 @@ export const resetIdle = (title?: string): TJarvisAction => ({
   payload: {
     title,
   },
+});
+
+export const activeJarvis = (): TJarvisAction => ({
+  type: Actions.ActiveJarvis,
+  payload: {},
 });
 
 export default Actions;

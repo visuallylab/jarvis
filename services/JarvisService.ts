@@ -8,6 +8,7 @@ import {
   setStatus,
   setSuggestions,
   resetIdle,
+  activeJarvis,
 } from '@/contexts/jarvis/actions';
 import {
   TActionRouterAction,
@@ -116,7 +117,7 @@ export default class JarvisService {
       switch (status.current) {
         case JarvisStatus.Idle: {
           if (matchHeyJarvis(target[0].transcript)) {
-            dispatch(setStatus(JarvisStatus.Active, 'What can I help you ?'));
+            dispatch(activeJarvis());
           }
           break;
         }

@@ -58,7 +58,7 @@ function init(args: TInitArgs) {
   return {
     jarvis: undefined,
     enabled: false,
-    title: 'What can I help you ?',
+    title: '',
     status: args.status,
     response: defaultJarvisRes,
     suggestions: [],
@@ -69,7 +69,7 @@ export const JarvisContext = createContext<TJarvisContext>({
   jarvis: undefined,
   status: JarvisStatus.Idle,
   enabled: false,
-  title: 'What can I help you ?',
+  title: '',
   response: defaultJarvisRes,
   suggestions: [],
   dispatch: () => ({}),
