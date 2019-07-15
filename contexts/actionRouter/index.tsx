@@ -41,8 +41,17 @@ export type TActionRouterReducer = (
 ) => TActionRouterState;
 
 const initialState = {
-  currentIndex: -1,
-  history: [],
+  currentIndex: 0,
+  history: [
+    {
+      actionType: ActionType.Show,
+      templateType: TemplateType.Home,
+      dataTypes: [],
+      times: [],
+      focus: [],
+      extraProps: {},
+    },
+  ],
   back: () => ({}),
   dispatch: () => ({}),
 };

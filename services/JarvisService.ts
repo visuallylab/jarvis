@@ -144,10 +144,8 @@ export default class JarvisService {
             if (target[0].transcript.trim() === 'back') {
               actionRouterDispatch(backRoute());
               dispatch(setListening());
-              console.log(target[0].transcript.trim(), 1236666);
               break;
             }
-            console.log(target[0].transcript.trim(), 123);
 
             const encoded = this.encoded(target[0]);
             if (!encoded.actionType) {

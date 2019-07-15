@@ -5,7 +5,7 @@ import { JarvisStatus } from '@/services/JarvisService';
 const reducer: TJarvisReducer = (state, action) => {
   // CAUTION:
   // status are ref object, we update by set `status.current`
-  console.log(action);
+
   switch (action.type) {
     case Actions.InitJarvisService: {
       return { ...state, ...action.payload };
