@@ -1,11 +1,41 @@
 import { MutableRefObject } from 'react';
 import debounce from 'lodash/debounce';
-import { TSetRefState } from '@/hooks/useRefState';
+import {
+  TJarvisAction,
+  startWebSpeech,
+  stopWebSpeech,
+  setResponse,
+  setSuggestions,
+  activeJarvis,
+  setError,
+  setSuccess,
+} from '@/contexts/jarvis/actions';
+import {
+  TActionRouterAction,
+  pushRoute,
+} from '@/contexts/actionRouter/actions';
+import { JarvisSuggestion } from '@/contexts/jarvis';
+import { ActionType, TemplateType, DataType } from '@/constants/actionRouter';
+import { grammars } from '@/constants/jarvis';
+import {
+  matchHeyJarvis,
+  matchStop,
+  matchAction,
+  matchData,
+  matchTimes,
+  matchStatus,
+} from '@/utils/regexp';
+
+import { getActionType, getFocus, getTemplateType } from '@/utils/jarvis';
+import { Time, Focus, TActionRoute } from '@/contexts/actionRouter';
 
 export enum JarvisStatus {
-  Idle = 'IDLE',
-  Listening = 'LISTENING',
+  Idle = 'IDLE', // hide
+  Active = 'ACTIVE', // show dialog (from screen right)
+  Listening = 'LISTENING', // start listening (start wave animation)
   Recognizing = 'RECOGNIZING',
+  Success = 'SUCCESS',
+  Error = 'Error',
 }
 
 export type TJarvisResponse = {
@@ -14,52 +44,30 @@ export type TJarvisResponse = {
   isFinal: boolean;
 };
 
-const regexp = {
-  HEY_JARVIS: /[J|T|G|D]arv/g,
-  STOP: /(thank you)|(stop)/g,
-};
-
-const grammars = {
-  heyJarvis: `
-    #JSGF V1.0 utf-8 en;
-    grammar heyJarvis;
-
-    <hey> = /10/ hey | /0.2/ Hey | /0.2/ Hi | /0.2/ hi;
-    public <Jarvis> = /100/ Jarvis | /1/ Travis | /0/ Carlos | /0/ Bobby | /0/ drop it | /0/ Gabby | /0/ gummies;
-    <listening> = <hey>* <Jarvis>;
-  `,
-  stop: `
-    #JSGF V1.0 utf-8 en;
-    grammar stop;
-
-    <stop> = stop <Jarvis>*;
-    <thank you> = thank you <Jarvis>*;
-    `,
-};
-
 type TJarvisServiceProps = {
   status: MutableRefObject<JarvisStatus>;
-  setRefStatus: TSetRefState<JarvisStatus>;
-  setEnabled: TSetRefState<boolean>;
-  setResponse: TSetRefState<TJarvisResponse>;
+  dispatch: React.Dispatch<TJarvisAction>;
+  actionRouterDispatch: React.Dispatch<TActionRouterAction>;
 };
+
+// TODO:
+// [refactor]: handle if recognition is undefined
+// [grammar]: add match grammar
 
 export default class JarvisService {
   public props: TJarvisServiceProps;
   private recognition: SpeechRecognition;
+  private recognizing: boolean = false;
 
   constructor(props: TJarvisServiceProps) {
     this.props = props;
+
     // @ts-ignore
     const Recognition = window.SpeechRecognition || webkitSpeechRecognition;
     this.recognition = new Recognition() as SpeechRecognition;
     this.initialize();
-    this.recognition.onresult = this.onresult;
-    this.recognition.onstart = this.onstart;
-    this.recognition.onend = this.onend;
-    this.recognition.onerror = this.onerror;
 
-    // default enable jarvis service
+    // DEFAULT: enable jarvis service
     this.enable();
   }
 
@@ -71,6 +79,11 @@ export default class JarvisService {
       this.recognition.lang = 'en-US';
       this.recognition.continuous = true; // continuous results are returned for each recognition
       this.recognition.interimResults = true;
+
+      this.recognition.onresult = this.onresult;
+      this.recognition.onstart = this.onstart;
+      this.recognition.onend = this.onend;
+      this.recognition.onerror = this.onerror;
     }
   }
 
@@ -87,39 +100,62 @@ export default class JarvisService {
 
   // tslint:disable
   onresult = debounce(event => {
-    const { status, setRefStatus, setResponse } = this.props;
-    const target = event.results[event.resultIndex];
-    console.log(event);
-    if (regexp.STOP.exec(target[0].transcript) && target.isFinal) {
-      setRefStatus(JarvisStatus.Idle);
-      return;
-    }
+    if (!this.recognizing) {
+      this.recognizing = true;
+      const { dispatch, status, actionRouterDispatch } = this.props;
+      const target = event.results[event.resultIndex];
+      const response = {
+        message: target[0].transcript,
+        confidence: target[0].confidence,
+        isFinal: target.isFinal,
+      };
 
-    if (
-      status.current === JarvisStatus.Idle &&
-      regexp.HEY_JARVIS.exec(target[0].transcript)
-    ) {
-      setRefStatus(JarvisStatus.Listening);
-    } else if (status.current === JarvisStatus.Listening) {
-      // listening
-      // recognize
-      // listening suggestion
-      console.log('listening');
-    }
+      // run before anything when matches "stop grammar",
+      // set jarvis status to "Idle"
+      if (matchStop(target[0].transcript)) {
+        dispatch(setResponse(response, JarvisStatus.Idle));
+        this.recognizing = false;
+        return;
+      }
 
-    setResponse({
-      message: target[0].transcript,
-      confidence: target[0].confidence,
-      isFinal: target.isFinal,
-    });
+      switch (status.current) {
+        case JarvisStatus.Idle: {
+          if (matchHeyJarvis(target[0].transcript)) {
+            dispatch(activeJarvis());
+          }
+          break;
+        }
+
+        case JarvisStatus.Listening: {
+          if (target.isFinal) {
+            dispatch(
+              setResponse(response, JarvisStatus.Recognizing, 'Recognizing...'),
+            );
+            const encoded = this.encoded(target[0]);
+            if (!encoded.actionType || !encoded.templateType) {
+              dispatch(setError());
+            } else if (encoded.suggestions.length) {
+              dispatch(setSuggestions(encoded.suggestions));
+              // TODO:
+              // when click ui -> turn to listening...
+            } else {
+              actionRouterDispatch(pushRoute(encoded as TActionRoute));
+              dispatch(setSuccess());
+            }
+          } else {
+            dispatch(setResponse(response));
+          }
+          break;
+        }
+      }
+
+      this.recognizing = false;
+    }
   }, 100);
 
-  onstart = () => this.props.setEnabled(true);
+  onstart = () => this.props.dispatch(startWebSpeech());
 
-  onend = () => {
-    this.props.setEnabled(false);
-    this.props.setRefStatus(JarvisStatus.Idle);
-  };
+  onend = () => this.props.dispatch(stopWebSpeech());
 
   onerror = (event: any) => {
     console.error('error', event);
@@ -131,5 +167,53 @@ export default class JarvisService {
 
   disable() {
     this.recognition.stop();
+  }
+
+  encoded(src: {
+    transcript: string;
+    confidence: number;
+  }): {
+    actionType: ActionType | '';
+    templateType: TemplateType | '';
+    dataTypes: DataType[];
+    times: Time[];
+    focus: Focus[];
+    suggestions: JarvisSuggestion[];
+    extraProps: { [key: string]: any };
+  } {
+    const { action, data, times, status } = this.parseTranscript(
+      src.transcript,
+    );
+    const actionType = getActionType(action);
+    const { templateType, dataTypes } = getTemplateType(data);
+    const focus = getFocus(status);
+
+    const suggestions: JarvisSuggestion[] = [];
+    const extraProps = {};
+
+    return {
+      actionType,
+      templateType,
+      dataTypes,
+      times,
+      focus,
+      suggestions,
+      extraProps,
+    };
+  }
+
+  // parse A + D + T + S
+  // show me traffic status this year
+  parseTranscript(transcript: string) {
+    const action = matchAction(transcript);
+    const data = matchData(transcript);
+    const times = matchTimes(transcript);
+    const status = matchStatus(transcript);
+    return {
+      action,
+      data,
+      times,
+      status,
+    };
   }
 }

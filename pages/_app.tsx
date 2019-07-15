@@ -2,7 +2,7 @@ import App, { Container } from 'next/app';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import AppContextsProvider from '@/contexts/AppContextsProvider';
+import GlobalStateProvider from '@/contexts/GlobalStateProvider';
 import theme from '@/themes/theme';
 
 export default class MyApp extends App {
@@ -21,9 +21,9 @@ export default class MyApp extends App {
     return (
       <Container>
         <ThemeProvider theme={theme}>
-          <AppContextsProvider>
+          <GlobalStateProvider>
             <Component {...pageProps} />
-          </AppContextsProvider>
+          </GlobalStateProvider>
         </ThemeProvider>
       </Container>
     );
