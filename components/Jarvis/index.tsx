@@ -3,9 +3,9 @@ import { animated } from 'react-spring';
 import styled from 'styled-components';
 import SiriWave from 'siriwave';
 import useJarvisSpringProps from '@/hooks/useJarvisSpringProps';
-import { JarvisContext } from '@/contexts/jarvisContext';
 import { JarvisStatus } from '@/services/JarvisService';
 import { setListening, resetIdle } from '@/contexts/jarvis/actions';
+import { JarvisContext } from '@/contexts/jarvis';
 
 type TProps = {
   size?: number;
