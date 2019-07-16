@@ -15,7 +15,7 @@ const Container = styled.div<{ size: number }>`
   position: absolute;
   top: 0;
   right: 0;
-  margin-top: ${props => props.size}px;
+  margin: 24px ${props => props.size * 2}px;
   width: ${props => props.size * 5}px;
   height: ${props => props.size * 1.5}px;
 `;
@@ -30,7 +30,7 @@ const AnimatedWrapper = styled(animated.div)`
   position: absolute;
 `;
 
-const Wrapper = styled.button`
+const Wrapper = styled.div`
   padding: 0;
   border: none;
   top: 0;
@@ -44,9 +44,7 @@ const Wrapper = styled.button`
 `;
 
 const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
-  const { status, title, response, jarvis, enabled, dispatch } = useContext(
-    JarvisContext,
-  );
+  const { status, jarvis, enabled, dispatch } = useContext(JarvisContext);
   const { circleProps, siriProps } = useJarvisSpringProps({
     size,
     status,
@@ -135,11 +133,6 @@ const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
     <Container size={size}>
       <AnimatedWrapper style={siriProps} ref={wrapperRef}>
         <div id="jarvis-wave" />
-        <p>
-          <b>{title}</b>
-        </p>
-        <div id="jarvis-wave" />
-        <p>{response.message}</p>
       </AnimatedWrapper>
       <Wrapper
         onClick={() =>
