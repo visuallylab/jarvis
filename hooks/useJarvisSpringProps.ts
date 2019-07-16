@@ -15,7 +15,7 @@ enum CircleBackgroundOption {
 const CIRCLE_NUM = 5;
 const EXPAND_SCALE = 0.5;
 const MARGIN = 0.5;
-const primaryColor = 'rgba(71,46,234,0.8)';
+const primaryColor = 'rgb(195, 186, 255)';
 const colorSet = [
   'rgb(255,255,255)',
   'rgb(15,82,169)',
@@ -24,7 +24,11 @@ const colorSet = [
   'rgb(48,220,155)',
 ];
 
-const getBackground = (scale: CircleBackgroundOption, index: number) => {
+const getBackground = (
+  scale: CircleBackgroundOption,
+  index: number,
+  color = 'blue',
+) => {
   if (scale === CircleBackgroundOption.Compound) {
     return `linear-gradient(${15 * index}deg, ${
       colorSet[index === 0 ? 4 : index - 1]
@@ -32,7 +36,7 @@ const getBackground = (scale: CircleBackgroundOption, index: number) => {
   }
 
   if (scale === CircleBackgroundOption.Monochromatic) {
-    return `linear-gradient(45deg, blue, blue)`;
+    return `linear-gradient(45deg, grey, ${color})`;
   }
   return `linear-gradient(45deg, blue, blue)`;
 };
@@ -221,10 +225,11 @@ const useJarvisSpringProps = ({ status, size = 60 }: TProps) => {
           to: {
             ...preset[status],
             left: getSpreadingOffset(0, index),
-            transform: getBloomingTransform(true, 20, index) + getScale(0.3),
+            transform: getBloomingTransform(true, 20, index) + getScale(0.6),
             background: getBackground(
               CircleBackgroundOption.Monochromatic,
               index,
+              'red',
             ),
           },
         }));
