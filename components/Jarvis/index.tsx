@@ -115,20 +115,6 @@ const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
     }
   }, []);
 
-  useEffect(() => {
-    const siri = new SiriWave({
-      container: document.getElementById('jarvis-wave'),
-      width: size * 5,
-      height: size * 1.5,
-      amplitude: 3,
-      style: 'ios9',
-      autostart: true,
-    });
-    return () => {
-      siri.stop();
-    };
-  }, []);
-
   return (
     <Container size={size}>
       <AnimatedWrapper style={siriProps} ref={wrapperRef}>
