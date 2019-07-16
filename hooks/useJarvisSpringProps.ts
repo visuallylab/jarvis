@@ -121,6 +121,8 @@ const useJarvisSpringProps = ({ status, size = 60 }: TProps) => {
     transform: 'translateX(0%})',
     opacity: 0,
     filter: 'blur(0px)',
+    height: '100%',
+    width: '100%',
   }));
 
   useEffect(() => {
