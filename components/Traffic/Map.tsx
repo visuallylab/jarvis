@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 import DeckGL from '@deck.gl/react';
-import MapGL, { ViewState, Popup } from 'react-map-gl';
+import { ViewState, FlyToInterpolator, StaticMap } from 'react-map-gl';
 import useLineLayer from '@/hooks/useLineLayer';
 import useTripLayers from '@/hooks/useTripLayers';
 import useAccidentLayers from '@/hooks/useAccidentLayer';
@@ -12,12 +12,20 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import buses from 'static/buses.json';
 import traffic from 'static/traffic.json';
 import accidents from 'static/accidents.json';
-import Panel from './Panel';
+import Panel, { TTrafficFlow } from './Panel';
 import Tooltip from './Tooltip';
-import CarInfoPopup from './CarInfoPopup';
-import { getBuildingLayer, getLightEffect } from '@/utils/traffic';
+import {
+  getBuildingLayer,
+  getLightEffect,
+  createTrafficFlowData,
+} from '@/utils/traffic';
+import { TrafficStatus } from '@/constants';
+import cogoToast from 'cogo-toast';
+import './toast.css';
+import Button from '@/components/Traffic/Button';
+import usePanelProps from '@/hooks/usePanelProps';
 
-enum MapStatus {
+export enum MapStatus {
   Overview,
   TrafficJam,
   Accident,
@@ -38,60 +46,52 @@ const initialViewState = {
   zoom: 15,
   pitch: 45,
   bearing: 0,
+  transitionDuration: 500,
+  transitionInterpolator: new FlyToInterpolator(),
 };
+
+const events = [
+  {
+    name: '下班人潮激增，出現三處塞車',
+  },
+];
 
 const Map = () => {
   const buildingLayer = getBuildingLayer();
   const lightingEffect = getLightEffect();
-  const [status, setStatus] = useState(MapStatus.Overview);
-  const [viewState, setViewState] = useState<ViewState>(initialViewState);
-  const [gl, setGl] = useState();
-  const [showInfo, setShowInfo] = useState(false);
-
+  const [mapState, setMapState] = useState(MapStatus.Overview);
+  const [viewState, setViewState] = useState<
+    ViewState & { transitionDuration: number; transitionInterpolator: any }
+  >(initialViewState);
+  const [trafficStatus, setTrafficStatus] = useState(TrafficStatus.normal);
   const {
     lineLayer,
     hoverData,
     count: trafficJamCount,
-    length: trafficJamLenght,
-  } = useLineLayer(status === MapStatus.TrafficJam);
-  const { timestamps, transportation } = useTransportationData(
-    status === MapStatus.Overview,
-    traffic,
-  );
+    length: trafficJamLength,
+  } = useLineLayer(mapState === MapStatus.TrafficJam);
+  const { timestamps, transportation } = useTransportationData(true, traffic);
+  const [trafficFlowData, setTrafficFlowData] = useState<TTrafficFlow>();
+  const { panelProps } = usePanelProps({
+    mapState,
+    setMapState,
+    transportation,
+    trafficJamCount,
+    trafficJamLength,
+  });
   const { layers: busLayers } = useBusScenegraphLayers(
-    status === MapStatus.BusCapacityUtilization,
+    mapState === MapStatus.BusCapacityUtilization,
     buses,
   );
   const tripLayers = useTripLayers(traffic as TransporationItem[], timestamps);
   const accidentLayer = useAccidentLayers(
-    status === MapStatus.Accident,
+    mapState === MapStatus.Accident,
     accidents,
   );
 
-  const Popups = transportation
-    .slice(0, 1)
-    .map((d, i) => (
-      <CarInfoPopup
-        key={d.id}
-        lat={d.latlng[1]}
-        lng={d.latlng[0]}
-        texts={[` 車牌: ${d.vehicleId} #${i}`, `時速:${d.speed} km/h`]}
-      />
-    ));
-
-  const carsAmount = transportation.filter(t => t.type === 0 && t.speed !== 0)
-    .length;
-  const scooterAmount = transportation.filter(
-    t => t.type === 1 && t.speed !== 0,
-  ).length;
-
-  const averageSpeed =
-    transportation.reduce((prev, curr) => prev + curr.speed, 0) /
-    (carsAmount + scooterAmount);
-
   const getLayers = () => {
     let result;
-    switch (status) {
+    switch (mapState) {
       case MapStatus.Accident:
         result = [accidentLayer];
         break;
@@ -102,100 +102,223 @@ const Map = () => {
         result = [buildingLayer, tripLayers];
         break;
       case MapStatus.TrafficJam:
-        result = [buildingLayer, lineLayer];
+        result = [buildingLayer, lineLayer, tripLayers];
         break;
     }
     return result;
   };
 
-  const title = useMemo(() => {
-    let result = '交通概況';
-    switch (status) {
-      case MapStatus.Accident:
-        result = '車禍路徑紀錄';
-        break;
-      case MapStatus.BusCapacityUtilization:
-        result = '公車站牌等候人次';
-        break;
-      case MapStatus.Overview:
-        result = '交通概況';
-        break;
-      case MapStatus.TrafficJam:
-        result = '塞車分佈';
-        break;
-    }
-    return result;
-  }, [status]);
+  useEffect(() => {
+    /**
+     * 1. 顯示目前交通狀況
+     * 2. 標出所有塞車地區
+     * 3. 分別放大各地區
+     * 4. 分析可能原因
+     * 5. 一起連環車禍事故發生
+     * 6. 比較車禍事故發生時間與之後流量表
+     * 7. 與車禍發生的路徑
+     * 8. 分析可能疏導方法（AI）
+     * 9. 管制流量，恢復交通
+     */
+
+    /**
+     * 顯示目前交通狀況
+     *
+     * [v]trip layer
+     * [v]avg speed
+     * [v]car and scooter count
+     * [v]traffic jam count and length
+     * [v]accident count and hurt, death
+     * [v]bus util percentage, delay rate, avg delay time
+     */
+
+    /**
+     * 標出所有塞車地區
+     *
+     * [v]Line layer
+     * [v]car and scooter count
+     * [v]traffic jam count and length
+     * [v]bus util percentage, delay rate, avg delay time
+     * [v]三個按鈕，檢視塞車地區 1, 2, 3
+     */
+
+    /**
+     * 分別放大各地區
+     *
+     * [v]auto zoom to the pick traffic jam area
+     * [v]Line layer
+     * [v]when zoom over the threshold
+     * [v]show the area 流量圖 with accident
+     */
+
+    /**
+     * 觀看車禍原因
+     *
+     * [v]重現車禍路徑
+     * []車禍雙方車輛資訊與原因
+     */
+
+    /**
+     * 提示疏導方法
+     *
+     * []建議疏導的路線
+     * []建議指派的人員、位置與動作
+     */
+
+    /**
+     * 回到交通概覽
+     *
+     */
+
+    const showTrafficJamPrompt = () => {
+      cogoToast.info('西門路一段出現塞車路段', {
+        onClick: () =>
+          setViewState({
+            transitionDuration: 500,
+            transitionInterpolator: new FlyToInterpolator(),
+            longitude: 120.19767902271758,
+            latitude: 22.989887240887853,
+            zoom: 18,
+            pitch: 45,
+            bearing: 0,
+          }),
+        hideAfter: 15,
+        position: 'top-right',
+        bar: {
+          size: '0px',
+        },
+        renderIcon: () => <Button>查看</Button>,
+      });
+
+      cogoToast.info('西門路二段出現塞車路段', {
+        onClick: () =>
+          setViewState({
+            transitionDuration: 500,
+            transitionInterpolator: new FlyToInterpolator(),
+            longitude: 120.20015723575861,
+            latitude: 22.997552333424316,
+            zoom: 18,
+            pitch: 45,
+            bearing: 0,
+          }),
+        hideAfter: 15,
+        position: 'top-right',
+        bar: {
+          size: '0px',
+        },
+        renderIcon: () => <Button>查看</Button>,
+      });
+
+      cogoToast.info('中正路出現塞車路段', {
+        onClick: () =>
+          setViewState({
+            transitionDuration: 500,
+            transitionInterpolator: new FlyToInterpolator(),
+            longitude: 120.20120424682624,
+            latitude: 22.9922258462312,
+            zoom: 18,
+            pitch: 45,
+            bearing: 0,
+          }),
+        hideAfter: 15,
+        position: 'top-right',
+        bar: {
+          size: '0px',
+        },
+        renderIcon: () => <Button> 查看</Button>,
+      });
+    };
+
+    setTimeout(() => {
+      cogoToast.warn(events[0].name, {
+        onClick: hide => {
+          setMapState(MapStatus.TrafficJam);
+          setTimeout(showTrafficJamPrompt, 100);
+          // @ts-ignore
+          hide();
+        },
+        hideAfter: 15,
+        position: 'top-right',
+        bar: {
+          size: '0px',
+        },
+        renderIcon: () => <Button>顯示資訊</Button>,
+      });
+      setTrafficStatus(TrafficStatus.warning);
+    }, 6000);
+  }, []);
 
   return (
-    <MapGL
-      {...GLMapProps}
-      gl={gl}
-      reuseMaps={true}
-      viewState={viewState}
-      preventStyleDiffing={true}
-      onViewportChange={state => setViewState(state)}
-    >
+    <>
       <DeckGL
         controller={true}
         effects={[lightingEffect]}
         layers={getLayers()}
         initialViewState={initialViewState}
         viewState={viewState}
-        onWebGLInitialized={setGl}
-      />
-      {showInfo && Popups}
-      {status === MapStatus.Accident && (
-        <Popup
-          longitude={120.2063817400933}
-          latitude={22.99229346995837}
-          closeButton={false}
-        >
-          💥
-        </Popup>
-      )}
+        onViewStateChange={({ viewState: newViewState }: any) => {
+          setViewState(newViewState);
+          if (newViewState.zoom >= 18 && mapState === MapStatus.TrafficJam) {
+            setTrafficFlowData(createTrafficFlowData(new Date()));
+            cogoToast.warn('可能由於一起車禍導致塞車', {
+              onClick: hide => {
+                setMapState(MapStatus.Accident);
+                // @ts-ignore
+                hide();
+                setTimeout(() => {
+                  cogoToast.warn('建議指派一位員警到此路口指揮交通', {
+                    onClick: hide => {
+                      setMapState(MapStatus.Overview);
+                      setTrafficFlowData(undefined);
+                      setViewState(prev => ({
+                        ...prev,
+                        zoom: 15,
+                        transitionDuration: 500,
+                        transitionInterpolator: new FlyToInterpolator(),
+                      }));
+                      // @ts-ignore
+                      hide();
+                    },
+                    hideAfter: 15,
+                    position: 'top-right',
+                    bar: {
+                      size: '0px',
+                    },
+                    renderIcon: () => <Button>我知道了</Button>,
+                  });
+                }, 2000);
+              },
+              hideAfter: 15,
+              position: 'top-right',
+              bar: {
+                size: '0px',
+              },
+              renderIcon: () => <Button>顯示資訊</Button>,
+            });
+          }
+          if (
+            newViewState.zoom < 18 &&
+            mapState !== MapStatus.TrafficJam &&
+            trafficFlowData
+          ) {
+            setTrafficFlowData(undefined);
+            setMapState(MapStatus.Overview);
+          }
+        }}
+      >
+        <StaticMap {...GLMapProps} />
+      </DeckGL>
       <Panel
-        title={title}
-        infos={[
-          `平均時速: ${
-            isNaN(averageSpeed) ? 0 : averageSpeed.toFixed(2)
-          } km/hr`,
-          `目前城市中有 ${carsAmount} 輛汽車、${scooterAmount} 輛機車行駛`,
-          `共有 ${trafficJamCount} 處塞車，全長 ${trafficJamLenght} 公尺`,
-          `一小時內有 1 件車禍，無人傷亡`,
-          `公共運輸滿載率 67%，延誤率 13%，今日平均延誤 3 分鐘`,
-        ]}
-        buttonConfigs={[
-          { text: '顯示車輛資料', onClick: () => setShowInfo(prev => !prev) },
-          { text: '交通概況', onClick: () => setStatus(MapStatus.Overview) },
-          {
-            text: '塞車分佈',
-            onClick: () => setStatus(MapStatus.TrafficJam),
-          },
-          {
-            text: '車禍路徑紀錄',
-            onClick: () => setStatus(MapStatus.Accident),
-          },
-          {
-            text: '公車站牌等候人次',
-            onClick: () => setStatus(MapStatus.BusCapacityUtilization),
-          },
-          {
-            text: '顯示地點車輛流量',
-            onClick: () => alert('not implemetnt yet'),
-          },
-          {
-            text: '顯示上個月的統計資料',
-            onClick: () => alert('not implemetnt yet'),
-          },
-        ]}
+        {...panelProps}
+        trafficFlowData={trafficFlowData}
+        status={trafficStatus}
       />
       {hoverData.object && (
         <Tooltip left={hoverData.x} top={hoverData.y}>
           塞車
         </Tooltip>
       )}
-    </MapGL>
+    </>
   );
 };
 

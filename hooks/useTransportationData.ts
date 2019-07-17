@@ -12,7 +12,10 @@ import useAnimationController from './useAnimationController';
 registerLoaders([GLTFScenegraphLoader]);
 
 const initalTransportation = staticTraffic.map(d => {
-  return d.data[0];
+  return {
+    ...d.data[0],
+    direction: d.data[0].direction ? d.data[0].direction : 0,
+  };
 });
 
 const useTransportationData = (
