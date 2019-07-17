@@ -10,4 +10,16 @@ export const NAV_TITLE = 'nav title';
 
 /* Traffic animation config */
 export const frames = 10;
-export const accidentFrames = 30;
+export const accidentFrames = 15;
+export enum TrafficStatus {
+  normal = 'normal',
+  warning = 'warning',
+}
+export enum IndicatorColor {
+  normal = '#009900',
+  warning = '#EE0000',
+}
+export enum IndicatorMessage {
+  normal = '順暢通行',
+  warning = '馬路擁擠',
+}

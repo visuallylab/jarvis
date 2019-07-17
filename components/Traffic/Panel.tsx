@@ -1,26 +1,9 @@
+import React from 'react';
 import styled from 'styled-components';
-
-const Button = styled.button`
-  margin: 24px 12px 12px 24px;
-  padding: 8px 24px;
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0);
-  border: 1px solid #666;
-  font-weight: 100;
-  color: rgba(0, 217, 255, 0.8);
-  letter-spacing: 1px;
-  transition: 0.05s;
-
-  :hover {
-    transform: scale(1.2);
-    background-color: rgba(255, 255, 255, 0.3);
-    cursor: pointer;
-  }
-  :active {
-    color: whitesmoke;
-    transform: scale(1.1);
-  }
-`;
+import Indicator from './Indicator';
+import { TrafficStatus, IndicatorMessage, IndicatorColor } from '@/constants';
+import Button from './Button';
+import LineChart from './LineChart';
 
 const Container = styled.div`
   position: absolute;
@@ -28,7 +11,17 @@ const Container = styled.div`
   left: 0;
   width: 100%;
   padding: 64px 64px 36px 24px;
-  background-color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+`;
+
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+`;
+
+const ExtraContainer = styled.div`
+  flex-grow: 1;
 `;
 
 const Info = styled.p<{ large?: boolean }>`
@@ -39,29 +32,75 @@ const Info = styled.p<{ large?: boolean }>`
   font-size: ${props => (props.large ? '48px' : '18px')};
 `;
 
-type TButton = {
+const VerticalLayoutWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const HorizontalLayoutWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  align-items: bottom;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  max-width: 1300px;
+  justify-content: space-between;
+`;
+
+export type TButton = {
   text: string;
   onClick: () => void;
 };
 
-type TProps = {
+export type TTrafficFlow = Array<{ value: number; time: string }>;
+
+export type TProps = {
   title: string;
   infos: string[];
   buttonConfigs: TButton[];
+  status: TrafficStatus;
+  trafficFlowData?: TTrafficFlow;
 };
 
-const Panel: React.FC<TProps> = ({ title, infos, buttonConfigs }) => (
-  <Container>
-    <Info large={true}>{title}</Info>
-    {infos.map(info => (
-      <Info key={info}>{info}</Info>
-    ))}
-    {buttonConfigs.map(config => (
-      <Button key={config.text} onClick={config.onClick}>
-        {config.text}
-      </Button>
-    ))}
-  </Container>
+const Panel: React.FC<TProps> = React.memo(
+  ({ title, infos, buttonConfigs, status, trafficFlowData }) => (
+    <Container>
+      <HorizontalLayoutWrapper>
+        <MainContainer>
+          <VerticalLayoutWrapper>
+            <Info large={true}>{title}</Info>
+            <Indicator
+              text={
+                status === TrafficStatus.normal
+                  ? IndicatorMessage.normal
+                  : IndicatorMessage.warning
+              }
+              color={
+                status === TrafficStatus.normal
+                  ? IndicatorColor.normal
+                  : IndicatorColor.warning
+              }
+            />
+          </VerticalLayoutWrapper>
+          {infos.map(info => (
+            <Info key={info}>{info}</Info>
+          ))}
+          <ButtonWrapper>
+            {buttonConfigs.map(config => (
+              <Button key={config.text} onClick={config.onClick}>
+                {config.text}
+              </Button>
+            ))}
+          </ButtonWrapper>
+        </MainContainer>
+        <ExtraContainer>
+          {trafficFlowData && <LineChart data={trafficFlowData} />}
+        </ExtraContainer>
+      </HorizontalLayoutWrapper>
+    </Container>
+  ),
 );
 
 export default Panel;

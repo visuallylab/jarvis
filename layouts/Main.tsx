@@ -20,8 +20,8 @@ const MainLayout: React.FunctionComponent<TProps> = ({
       <Head>
         <title>{title}</title>
       </Head>
-      {children}
       <Jarvis />
+      {children}
       <NormalizeStyles />
       <GlobalStyles />
     </Section>
