@@ -15,6 +15,15 @@ export interface Theme {
     high: number;
     superHigh: bumber;
   };
+
+  fontSize: {
+    h1: string;
+    h2: string;
+    h3: string;
+    bigger: string;
+    smaller: string;
+    small: string;
+  };
 }
 
 // and extend them!

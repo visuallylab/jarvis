@@ -10,6 +10,15 @@ const theme: Theme = {
 
   borderRadius: '6px',
 
+  fontSize: {
+    h1: '2.5rem',
+    h2: '2rem',
+    h3: '1.5rem',
+    bigger: '1.25rem',
+    smaller: '.875rem',
+    small: '.75rem',
+  },
+
   z: {
     bigger: 10,
     high: 100,
