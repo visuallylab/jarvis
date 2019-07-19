@@ -12,11 +12,6 @@ require('dotenv').config();
 const GITHUB = process.env.DEPLOY_ENV === 'github';
 const PROJ_NAME = process.env.PROJ_NAME;
 
-// fix: prevents error when .less files are required by node
-if (typeof require !== 'undefined') {
-  require.extensions['.less'] = file => {};
-}
-
 module.exports = withCSS(
   withBundleAnalyzer(
     withTypescript({
@@ -40,8 +35,6 @@ module.exports = withCSS(
       },
       webpack: (config, { isServer, buildId, dev }) => {
         config.plugins = config.plugins || [];
-        config.resolve.extensions = config.resolve.extensions.concat(['.less']);
-
         config.plugins = [
           ...config.plugins,
 
@@ -51,6 +44,9 @@ module.exports = withCSS(
             systemvars: true,
           }),
         ];
+
+        // react-icons issue @see https://github.com/react-icons/react-icons/issues/154#issuecomment-412774515
+        config.resolve.extensions = ['.mjs', ...config.resolve.extensions];
 
         return config;
       },

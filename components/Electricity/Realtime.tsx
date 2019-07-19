@@ -6,19 +6,23 @@ import UsageBox from './UsageBox';
 import PowerBox from './PowerBox';
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   width: 100%;
-  height: 100%;
-  padding: 0 5%;
+  height: 100vh;
+  padding: 1em 4%;
+`;
+
+const Title = styled(H1)`
+  margin: 0 0.5em 0.75em;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   align-items: cenetr;
   justify-content: space-between;
-`;
-
-const Title = styled(H1)`
-  margin-top: 0.8em;
+  height: 90%;
 `;
 
 const Realtime: FC = () => {

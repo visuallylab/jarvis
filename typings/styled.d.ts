@@ -6,6 +6,13 @@ export interface Theme {
     smokyWhite: string;
     spaceGray: string;
     grey: string;
+
+    success: string;
+    warning: string;
+    error: string;
+
+    boxBackground: string;
+    boxBorder: string;
   };
 
   borderRadius: string;

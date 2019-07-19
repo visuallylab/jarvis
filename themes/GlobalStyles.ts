@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { media } from '@/utils/theme';
 
 export default createGlobalStyle`
   * {
@@ -10,6 +11,10 @@ export default createGlobalStyle`
     color: ${p => p.theme.colors.smokyWhite};
     font-size: 14px; /* 1em = 14px */
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+
+    ${media('largeDesktop')} {
+      font-size: 16px;
+    }
   }
 
   p {
