@@ -16,12 +16,14 @@ import Panel from './Panel';
 import Tooltip from './Tooltip';
 import CarInfoPopup from './CarInfoPopup';
 import { getBuildingLayer, getLightEffect } from '@/utils/traffic';
+import usePublicTransporationLayers from '@/hooks/usePublicTransporationLayers';
 
 enum MapStatus {
   Overview,
   TrafficJam,
   Accident,
   BusCapacityUtilization,
+  TrainCapacityUtilization,
 }
 
 const GLMapProps = {
@@ -47,6 +49,9 @@ const Map = () => {
   const [viewState, setViewState] = useState<ViewState>(initialViewState);
   const [gl, setGl] = useState();
   const [showInfo, setShowInfo] = useState(false);
+  const { layers: trainLayers } = usePublicTransporationLayers(
+    status === MapStatus.TrainCapacityUtilization,
+  );
 
   const {
     lineLayer,
@@ -104,6 +109,8 @@ const Map = () => {
       case MapStatus.TrafficJam:
         result = [buildingLayer, lineLayer];
         break;
+      case MapStatus.TrainCapacityUtilization:
+        result = [...trainLayers];
     }
     return result;
   };
