@@ -1,6 +1,6 @@
 // it is a memory cache, for demo, record the system info
 
-export enum Page {
+export enum SystemPage {
   Traffic = 'TRAFFIC',
   Electricity = 'ELECTRICITY',
   Home = 'HOME',
@@ -12,10 +12,10 @@ export enum NotifyEvent {
 }
 
 const systemStatus: {
-  page: Page;
+  page: SystemPage;
   notifyEvent: NotifyEvent | null;
 } = {
-  page: Page.Home,
+  page: SystemPage.Home,
   notifyEvent: null,
 };
 

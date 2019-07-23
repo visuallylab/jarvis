@@ -15,29 +15,45 @@ const Container = styled.div<{ size: number }>`
   position: absolute;
   top: 0;
   right: 0;
-  margin: 24px ${props => props.size * 2}px;
-  width: ${props => props.size * 5}px;
-  height: ${props => props.size * 1.5}px;
+  padding: 12px ${props => props.size}px;
+  width: ${props => props.size * 15}px;
+  height: 50vh;
+  z-index: ${p => p.theme.z.high};
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 `;
 
 const AnimatedWrapper = styled(animated.div)`
   display: flex;
-  top: 0;
-  right: 0;
-  bottom: 0;
   flex-direction: column;
   align-items: center;
-  position: absolute;
+  border: solid 1px ${p => p.theme.colors.boxBorder};
+  background: ${p => p.theme.colors.smokyBlack};
+  border-radius: ${p => p.theme.borderRadius};
+  box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.1) inset;
+  padding: 8px;
 `;
 
-const Wrapper = styled.div`
-  padding: 0;
-  border: none;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+const Title = styled.p`
+  font-weight: 500;
+`;
+
+const Message = styled.p`
+  font-size: ${p => p.theme.fontSize.smaller};
+  white-space: pre-line;
+`;
+
+const Wrapper = styled.div<{ size: number }>`
   position: absolute;
+  border: none;
+  padding: 0;
+  top: 24px;
+  left: 50%;
+  right: 0;
+  width: ${props => props.size * 5}px;
+  height: ${props => props.size * 1.5}px;
+  transform: translate3d(-50%, 0, 0);
   display: flex;
   align-items: center;
   background: none;
@@ -120,13 +136,12 @@ const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
   return (
     <Container size={size}>
       <AnimatedWrapper style={siriProps} ref={wrapperRef}>
-        <p>
-          <b>{title}</b>
-        </p>
+        <Title>{title}</Title>
         <div id="jarvis-wave" />
-        <p>{response.message}</p>
+        <Message>{response.message}</Message>
       </AnimatedWrapper>
       <Wrapper
+        size={size}
         onClick={() =>
           enabled ? jarvis && jarvis.disable() : jarvis && jarvis.enable()
         }

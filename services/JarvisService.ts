@@ -151,10 +151,10 @@ export default class JarvisService {
             if (!encoded.actionType) {
               const isStatistics =
                 encoded.templateType === TemplateType.Statistics;
-              if (
-                !encoded.templateType ||
-                (isStatistics && !encoded.dataTypes.length)
-              ) {
+              if (encoded.templateType) {
+                actionRouterDispatch(pushRoute(encoded as TActionRoute));
+                dispatch(setSuccess());
+              } else if (isStatistics && !encoded.dataTypes.length) {
                 dispatch(setError());
               }
             } else if (encoded.suggestions.length) {

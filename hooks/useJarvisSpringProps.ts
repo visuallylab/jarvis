@@ -94,20 +94,19 @@ const useJarvisSpringProps = ({ status, size = 60 }: TProps) => {
       `calc(${scale * (index - 2) * EXPAND_SCALE * (1 + MARGIN) * size}px)`,
     [size],
   );
-  const getBloomingTransform = useCallback((
-    bloom: boolean,
-    scale: number,
-    index: number,
-  ) => {
-    if (bloom) {
-      return `translate(${(2 - index) * size +
-        Math.sin((((index * Math.PI) / 180) * 360) / CIRCLE_NUM) *
-          Math.sqrt(size * scale)}px, ${Math.cos(
-        (((index * Math.PI) / 180) * 360) / CIRCLE_NUM,
-      ) * Math.sqrt(size * scale)}px`;
-    }
-    return `translate(${(2 - index) * size}px, 0px)`;
-  }, [size]);
+  const getBloomingTransform = useCallback(
+    (bloom: boolean, scale: number, index: number) => {
+      if (bloom) {
+        return `translate(${(2 - index) * size +
+          Math.sin((((index * Math.PI) / 180) * 360) / CIRCLE_NUM) *
+            Math.sqrt(size * scale)}px, ${Math.cos(
+          (((index * Math.PI) / 180) * 360) / CIRCLE_NUM,
+        ) * Math.sqrt(size * scale)}px`;
+      }
+      return `translate(${(2 - index) * size}px, 0px)`;
+    },
+    [size],
+  );
 
   const [circleProps, setCircleProps] = useSprings(colorSet.length, index => ({
     to: {
@@ -121,7 +120,6 @@ const useJarvisSpringProps = ({ status, size = 60 }: TProps) => {
     transform: 'translateX(0%})',
     opacity: 0,
     filter: 'blur(0px)',
-    height: '100%',
     width: '100%',
   }));
 
