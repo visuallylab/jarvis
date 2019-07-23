@@ -22,7 +22,7 @@ const IntroWrapper = styled.div`
 
 const pages = [
   ({ style }: any) => (
-    <AnimatedWrapper style={{ ...style }}>
+    <AnimatedWrapper style={style}>
       <IntroWrapper>
         <h1>City Dashboard</h1>
         <p>Say: Hey Jarvis!</p>
@@ -30,7 +30,7 @@ const pages = [
     </AnimatedWrapper>
   ),
   ({ style }: any) => (
-    <AnimatedWrapper style={{ ...style }}>
+    <AnimatedWrapper style={style}>
       <Map />
     </AnimatedWrapper>
   ),
