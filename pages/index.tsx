@@ -1,21 +1,38 @@
 import { useContext } from 'react';
 import { animated, useTransition } from 'react-spring';
+import styled from 'styled-components';
+
 import MainLayout from '@/layouts/Main';
 import { SITE_TITLE } from '@/constants';
 import { ActionRouterContext } from '@/contexts/actionRouter';
 import Map from '@/components/Traffic/Map';
 
+const AnimatedWrapper = styled(animated.div)`
+  width: 100%;
+  height: 100%;
+`;
+
+const IntroWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 const pages = [
   ({ style }: any) => (
-    <animated.div style={{ ...style }}>
-      <h1>City Dashboard</h1>
-      <p>Say: Hey Jarvis!</p>
-    </animated.div>
+    <AnimatedWrapper style={{ ...style }}>
+      <IntroWrapper>
+        <h1>City Dashboard</h1>
+        <p>Say: Hey Jarvis!</p>
+      </IntroWrapper>
+    </AnimatedWrapper>
   ),
   ({ style }: any) => (
-    <animated.div style={{ ...style }}>
+    <AnimatedWrapper style={{ ...style }}>
       <Map />
-    </animated.div>
+    </AnimatedWrapper>
   ),
 ];
 

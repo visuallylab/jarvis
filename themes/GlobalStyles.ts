@@ -1,15 +1,37 @@
 import { createGlobalStyle } from 'styled-components';
+import { media } from '@/utils/theme';
 
 export default createGlobalStyle`
-  body {
-    background-color: ${p => p.theme.colors.smokyBlack};
-    color: ${p => p.theme.colors.smokyWhite};
-    font-size: 14px;
+  * {
+    box-sizing: border-box;
   }
 
-  @media only screen and (max-width: 768px) {
-    p {
-      font-weight: 300;
+  html {
+    background-color: ${p => p.theme.colors.smokyBlack};
+    color: ${p => p.theme.colors.smokyWhite};
+    font-size: 14px; /* 1em = 14px */
+    font-weight: 300;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+
+    ${media('largeDesktop')} {
+      font-size: 16px;
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+
+  ol, ul {
+    list-style: none;
+  }
+
+  input, button {
+    outline: none;
+    border: none;
+
+    &:focus {
+      outline: none;
     }
   }
 `;
