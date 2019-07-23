@@ -10,6 +10,7 @@ export default createGlobalStyle`
     background-color: ${p => p.theme.colors.smokyBlack};
     color: ${p => p.theme.colors.smokyWhite};
     font-size: 14px; /* 1em = 14px */
+    font-weight: 300;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 
     ${media('largeDesktop')} {
@@ -19,16 +20,18 @@ export default createGlobalStyle`
 
   p {
     margin: 0;
-    font-weight: 300;
   }
 
   ol, ul {
     list-style: none;
   }
 
-  button {
+  input, button {
     outline: none;
     border: none;
-    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
   }
 `;

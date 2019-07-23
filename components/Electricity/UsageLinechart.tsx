@@ -1,41 +1,17 @@
-import {
-  LineChart,
-  Line,
-  XAxis,
-  Tooltip,
-  ResponsiveContainer,
-  YAxis,
-} from 'recharts';
+import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { FC } from 'react';
+import { TUsageData } from '@/utils/electricity';
 
-const valueBase = 34992;
-
-const createChartData = () => {
-  const maxProvide = 50000;
-  return Array.from({ length: 24 }).map((_, d) => {
-    const hour = String(d);
-
-    const useValue = valueBase + Math.floor(Math.random() * 10000);
-    let maxEstimate = useValue + Math.floor(Math.random() * 5000);
-    if (maxEstimate % 2) {
-      // 亂減一下，給點電力不足的錯誤資訊
-      maxEstimate -= Math.floor(Math.random() * 3000);
-    }
-    return {
-      hour,
-      useValue,
-      maxEstimate,
-      maxProvide,
-      backupCapacity: maxProvide - maxEstimate,
-    };
-  });
+type TProps = {
+  hours: number[];
+  data: TUsageData[];
 };
 
-const UsageLinechart = () => {
-  const chartData = createChartData();
+const UsageLinechart: FC<TProps> = ({ data, hours }) => {
   return (
     <ResponsiveContainer width="100%" height="30%">
       <LineChart
-        data={chartData}
+        data={data}
         margin={{
           top: 0,
           right: 20,
@@ -44,14 +20,26 @@ const UsageLinechart = () => {
         }}
       >
         {/* <YAxis /> */}
-        <XAxis dataKey="hour" interval={1} />
-        <Tooltip
-          wrapperStyle={{
-            backgroundColor: 'rgba(0,0,0,.7)',
-          }}
+        <XAxis
+          dataKey="hour"
+          // ticks={hours}
         />
-        <Line dataKey="useValue" stroke="rgb(127, 222, 195)" />
-        <Line dataKey="maxProvide" stroke="#fff" />
+        <Tooltip
+          content={(src: any) => {
+            if (!src.payload.length) return null;
+            const data = src.payload[0].payload;
+            return (
+              <div>
+                {data.hour}: {data.minute}: {data.sec}
+              </div>
+            );
+          }}
+          // contentStyle={{
+          //   backgroundColor: 'rgba(0,0,0,.7)',
+          // }}
+        />
+        <Line dataKey="useValue" stroke="rgb(127, 222, 195)" dot={false} />
+        <Line dataKey="maxProvide" stroke="#fff" dot={false} />
         <Line dataKey="backupCapacity" stroke="rgb(244, 228, 94)" dot={false} />
       </LineChart>
     </ResponsiveContainer>

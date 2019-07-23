@@ -11,6 +11,8 @@ const theme: Theme = {
     success: '#52c41a',
     warning: '#fa8c16',
     error: '#f5222d',
+    unused: '#9d9da0',
+    electricity: '#59e2c2',
   },
 
   borderRadius: '6px',

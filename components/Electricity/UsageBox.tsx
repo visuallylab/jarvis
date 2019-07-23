@@ -1,10 +1,9 @@
 import { FC, useState } from 'react';
 import styled from 'styled-components';
-
-import UsageItem from './UsageItem';
 import BackupStatus from './BackupStatus';
 import UsageLinechart from './UsageLinechart';
 import CurrentUsage from './CurrentUsage';
+import { TUsageData } from '@/utils/electricity';
 
 const Wrapper = styled.div<{ width?: string }>`
   width: ${p => p.width || '100%'};
@@ -24,32 +23,23 @@ export type TData = {
 
 type TProps = {
   width?: string;
+  data: TUsageData[];
+  hours: number[];
 };
 
-const UsageBox: FC<TProps> = ({ width }) => {
-  // const [data, setSate] = useState<number>(12.5);
+const UsageBox: FC<TProps> = ({ width, data, hours }) => {
+  const latestData = data[data.length - 1];
 
   return (
     <Wrapper width={width}>
-      {/* <Table.Container>
-        {columnOrder.map(key => (
-          <Table.Column key={key}>
-            {data.map((d, idx) => (
-              <Table.Row key={idx} count={data.length}>
-                <UsageItem key={idx} itemKey={key} item={d} />
-              </Table.Row>
-            ))}
-          </Table.Column>
-        ))}
-      </Table.Container> */}
-      <BackupStatus data={{ value: 13902, ratio: 20 }} />
+      <BackupStatus value={latestData.backupCapacity} lastHigh={3885} />
       <CurrentUsage
-        useValue={36378}
-        maxValue={41920}
-        estimateHighValue={39201}
+        useValue={latestData.useValue}
+        maxValue={latestData.maxProvide}
+        estimateHighValue={latestData.estimatedHigh}
         pieHeight={200}
       />
-      <UsageLinechart />
+      <UsageLinechart data={data} hours={hours} />
     </Wrapper>
   );
 };

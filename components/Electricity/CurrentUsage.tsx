@@ -3,12 +3,15 @@ import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 import styled from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 
-import H3 from '@/components/H3';
+const Title = styled.p`
+  font-weight: 500;
+  margin-bottom: 0.5em;
+`;
 
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  margin-bottom: 1.5em;
+  margin: 0.5em 0 1.5em;
 `;
 
 const AnimatedPercentNumber = styled(animated.p)`
@@ -76,7 +79,7 @@ const CurrentUsage: FC<TProps> = ({
 }) => {
   const data = [
     { value: useValue, label: 'current usage' },
-    { value: maxValue - useValue, label: 'left for max' },
+    { value: maxValue - useValue, label: 'left for limit' },
   ];
   const usage = (useValue / maxValue) * 100;
 
@@ -108,9 +111,24 @@ const CurrentUsage: FC<TProps> = ({
     },
   });
 
+  const infoData = [
+    {
+      title: 'use',
+      props: useValueProps,
+    },
+    {
+      title: 'estimated high',
+      props: estimateHighValueProps,
+    },
+    {
+      title: 'max provide',
+      props: maxValueProps,
+    },
+  ];
+
   return (
     <Wrapper>
-      <H3 noBold={true}>Current use:</H3>
+      <Title>Current use:</Title>
       <ChartWrapper>
         <ResponsiveContainer width="100%" height={pieHeight}>
           <PieChart>
@@ -139,26 +157,17 @@ const CurrentUsage: FC<TProps> = ({
           </AnimatedPercentNumber>
         </UsageTextWrapper>
         <InfoWrapper>
-          <Info key="use">
-            <p>use</p>
-            <AnimatedNumber>
-              {useValueProps.number.interpolate(x => x.toFixed(0))}
-            </AnimatedNumber>
-          </Info>
-          <Info key="high">
-            <p>high</p>
-            <AnimatedNumber>
-              {estimateHighValueProps.number.interpolate(x => x.toFixed(0))}
-            </AnimatedNumber>
-          </Info>
-          <Info key="max">
-            <p>max provide</p>
-            <AnimatedNumber>
-              {maxValueProps.number.interpolate(x => x.toFixed(0))}
-            </AnimatedNumber>
-          </Info>
+          {infoData.map(info => (
+            <Info key={info.title}>
+              <p>{info.title}</p>
+              <AnimatedNumber>
+                {info.props.number.interpolate(x => x.toFixed(0))}
+              </AnimatedNumber>
+            </Info>
+          ))}
         </InfoWrapper>
         <Unit>( Unit: MW )</Unit>
+        {/* TODO: Add estimated high pointer */}
       </ChartWrapper>
     </Wrapper>
   );

@@ -2,10 +2,16 @@ import { FC } from 'react';
 import styled from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import { FaBolt } from 'react-icons/fa';
-import H3 from '@/components/H3';
+
+import theme from '@/themes/theme';
+
+const Title = styled.p`
+  font-weight: 500;
+  margin-bottom: 0.5em;
+`;
 
 const Wrapper = styled.div`
-  margin-bottom: 1.5em;
+  margin: 0.5em 0 1.5em;
 `;
 
 const StatusWrapper = styled.div`
@@ -14,57 +20,56 @@ const StatusWrapper = styled.div`
   justify-content: center;
 `;
 
-const Ratio = styled(animated.p)<{ color: string }>`
+const Ratio = styled(animated.p)`
   font-weight: 700;
   font-size: 4em;
   letter-spacing: 2px;
   margin-left: 10px;
-  color: ${p => p.color};
 `;
 
-const StatusText = styled.span`
+const StatusText = styled(animated.span)`
   font-size: ${p => p.theme.fontSize.bigger};
   color: ${p => p.color};
   letter-spacing: 1px;
   margin-top: 5px;
 `;
 
-const COLORS = ['#59e2c2'];
-
-const BackupStatus: FC<{ data: { value: number; ratio: number } }> = ({
-  data,
+const BackupStatus: FC<{ value: number; lastHigh: number }> = ({
+  value,
+  lastHigh,
 }) => {
-  const { value, ratio } = data;
-  const props = useSpring({ number: data.ratio, from: { number: 0 } });
   let statusText = '';
-  let color = COLORS[0];
+  let color = '';
+  const ratio = (value / lastHigh) * 100;
 
   if (ratio >= 10) {
     statusText = 'SUPPLY GREAT';
-    color = COLORS[0];
+    color = '#59e2c2';
   } else if (ratio < 10 && ratio > 6) {
     statusText = 'SUPPLY TIGHT';
-    color = COLORS[1];
+    color = theme.colors.warning;
   } else if (ratio <= 6) {
     statusText = 'WARNING';
-    color = COLORS[2];
+    color = theme.colors.error;
   }
+  const props = useSpring({ number: ratio, color, from: { number: 0 } });
+  console.log(ratio);
+  console.log('color', color);
 
   return (
     <Wrapper>
-      <H3 noBold={true}>Backup status:</H3>
+      <Title>Backup status:</Title>
       <div style={{ textAlign: 'center' }}>
         <StatusWrapper>
           <FaBolt
-            style={{ marginRight: '.25em', marginTop: '3px' }}
-            color={color}
+            style={{ marginRight: '.25em', marginTop: '3px', color }}
             size="3.5em"
           />
-          <Ratio color={color}>
-            {props.number.interpolate(x => `${x.toFixed(1)}%`)}
+          <Ratio style={{ color: props.color }}>
+            {props.number.interpolate(x => `${Number(x).toFixed(1)}%`)}
           </Ratio>
         </StatusWrapper>
-        <StatusText color={color}>( {statusText} )</StatusText>
+        <StatusText style={{ color: props.color }}>( {statusText} )</StatusText>
       </div>
     </Wrapper>
   );

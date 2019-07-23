@@ -13,6 +13,9 @@ export interface Theme {
 
     boxBackground: string;
     boxBorder: string;
+
+    unused: string;
+    electricity: string;
   };
 
   borderRadius: string;
