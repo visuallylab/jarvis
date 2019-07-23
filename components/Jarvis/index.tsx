@@ -44,7 +44,9 @@ const Wrapper = styled.div`
 `;
 
 const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
-  const { status, jarvis, enabled, dispatch } = useContext(JarvisContext);
+  const { status, jarvis, enabled, dispatch, title, response } = useContext(
+    JarvisContext,
+  );
   const { circleProps, siriProps } = useJarvisSpringProps({
     size,
     status,
@@ -118,7 +120,11 @@ const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
   return (
     <Container size={size}>
       <AnimatedWrapper style={siriProps} ref={wrapperRef}>
+        <p>
+          <b>{title}</b>
+        </p>
         <div id="jarvis-wave" />
+        <p>{response.message}</p>
       </AnimatedWrapper>
       <Wrapper
         onClick={() =>
