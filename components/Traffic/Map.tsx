@@ -24,12 +24,14 @@ import cogoToast from 'cogo-toast';
 import './toast.css';
 import Button from '@/components/Traffic/Button';
 import usePanelProps from '@/hooks/usePanelProps';
+import useTrainStatusLayers from '@/hooks/useTrainStatusLayers';
 
 export enum MapStatus {
   Overview,
   TrafficJam,
   Accident,
   BusCapacityUtilization,
+  TrainCapacityUtilization,
 }
 
 const GLMapProps = {
@@ -53,6 +55,9 @@ const initialViewState = {
 const events = [
   {
     name: '下班人潮激增，出現三處塞車',
+  },
+  {
+    name: '下班人潮激增，鐵路高度擁擠',
   },
 ];
 
@@ -88,6 +93,9 @@ const Map = () => {
     mapState === MapStatus.Accident,
     accidents,
   );
+  const trainlayer = useTrainStatusLayers(
+    mapState === MapStatus.TrainCapacityUtilization,
+  );
 
   const getLayers = () => {
     let result;
@@ -104,72 +112,13 @@ const Map = () => {
       case MapStatus.TrafficJam:
         result = [buildingLayer, lineLayer, tripLayers];
         break;
+      case MapStatus.TrainCapacityUtilization:
+        result = [...trainlayer];
     }
     return result;
   };
 
-  useEffect(() => {
-    /**
-     * 1. 顯示目前交通狀況
-     * 2. 標出所有塞車地區
-     * 3. 分別放大各地區
-     * 4. 分析可能原因
-     * 5. 一起連環車禍事故發生
-     * 6. 比較車禍事故發生時間與之後流量表
-     * 7. 與車禍發生的路徑
-     * 8. 分析可能疏導方法（AI）
-     * 9. 管制流量，恢復交通
-     */
-
-    /**
-     * 顯示目前交通狀況
-     *
-     * [v]trip layer
-     * [v]avg speed
-     * [v]car and scooter count
-     * [v]traffic jam count and length
-     * [v]accident count and hurt, death
-     * [v]bus util percentage, delay rate, avg delay time
-     */
-
-    /**
-     * 標出所有塞車地區
-     *
-     * [v]Line layer
-     * [v]car and scooter count
-     * [v]traffic jam count and length
-     * [v]bus util percentage, delay rate, avg delay time
-     * [v]三個按鈕，檢視塞車地區 1, 2, 3
-     */
-
-    /**
-     * 分別放大各地區
-     *
-     * [v]auto zoom to the pick traffic jam area
-     * [v]Line layer
-     * [v]when zoom over the threshold
-     * [v]show the area 流量圖 with accident
-     */
-
-    /**
-     * 觀看車禍原因
-     *
-     * [v]重現車禍路徑
-     * []車禍雙方車輛資訊與原因
-     */
-
-    /**
-     * 提示疏導方法
-     *
-     * []建議疏導的路線
-     * []建議指派的人員、位置與動作
-     */
-
-    /**
-     * 回到交通概覽
-     *
-     */
-
+  const triggerTrafficJamEvent = () => {
     const showTrafficJamPrompt = () => {
       cogoToast.info('西門路一段出現塞車路段', {
         onClick: () =>
@@ -228,25 +177,89 @@ const Map = () => {
         renderIcon: () => <Button> 查看</Button>,
       });
     };
+    cogoToast.warn(events[0].name, {
+      onClick: hide => {
+        setMapState(MapStatus.TrafficJam);
+        setTimeout(showTrafficJamPrompt, 100);
+        // @ts-ignore
+        hide();
+      },
+      hideAfter: 15,
+      position: 'top-right',
+      bar: {
+        size: '0px',
+      },
+      renderIcon: () => <Button>顯示資訊</Button>,
+    });
+    setTrafficStatus(TrafficStatus.RoadCrowed);
+  };
 
+  const triggerCrowdedTrainEvent = () => {
+    cogoToast.warn(events[1].name, {
+      onClick: hide => {
+        setMapState(MapStatus.TrainCapacityUtilization);
+        setTimeout(() => {
+          cogoToast.warn('建議加開台南站南下車次', {
+            onClick: innerHide => {
+              setMapState(MapStatus.Overview);
+              setTrafficFlowData(undefined);
+              setViewState(prev => ({
+                ...prev,
+                zoom: 15,
+                transitionDuration: 500,
+                transitionInterpolator: new FlyToInterpolator(),
+              }));
+              // @ts-ignore
+              innerHide();
+            },
+            hideAfter: 15,
+            position: 'top-right',
+            bar: {
+              size: '0px',
+            },
+            renderIcon: () => <Button>我知道了</Button>,
+          });
+        }, 3000);
+        // @ts-ignore
+        hide();
+      },
+      hideAfter: 15,
+      position: 'top-right',
+      bar: {
+        size: '0px',
+      },
+      renderIcon: () => <Button>顯示資訊</Button>,
+    });
+    setTrafficStatus(TrafficStatus.TrainCrowed);
+  };
+
+  useEffect(() => {
     setTimeout(() => {
-      cogoToast.warn(events[0].name, {
-        onClick: hide => {
-          setMapState(MapStatus.TrafficJam);
-          setTimeout(showTrafficJamPrompt, 100);
-          // @ts-ignore
-          hide();
-        },
-        hideAfter: 15,
-        position: 'top-right',
-        bar: {
-          size: '0px',
-        },
-        renderIcon: () => <Button>顯示資訊</Button>,
-      });
-      setTrafficStatus(TrafficStatus.warning);
+      if (Math.random() > 0.5) {
+        triggerTrafficJamEvent();
+      } else {
+        triggerCrowdedTrainEvent();
+      }
     }, 6000);
   }, []);
+
+  useEffect(() => {
+    if (mapState === MapStatus.TrainCapacityUtilization) {
+      setViewState(prev => ({
+        ...prev,
+        zoom: 11,
+        transitionDuration: 500,
+        transitionInterpolator: new FlyToInterpolator(),
+      }));
+    } else if (viewState.zoom === 12) {
+      setViewState(prev => ({
+        ...prev,
+        zoom: 15,
+        transitionDuration: 500,
+        transitionInterpolator: new FlyToInterpolator(),
+      }));
+    }
+  }, [mapState]);
 
   return (
     <>
@@ -267,7 +280,8 @@ const Map = () => {
                 hide();
                 setTimeout(() => {
                   cogoToast.warn('建議指派一位員警到此路口指揮交通', {
-                    onClick: hide => {
+                    // @ts-ignore
+                    onClick: innerHide => {
                       setMapState(MapStatus.Overview);
                       setTrafficFlowData(undefined);
                       setViewState(prev => ({
@@ -277,7 +291,7 @@ const Map = () => {
                         transitionInterpolator: new FlyToInterpolator(),
                       }));
                       // @ts-ignore
-                      hide();
+                      innerHide();
                     },
                     hideAfter: 15,
                     position: 'top-right',
@@ -312,6 +326,7 @@ const Map = () => {
         {...panelProps}
         trafficFlowData={trafficFlowData}
         status={trafficStatus}
+        mapState={mapState}
       />
       {hoverData.object && (
         <Tooltip left={hoverData.x} top={hoverData.y}>
