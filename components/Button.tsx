@@ -1,14 +1,15 @@
 import styled from 'styled-components';
 export default styled.button`
-  margin: 6px 3px 3px 6px;
-  padding: 8px 24px;
+  padding: 3px 6px;
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0);
   border: 1px solid #666;
   font-weight: 100;
+  font-size: 14px;
   color: rgba(0, 217, 255, 0.8);
   letter-spacing: 1px;
   transition: 0.05s;
+  white-space: nowrap;
   pointer-events: auto;
   :focus {
     outline: 0;
