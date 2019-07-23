@@ -1,11 +1,12 @@
 import App, { Container } from 'next/app';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import { appWithTranslation } from '@/i18n';
 
 import GlobalStateProvider from '@/contexts/GlobalStateProvider';
 import theme from '@/themes/theme';
 
-export default class MyApp extends App {
+class MyApp extends App {
   static async getInitialProps({ Component, ctx }: any) {
     let pageProps = {};
 
@@ -29,3 +30,5 @@ export default class MyApp extends App {
     );
   }
 }
+
+export default appWithTranslation(MyApp);

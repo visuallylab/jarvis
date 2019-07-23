@@ -49,7 +49,7 @@ export const createTrafficFlowData = (current: Date) => {
     const time = new Date(current);
     time.setHours(current.getHours() - 12 + i);
     data.push({
-      time: `${time.getHours()}時`,
+      time: `${time.getHours()}:00`,
       value: Math.round(20 + Math.random() * 10 + Math.random() * i * i * 2), // cars per minute
     });
   }

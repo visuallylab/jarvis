@@ -2,11 +2,12 @@ import React, { useState, useMemo } from 'react';
 import { useSpring, animated, config } from 'react-spring';
 import { color as d3color } from 'd3-color';
 import styled from 'styled-components';
-import { IndicatorColor } from '@/constants';
+import { IndicatorColor, TrafficStatus, i18nNamespace } from '@/constants';
+import { useTranslation } from 'react-i18next';
 
 type TIndicator = {
   color?: string;
-  text: string;
+  status: TrafficStatus;
 };
 
 const AnimatedContainer = styled(animated.div)`
@@ -18,8 +19,9 @@ const AnimatedContainer = styled(animated.div)`
 
 const Indicator: React.FC<TIndicator> = ({
   color = IndicatorColor.normal,
-  text,
+  status,
 }) => {
+  const { t } = useTranslation(i18nNamespace.TrafficMap);
   const [running, setRunning] = useState(true);
   const darkerColor = useMemo(
     () =>
@@ -49,7 +51,11 @@ const Indicator: React.FC<TIndicator> = ({
     onRest: () => setRunning(prev => !prev),
   });
 
-  return <AnimatedContainer style={props}>{text}</AnimatedContainer>;
+  return (
+    <AnimatedContainer style={props}>
+      {t(`indicator.${status}`)}
+    </AnimatedContainer>
+  );
 };
 
 export default Indicator;
