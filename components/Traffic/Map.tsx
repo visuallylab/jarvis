@@ -18,11 +18,9 @@ import {
   createTrafficFlowData,
 } from '@/utils/traffic';
 import { TrafficStatus } from '@/constants';
-import cogoToast from 'cogo-toast';
-import './toast.css';
-import Button from '@/components/Traffic/Button';
 import usePanelProps from '@/hooks/usePanelProps';
 import useTrainStatusLayers from '@/hooks/useTrainStatusLayers';
+import notify from '@/utils/notify';
 
 export enum MapStatus {
   Start,
@@ -127,94 +125,49 @@ const Map = () => {
 
   const triggerTrafficJamEvent = () => {
     const showTrafficJamPrompt = () => {
-      cogoToast.info('西門路一段出現塞車路段', {
-        onClick: hide => {
-          setMapState(MapStatus.FocusXimenRdSec1);
-          // @ts-ignore
-          hide();
-        },
-        hideAfter: 15,
-        position: 'top-right',
-        bar: {
-          size: '0px',
-        },
-        renderIcon: () => <Button>查看</Button>,
+      notify({
+        msg: '西門路一段出現塞車路段',
+        action: () => setMapState(MapStatus.FocusXimenRdSec1),
+        btnText: '查看',
       });
-
-      cogoToast.info('西門路二段出現塞車路段', {
-        onClick: hide => {
-          setMapState(MapStatus.FocusXimenRdSec2);
-          // @ts-ignore
-          hide();
-        },
-        hideAfter: 15,
-        position: 'top-right',
-        bar: {
-          size: '0px',
-        },
-        renderIcon: () => <Button>查看</Button>,
+      notify({
+        msg: '西門路二段出現塞車路段',
+        action: () => setMapState(MapStatus.FocusXimenRdSec2),
+        btnText: '查看',
       });
-
-      cogoToast.info('中正路出現塞車路段', {
-        onClick: hide => {
-          setMapState(MapStatus.FocusZhongzhengRd);
-          // @ts-ignore
-          hide();
-        },
-        hideAfter: 15,
-        position: 'top-right',
-        bar: {
-          size: '0px',
-        },
-        renderIcon: () => <Button> 查看</Button>,
+      notify({
+        msg: '中正路出現塞車路段',
+        action: () => setMapState(MapStatus.FocusZhongzhengRd),
+        btnText: '查看',
       });
     };
-    cogoToast.warn(events.trafficJam.name, {
-      onClick: hide => {
+    notify({
+      msg: events.trafficJam.name,
+      action: () => {
         setMapState(MapStatus.TrafficJam);
         setTimeout(showTrafficJamPrompt, 100);
-        // @ts-ignore
-        hide();
       },
-      hideAfter: 15,
-      position: 'top-right',
-      bar: {
-        size: '0px',
-      },
-      renderIcon: () => <Button>顯示資訊</Button>,
+      btnText: '顯示資訊',
     });
     setTrafficStatus(TrafficStatus.RoadCrowed);
   };
 
   const triggerCrowdedTrainEvent = () => {
-    cogoToast.warn(events.crowedTrain.name, {
-      onClick: hide => {
+    notify({
+      msg: events.crowedTrain.name,
+      action: () => {
         setMapState(MapStatus.TrainUtilization);
         setTimeout(() => {
-          cogoToast.warn('建議加開台南站南下車次', {
-            onClick: innerHide => {
-              setMapState(MapStatus.Start);
-              // @ts-ignore
-              innerHide();
-            },
-            hideAfter: 15,
-            position: 'top-right',
-            bar: {
-              size: '0px',
-            },
-            renderIcon: () => <Button>我知道了</Button>,
+          notify({
+            msg: '建議加開台南站南下車次',
+            action: () => setMapState(MapStatus.Start),
+            btnText: '我知道了',
           });
         }, 3000);
-        // @ts-ignore
-        hide();
       },
-      hideAfter: 15,
-      position: 'top-right',
-      bar: {
-        size: '0px',
-      },
-      renderIcon: () => <Button>顯示資訊</Button>,
+      btnText: '顯示資訊',
     });
+
     setTrafficStatus(TrafficStatus.TrainCrowed);
   };
 
@@ -231,34 +184,19 @@ const Map = () => {
   useEffect(() => {
     const triggerFocusPrompt = (nextState: MapStatus) => {
       setTimeout(
-        cogoToast.warn('可能由於一起車禍導致塞車', {
-          onClick: hide => {
+        notify({
+          msg: '可能由於一起車禍導致塞車',
+          btnText: '顯示資訊',
+          action: () => {
             setMapState(nextState);
-            // @ts-ignore
-            hide();
             setTimeout(() => {
-              cogoToast.warn('建議指派一位員警到此路口指揮交通', {
-                // @ts-ignore
-                onClick: innerHide => {
-                  setMapState(MapStatus.Start);
-                  // @ts-ignore
-                  innerHide();
-                },
-                hideAfter: 15,
-                position: 'top-right',
-                bar: {
-                  size: '0px',
-                },
-                renderIcon: () => <Button>我知道了</Button>,
+              notify({
+                btnText: '我知道了',
+                action: () => setMapState(MapStatus.Start),
+                msg: '建議指派一位員警到此路口指揮交通',
               });
             }, 2000);
           },
-          hideAfter: 15,
-          position: 'top-right',
-          bar: {
-            size: '0px',
-          },
-          renderIcon: () => <Button>顯示資訊</Button>,
         }),
         1500,
       );
@@ -281,7 +219,7 @@ const Map = () => {
         bearing: 0,
         ...trafficJamCenters.XimenRdSec1,
       });
-      triggerFocusPrompt(MapStatus.FocusXimenRdSec1);
+      triggerFocusPrompt(MapStatus.ShowAccidentXimenRdSec1);
     } else if (mapState === MapStatus.FocusXimenRdSec2) {
       setTrafficFlowData(createTrafficFlowData(new Date()));
       setViewState({
@@ -292,7 +230,7 @@ const Map = () => {
         bearing: 0,
         ...trafficJamCenters.XimenRdSec2,
       });
-      triggerFocusPrompt(MapStatus.FocusXimenRdSec2);
+      triggerFocusPrompt(MapStatus.ShowAccidentXimenRdSec2);
     } else if (mapState === MapStatus.FocusZhongzhengRd) {
       setTrafficFlowData(createTrafficFlowData(new Date()));
       setViewState({
@@ -303,7 +241,7 @@ const Map = () => {
         bearing: 0,
         ...trafficJamCenters.ZhongzhengRd,
       });
-      triggerFocusPrompt(MapStatus.FocusZhongzhengRd);
+      triggerFocusPrompt(MapStatus.ShowAccidentZhongzhengRd);
     } else if (mapState === MapStatus.Start) {
       setTrafficFlowData(undefined);
       setViewState(initialViewState);

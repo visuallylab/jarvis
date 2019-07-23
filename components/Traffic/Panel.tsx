@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Indicator from './Indicator';
 import { TrafficStatus, IndicatorColor } from '@/constants';
-import Button from './Button';
+import Button from '../Button';
 import LineChart from './LineChart';
 import { MapStatus } from './Map';
 
