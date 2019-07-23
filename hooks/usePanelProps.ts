@@ -42,41 +42,73 @@ const usePanelProps = ({
   useEffect(() => {
     let title = '交通概況';
     switch (mapState) {
-      case MapStatus.Accident:
-        title = '車禍路徑紀錄';
+      case MapStatus.FocusXimenRdSec1:
+        title = 'FocusXimenRdSec1';
         break;
-      case MapStatus.BusCapacityUtilization:
-        title = '公車站牌等候人次';
+      case MapStatus.FocusXimenRdSec2:
+        title = 'FocusXimenRdSec2';
         break;
-      case MapStatus.Overview:
+      case MapStatus.FocusZhongzhengRd:
+        title = 'FocusZhongzhengRd';
+        break;
+      case MapStatus.ShowAccidentXimenRdSec1:
+        title = 'ShowAccidentXimenRdSec1';
+        break;
+      case MapStatus.ShowAccidentXimenRdSec2:
+        title = 'ShowAccidentXimenRdSec2';
+        break;
+      case MapStatus.ShowAccidentZhongzhengRd:
+        title = 'ShowAccidentZhongzhengRd';
+        break;
+      case MapStatus.Start:
         title = '交通概況';
         break;
       case MapStatus.TrafficJam:
         title = '塞車分佈';
         break;
-      case MapStatus.TrainCapacityUtilization:
+      case MapStatus.TrainUtilization:
         title = '台鐵車次與車站人次分佈';
         break;
     }
 
     const buttonConfigs =
-      mapState === MapStatus.Overview
+      mapState === MapStatus.Start
         ? [
             {
-              text: '交通概況',
-              onClick: () => setMapState(MapStatus.Overview),
+              text: 'TrafficJam',
+              onClick: () => setMapState(MapStatus.TrafficJam),
             },
             {
-              text: '公車站牌等候人次',
-              onClick: () => setMapState(MapStatus.BusCapacityUtilization),
+              text: 'Start',
+              onClick: () => setMapState(MapStatus.Start),
             },
             {
-              text: '火車資訊',
-              onClick: () => setMapState(MapStatus.TrainCapacityUtilization),
+              text: 'ShowAccidentZhongzhengRd',
+              onClick: () => setMapState(MapStatus.ShowAccidentZhongzhengRd),
             },
             {
-              text: '顯示上個月的統計資料',
-              onClick: () => alert('not implemetnt yet'),
+              text: 'ShowAccidentXimenRdSec2',
+              onClick: () => setMapState(MapStatus.ShowAccidentXimenRdSec2),
+            },
+            {
+              text: 'ShowAccidentXimenRdSec1',
+              onClick: () => setMapState(MapStatus.ShowAccidentXimenRdSec1),
+            },
+            {
+              text: 'FocusZhongzhengRd',
+              onClick: () => setMapState(MapStatus.FocusZhongzhengRd),
+            },
+            {
+              text: 'FocusXimenRdSec2',
+              onClick: () => setMapState(MapStatus.FocusXimenRdSec2),
+            },
+            {
+              text: 'FocusXimenRdSec1',
+              onClick: () => setMapState(MapStatus.FocusXimenRdSec1),
+            },
+            {
+              text: 'TrainUtilization',
+              onClick: () => setMapState(MapStatus.TrainUtilization),
             },
           ]
         : [];
@@ -108,7 +140,7 @@ const usePanelProps = ({
 
     let infos: string[] = [];
     switch (mapState) {
-      case MapStatus.Overview:
+      case MapStatus.Start:
         infos = [
           averageSpeedDesc,
           carsAndScootersAmountDesc,
@@ -117,12 +149,16 @@ const usePanelProps = ({
           trafficJamDesc,
         ];
         break;
-      case MapStatus.Accident:
+      case MapStatus.FocusXimenRdSec1:
+      case MapStatus.ShowAccidentXimenRdSec1:
+      case MapStatus.FocusXimenRdSec2:
+      case MapStatus.ShowAccidentXimenRdSec2:
+      case MapStatus.FocusZhongzhengRd:
+      case MapStatus.ShowAccidentZhongzhengRd:
       case MapStatus.TrafficJam:
         infos = [trafficJamDesc, busDesc];
         break;
-      case MapStatus.BusCapacityUtilization:
-      case MapStatus.TrainCapacityUtilization:
+      case MapStatus.TrainUtilization:
         infos = [];
         break;
     }

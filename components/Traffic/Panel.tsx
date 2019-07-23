@@ -48,6 +48,7 @@ const ButtonWrapper = styled.div`
   display: flex;
   max-width: 1300px;
   justify-content: space-between;
+  flex-wrap: wrap;
 `;
 
 export type TButton = {
@@ -95,7 +96,7 @@ const Panel: React.FC<TProps> = React.memo(
         </MainContainer>
         <ExtraContainer>
           {trafficFlowData && <LineChart data={trafficFlowData} />}
-          {mapState === MapStatus.TrainCapacityUtilization && (
+          {mapState === MapStatus.TrainUtilization && (
             <div style={{ display: 'flex' }}>
               <div style={{ padding: '12px' }}>
                 承載人數上限
