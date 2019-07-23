@@ -86,21 +86,30 @@ export const createCurrentData = () => {
 
         if (random % 2) {
           Object.keys(current).forEach(key => {
+            // @ts-ignore
             Object.keys(current[key].data).forEach(k => {
+              // @ts-ignore
               current[key].data[k] += Math.random() * 3;
+              // @ts-ignore
               if (current[key].data[k] >= base[key].data[k] + 300) {
+                // @ts-ignore
                 current[key].data[k] -= Math.random() * 300 + 200;
               }
             });
           });
         } else {
           Object.keys(current).forEach(key => {
+            // @ts-ignore
             Object.keys(current[key].data).forEach(k => {
+              // @ts-ignore
               current[key].data[k] -= Math.random() * 2;
               if (
+                // @ts-ignore
                 current[key].data[k] <= base[key].data[k] - 300 ||
+                // @ts-ignore
                 current[key].data[k] < 0
               ) {
+                // @ts-ignore
                 current[key].data[k] = base[key].data[k];
               }
             });

@@ -53,8 +53,6 @@ const BackupStatus: FC<{ value: number; lastHigh: number }> = ({
     color = theme.colors.error;
   }
   const props = useSpring({ number: ratio, color, from: { number: 0 } });
-  console.log(ratio);
-  console.log('color', color);
 
   return (
     <Wrapper>

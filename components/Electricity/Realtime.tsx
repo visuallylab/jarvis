@@ -52,13 +52,17 @@ const Realtime: FC = () => {
 
         if (random % 2) {
           Object.keys(current).forEach(key => {
+            // @ts-ignore
             Object.keys(current[key].data).forEach(k => {
+              // @ts-ignore
               current[key].data[k] += Math.random() * 5;
             });
           });
         } else {
           Object.keys(current).forEach(key => {
+            // @ts-ignore
             Object.keys(current[key].data).forEach(k => {
+              // @ts-ignore
               current[key].data[k] -= Math.random() * 2;
             });
           });
