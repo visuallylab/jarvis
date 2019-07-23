@@ -1,7 +1,7 @@
 import { ScatterplotLayer, TextLayer } from '@deck.gl/layers';
 import tainanStations from 'static/tainanStations.json';
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { timer as d3Timer, Timer } from 'd3-timer';
+import { useState, useRef, useCallback } from 'react';
+import { Timer } from 'd3-timer';
 import useAnimationController from './useAnimationController';
 
 enum ZIndexs {
@@ -65,7 +65,9 @@ const createTrainPreset = (trainNumber: number) => {
       tainanStations.length +
       1,
 
-    maxRadius: [600, 900][Math.floor(Math.random() * 2)],
+    maxRadius: [TrainCapacity.normal, TrainCapacity.premium][
+      Math.floor(Math.random() * 2)
+    ],
   }));
 
   return result;
@@ -126,10 +128,11 @@ const usePublicTransporationLayers = (enable: boolean) => {
         filled: true,
         stroked: true,
         radiusScale: 0.4,
-        getRadius: d => d.radius,
-        getLineColor: d => (d.outline ? [200, 200, 200, 255] : [0, 0, 0, 0]),
-        getLineWidth: d => (d.outline ? 50 : 0),
-        getFillColor: d =>
+        getRadius: (d: any) => d.radius,
+        getLineColor: (d: any) =>
+          d.outline ? [200, 200, 200, 255] : [0, 0, 0, 0],
+        getLineWidth: (d: any) => (d.outline ? 50 : 0),
+        getFillColor: (d: any) =>
           d.outline
             ? [0, 0, 0, 0]
             : d.warning
@@ -147,12 +150,12 @@ const usePublicTransporationLayers = (enable: boolean) => {
         data: 'static/tainanStations.json',
         pickable: true,
         sizeUnits: 'meters',
-        getText: d => `${d.StationName.En} Station`,
-        getPosition: d => [...d.StationPosition, ZIndexs.label],
+        getText: (d: any) => `${d.StationName.En} Station`,
+        getPosition: (d: any) => [...d.StationPosition, ZIndexs.label],
         fontFamily: 'Source Sans',
         fontWeight: 900,
-        getColor: d => [255, 255, 255, 255],
-        getSize: d => 300,
+        getColor: (_: any) => [255, 255, 255, 255],
+        getSize: (_: any) => 300,
         getAlignmentBaseline: 'bottom',
         getPixelOffset: [0, -20],
         sizeMinPixels: 20,

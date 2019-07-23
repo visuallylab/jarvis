@@ -200,7 +200,7 @@ const Map = () => {
         setMapState(MapStatus.TrainCapacityUtilization);
         setTimeout(() => {
           cogoToast.warn('建議加開台南站南下車次', {
-            onClick: hide => {
+            onClick: innerHide => {
               setMapState(MapStatus.Overview);
               setTrafficFlowData(undefined);
               setViewState(prev => ({
@@ -210,7 +210,7 @@ const Map = () => {
                 transitionInterpolator: new FlyToInterpolator(),
               }));
               // @ts-ignore
-              hide();
+              innerHide();
             },
             hideAfter: 15,
             position: 'top-right',
@@ -281,7 +281,7 @@ const Map = () => {
                 setTimeout(() => {
                   cogoToast.warn('建議指派一位員警到此路口指揮交通', {
                     // @ts-ignore
-                    onClick: hide => {
+                    onClick: innerHide => {
                       setMapState(MapStatus.Overview);
                       setTrafficFlowData(undefined);
                       setViewState(prev => ({
@@ -291,7 +291,7 @@ const Map = () => {
                         transitionInterpolator: new FlyToInterpolator(),
                       }));
                       // @ts-ignore
-                      hide();
+                      innerHide();
                     },
                     hideAfter: 15,
                     position: 'top-right',

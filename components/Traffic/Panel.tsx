@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import Indicator from './Indicator';
-import { TrafficStatus, IndicatorMessage, IndicatorColor } from '@/constants';
+import { TrafficStatus, IndicatorColor } from '@/constants';
 import Button from './Button';
 import LineChart from './LineChart';
+import { MapStatus } from './Map';
 
 const Container = styled.div`
   position: absolute;
@@ -62,21 +63,18 @@ export type TProps = {
   buttonConfigs: TButton[];
   status: TrafficStatus;
   trafficFlowData?: TTrafficFlow;
+  mapState: MapStatus;
 };
 
 const Panel: React.FC<TProps> = React.memo(
-  ({ title, infos, buttonConfigs, status, trafficFlowData }) => (
+  ({ title, infos, buttonConfigs, status, trafficFlowData, mapState }) => (
     <Container>
       <HorizontalLayoutWrapper>
         <MainContainer>
           <VerticalLayoutWrapper>
             <Info large={true}>{title}</Info>
             <Indicator
-              text={
-                status === TrafficStatus.normal
-                  ? IndicatorMessage.normal
-                  : IndicatorMessage.warning
-              }
+              text={status}
               color={
                 status === TrafficStatus.normal
                   ? IndicatorColor.normal
@@ -97,6 +95,46 @@ const Panel: React.FC<TProps> = React.memo(
         </MainContainer>
         <ExtraContainer>
           {trafficFlowData && <LineChart data={trafficFlowData} />}
+          {mapState === MapStatus.TrainCapacityUtilization && (
+            <div style={{ display: 'flex' }}>
+              <div style={{ padding: '12px' }}>
+                承載人數上限
+                <div
+                  style={{
+                    margin: '12px',
+                    width: '50px',
+                    height: '50px',
+                    border: '2.5px solid white',
+                    borderRadius: '50%',
+                  }}
+                />
+              </div>
+              <div style={{ padding: '12px' }}>
+                目前已承載人數
+                <div
+                  style={{
+                    margin: '12px',
+                    width: '30px',
+                    height: '30px',
+                    backgroundColor: 'white',
+                    borderRadius: '50%',
+                  }}
+                />
+              </div>
+              <div style={{ padding: '12px' }}>
+                承載人數已接近上限
+                <div
+                  style={{
+                    margin: '12px',
+                    width: '30px',
+                    height: '30px',
+                    backgroundColor: 'red',
+                    borderRadius: '50%',
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </ExtraContainer>
       </HorizontalLayoutWrapper>
     </Container>

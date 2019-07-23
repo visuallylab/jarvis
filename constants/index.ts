@@ -12,8 +12,9 @@ export const NAV_TITLE = 'nav title';
 export const frames = 10;
 export const accidentFrames = 15;
 export enum TrafficStatus {
-  normal = 'normal',
-  warning = 'warning',
+  normal = '順暢通行',
+  RoadCrowed = '馬路擁擠',
+  TrainCrowed = '鐵路擁擠',
 }
 export enum IndicatorColor {
   normal = '#009900',

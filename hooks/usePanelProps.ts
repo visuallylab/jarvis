@@ -38,7 +38,6 @@ const usePanelProps = ({
     buttonConfigs: [],
     trafficFlowData: [],
   });
-  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     let title = '交通概況';
@@ -55,6 +54,9 @@ const usePanelProps = ({
       case MapStatus.TrafficJam:
         title = '塞車分佈';
         break;
+      case MapStatus.TrainCapacityUtilization:
+        title = '台鐵車次與車站人次分佈';
+        break;
     }
 
     const buttonConfigs =
@@ -69,25 +71,13 @@ const usePanelProps = ({
               onClick: () => setMapState(MapStatus.BusCapacityUtilization),
             },
             {
+              text: '火車資訊',
+              onClick: () => setMapState(MapStatus.TrainCapacityUtilization),
+            },
+            {
               text: '顯示上個月的統計資料',
               onClick: () => alert('not implemetnt yet'),
             },
-            // {
-            //   text: '顯示車輛資料',
-            //   onClick: () => setShowInfo(prev => !prev),
-            // },
-            // {
-            //   text: '塞車分佈',
-            //   onClick: () => setMapState(MapStatus.TrafficJam),
-            // },
-            // {
-            //   text: '車禍路徑紀錄',
-            //   onClick: () => setMapState(MapStatus.Accident),
-            // },
-            // {
-            //   text: '顯示地點車輛流量',
-            //   onClick: () => alert('not implemetnt yet'),
-            // },
           ]
         : [];
     setPanelProps(prev => ({
@@ -116,18 +106,26 @@ const usePanelProps = ({
 
     const trafficJamDesc = `共有 ${trafficJamCount} 處塞車，全長 ${trafficJamLength} 公尺`;
 
-    const infos =
-      mapState === MapStatus.Overview
-        ? [
-            averageSpeedDesc,
-            carsAndScootersAmountDesc,
-            accidentDesc,
-            busDesc,
-            trafficJamDesc,
-          ]
-        : mapState === MapStatus.TrafficJam || mapState === MapStatus.Accident
-        ? [trafficJamDesc, busDesc]
-        : [];
+    let infos: string[] = [];
+    switch (mapState) {
+      case MapStatus.Overview:
+        infos = [
+          averageSpeedDesc,
+          carsAndScootersAmountDesc,
+          accidentDesc,
+          busDesc,
+          trafficJamDesc,
+        ];
+        break;
+      case MapStatus.Accident:
+      case MapStatus.TrafficJam:
+        infos = [trafficJamDesc, busDesc];
+        break;
+      case MapStatus.BusCapacityUtilization:
+      case MapStatus.TrainCapacityUtilization:
+        infos = [];
+        break;
+    }
 
     setPanelProps(prev => ({
       ...prev,
@@ -135,7 +133,7 @@ const usePanelProps = ({
     }));
   }, [mapState, transportation]);
 
-  return { panelProps, showInfo };
+  return { panelProps };
 };
 
 export default usePanelProps;
