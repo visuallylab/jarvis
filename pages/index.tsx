@@ -1,9 +1,10 @@
+import { NextFC } from 'next';
 import { useContext, FC } from 'react';
 import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
 
 import MainLayout from '@/layouts/Main';
-import { SITE_TITLE } from '@/constants';
+import { SITE_TITLE, i18nNamespace } from '@/constants';
 import { ActionRouterContext } from '@/contexts/actionRouter';
 import { TemplateType } from '@/constants/actionRouter';
 import Map from '@/components/Traffic/Map';
@@ -58,7 +59,7 @@ const getPage = (item: TemplateType) => {
   );
 };
 
-const Index = () => {
+const Index: NextFC = () => {
   const { currentIndex, history } = useContext(ActionRouterContext);
   const transitions = useTransition(
     history[currentIndex].templateType,
@@ -79,5 +80,9 @@ const Index = () => {
     </MainLayout>
   );
 };
+
+Index.getInitialProps = () => ({
+  namespacesRequired: Object.values(i18nNamespace),
+});
 
 export default Index;
