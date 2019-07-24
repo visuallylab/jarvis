@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import Indicator from './Indicator';
-import { TrafficStatus, IndicatorColor } from '@/constants';
+import { TrafficStatus, IndicatorColor, i18nNamespace } from '@/constants';
 import Button from '../Button';
 import LineChart from './LineChart';
 import { MapStatus } from './Map';
+import { useTranslation } from 'react-i18next';
 
 const Container = styled.div`
   position: absolute;
@@ -67,17 +68,25 @@ export type TProps = {
   mapState: MapStatus;
 };
 
-const Panel: React.FC<TProps> = React.memo(
-  ({ title, infos, buttonConfigs, status, trafficFlowData, mapState }) => (
+const Panel: React.FC<TProps> = ({
+  title,
+  infos,
+  buttonConfigs,
+  status,
+  trafficFlowData,
+  mapState,
+}) => {
+  const { t } = useTranslation(i18nNamespace.TrafficMap);
+  return (
     <Container>
       <HorizontalLayoutWrapper>
         <MainContainer>
           <VerticalLayoutWrapper>
             <Info large={true}>{title}</Info>
             <Indicator
-              text={status}
+              status={status}
               color={
-                status === TrafficStatus.normal
+                status === TrafficStatus.Normal
                   ? IndicatorColor.normal
                   : IndicatorColor.warning
               }
@@ -99,7 +108,7 @@ const Panel: React.FC<TProps> = React.memo(
           {mapState === MapStatus.TrainUtilization && (
             <div style={{ display: 'flex' }}>
               <div style={{ padding: '12px' }}>
-                承載人數上限
+                {t('panel.trainLegend.maxCapacity')}
                 <div
                   style={{
                     margin: '12px',
@@ -111,7 +120,7 @@ const Panel: React.FC<TProps> = React.memo(
                 />
               </div>
               <div style={{ padding: '12px' }}>
-                目前已承載人數
+                {t('panel.trainLegend.current')}
                 <div
                   style={{
                     margin: '12px',
@@ -123,7 +132,7 @@ const Panel: React.FC<TProps> = React.memo(
                 />
               </div>
               <div style={{ padding: '12px' }}>
-                承載人數已接近上限
+                {t('panel.trainLegend.neatTheLimit')}
                 <div
                   style={{
                     margin: '12px',
@@ -139,7 +148,7 @@ const Panel: React.FC<TProps> = React.memo(
         </ExtraContainer>
       </HorizontalLayoutWrapper>
     </Container>
-  ),
-);
+  );
+};
 
 export default Panel;

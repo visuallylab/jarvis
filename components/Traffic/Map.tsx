@@ -17,10 +17,11 @@ import {
   getLightEffect,
   createTrafficFlowData,
 } from '@/utils/traffic';
-import { TrafficStatus } from '@/constants';
+import { TrafficStatus, i18nNamespace } from '@/constants';
 import usePanelProps from '@/hooks/usePanelProps';
 import useTrainStatusLayers from '@/hooks/useTrainStatusLayers';
 import notify from '@/utils/notify';
+import { useTranslation } from 'react-i18next';
 
 export enum MapStatus {
   Start,
@@ -52,14 +53,6 @@ const initialViewState = {
   transitionInterpolator: new FlyToInterpolator(),
 };
 
-const events = {
-  trafficJam: {
-    name: '下班人潮激增，出現三處塞車',
-  },
-  crowedTrain: {
-    name: '下班人潮激增，鐵路高度擁擠',
-  },
-};
 const trafficJamCenters = {
   XimenRdSec1: { longitude: 120.19767902271758, latitude: 22.989887240887853 },
   XimenRdSec2: { longitude: 120.20015723575861, latitude: 22.997552333424316 },
@@ -67,13 +60,14 @@ const trafficJamCenters = {
 };
 
 const Map = () => {
+  const { t } = useTranslation(i18nNamespace.TrafficMap);
   const buildingLayer = getBuildingLayer();
   const lightingEffect = getLightEffect();
   const [mapState, setMapState] = useState(MapStatus.Start);
   const [viewState, setViewState] = useState<
     ViewState & { transitionDuration: number; transitionInterpolator: any }
   >(initialViewState);
-  const [trafficStatus, setTrafficStatus] = useState(TrafficStatus.normal);
+  const [trafficStatus, setTrafficStatus] = useState(TrafficStatus.Normal);
   const {
     lineLayer,
     hoverData,
@@ -126,46 +120,46 @@ const Map = () => {
   const triggerTrafficJamEvent = () => {
     const showTrafficJamPrompt = () => {
       notify({
-        msg: '西門路一段出現塞車路段',
+        msg: t('events.trafficJam.detailXimenRdSec1.msg'),
         action: () => setMapState(MapStatus.FocusXimenRdSec1),
-        btnText: '查看',
+        btnText: t('events.trafficJam.detailXimenRdSec1.btnText'),
       });
       notify({
-        msg: '西門路二段出現塞車路段',
+        msg: t('events.trafficJam.detailXimenRdSec2.msg'),
         action: () => setMapState(MapStatus.FocusXimenRdSec2),
-        btnText: '查看',
+        btnText: t('events.trafficJam.detailXimenRdSec2.btnText'),
       });
       notify({
-        msg: '中正路出現塞車路段',
+        msg: t('events.trafficJam.detailZhongzhengRd.msg'),
         action: () => setMapState(MapStatus.FocusZhongzhengRd),
-        btnText: '查看',
+        btnText: t('events.trafficJam.detailZhongzhengRd.btnText'),
       });
     };
     notify({
-      msg: events.trafficJam.name,
+      msg: t('events.trafficJam.status.msg'),
       action: () => {
         setMapState(MapStatus.TrafficJam);
         setTimeout(showTrafficJamPrompt, 100);
       },
-      btnText: '顯示資訊',
+      btnText: t('events.trafficJam.status.btnText'),
     });
     setTrafficStatus(TrafficStatus.RoadCrowed);
   };
 
   const triggerCrowdedTrainEvent = () => {
     notify({
-      msg: events.crowedTrain.name,
+      msg: t('events.crowedTrain.status.msg'),
       action: () => {
         setMapState(MapStatus.TrainUtilization);
         setTimeout(() => {
           notify({
-            msg: '建議加開台南站南下車次',
+            msg: t('events.crowedTrain.suggestion.msg'),
             action: () => setMapState(MapStatus.Start),
-            btnText: '我知道了',
+            btnText: t('events.crowedTrain.suggestion.btnText'),
           });
         }, 3000);
       },
-      btnText: '顯示資訊',
+      btnText: t('events.crowedTrain.status.btnText'),
     });
 
     setTrafficStatus(TrafficStatus.TrainCrowed);
@@ -185,15 +179,15 @@ const Map = () => {
     const triggerFocusPrompt = (nextState: MapStatus) => {
       setTimeout(
         notify({
-          msg: '可能由於一起車禍導致塞車',
-          btnText: '顯示資訊',
+          msg: t('events.trafficJam.reason.msg'),
+          btnText: t('events.trafficJam.reason.btnText'),
           action: () => {
             setMapState(nextState);
             setTimeout(() => {
               notify({
-                btnText: '我知道了',
+                btnText: t('events.trafficJam.suggestion.btnText'),
                 action: () => setMapState(MapStatus.Start),
-                msg: '建議指派一位員警到此路口指揮交通',
+                msg: t('events.trafficJam.suggestion.msg'),
               });
             }, 2000);
           },
@@ -300,7 +294,7 @@ const Map = () => {
       />
       {hoverData.object && (
         <Tooltip left={hoverData.x} top={hoverData.y}>
-          塞車
+          {t('trafficJamTooltipText')}
         </Tooltip>
       )}
     </>
