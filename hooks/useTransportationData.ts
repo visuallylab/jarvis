@@ -49,8 +49,11 @@ const useTransportationData = (
           newState[index] = { ...newState[index], direction: 0 };
           if (
             animationState.current[index].currentPositionIndex + 1 ===
-            maxAnimationIndex
+              maxAnimationIndex &&
+            !isSetInitValue
           ) {
+            isSetInitValue = true;
+
             animationState.current.forEach((__, i) => {
               animationState.current[i].frame = 0;
               animationState.current[i].currentPositionIndex = 1;
@@ -58,7 +61,6 @@ const useTransportationData = (
                 traffic[i].data[0].latlng as [number, number],
                 traffic[i].data[1].latlng as [number, number],
               );
-              isSetInitValue = true;
             });
           }
           return;
@@ -83,6 +85,7 @@ const useTransportationData = (
         animationState.current[index].currentPositionIndex * frames +
         animationState.current[index].frame;
     });
+
     if (isSetInitValue) {
       setTransportations(initalTransportation);
     } else {
@@ -107,7 +110,7 @@ const useTransportationData = (
             ) /
               1000 /
               frames) *
-            36000;
+            360000;
 
           const direction = getRhumbLineBearing(
             {

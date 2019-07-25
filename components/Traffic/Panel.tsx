@@ -32,6 +32,7 @@ const Info = styled.p<{ large?: boolean }>`
   margin: 8px 0;
   font-weight: 100;
   font-size: ${props => (props.large ? '48px' : '18px')};
+  max-width: 40vw;
 `;
 
 const VerticalLayoutWrapper = styled.div`
@@ -92,9 +93,9 @@ const Panel: React.FC<TProps> = ({
               }
             />
           </VerticalLayoutWrapper>
-          {infos.map(info => (
+          {/* {infos.map(info => (
             <Info key={info}>{info}</Info>
-          ))}
+          ))} */}
           <ButtonWrapper>
             {buttonConfigs.map(config => (
               <Button key={config.text} onClick={config.onClick}>
@@ -132,7 +133,7 @@ const Panel: React.FC<TProps> = ({
                 />
               </div>
               <div style={{ padding: '12px' }}>
-                {t('panel.trainLegend.neatTheLimit')}
+                {t('panel.trainLegend.nearTheLimit')}
                 <div
                   style={{
                     margin: '12px',
