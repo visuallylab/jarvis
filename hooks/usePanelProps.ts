@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { TButton, TTrafficFlow } from '../components/Traffic/Panel';
 import { MapStatus } from '@/components/Traffic/Map';
+import { i18nNamespace } from '@/constants';
+import { useTranslation } from 'react-i18next';
 
 type TProps = {
   mapState: MapStatus;
@@ -27,7 +29,6 @@ type TStates = {
 
 const usePanelProps = ({
   mapState,
-  setMapState,
   transportation,
   trafficJamCount,
   trafficJamLength,
@@ -38,80 +39,81 @@ const usePanelProps = ({
     buttonConfigs: [],
     trafficFlowData: [],
   });
+  const { t } = useTranslation(i18nNamespace.TrafficMap);
 
   useEffect(() => {
-    let title = '交通概況';
+    let title = t('title.Start');
     switch (mapState) {
       case MapStatus.FocusXimenRdSec1:
-        title = 'FocusXimenRdSec1';
+        title = t('title.FocusXimenRdSec1');
         break;
       case MapStatus.FocusXimenRdSec2:
-        title = 'FocusXimenRdSec2';
+        title = t('title.FocusXimenRdSec2');
         break;
       case MapStatus.FocusZhongzhengRd:
-        title = 'FocusZhongzhengRd';
+        title = t('title.FocusZhongzhengRd');
         break;
       case MapStatus.ShowAccidentXimenRdSec1:
-        title = 'ShowAccidentXimenRdSec1';
+        title = t('title.ShowAccidentXimenRdSec1');
         break;
       case MapStatus.ShowAccidentXimenRdSec2:
-        title = 'ShowAccidentXimenRdSec2';
+        title = t('title.ShowAccidentXimenRdSec2');
         break;
       case MapStatus.ShowAccidentZhongzhengRd:
-        title = 'ShowAccidentZhongzhengRd';
+        title = t('title.ShowAccidentZhongzhengRd');
         break;
       case MapStatus.Start:
-        title = '交通概況';
+        title = t('title.Start');
         break;
       case MapStatus.TrafficJam:
-        title = '塞車分佈';
+        title = t('title.TrafficJam');
         break;
       case MapStatus.TrainUtilization:
-        title = '台鐵車次與車站人次分佈';
+        title = t('title.TrainUtilization');
         break;
     }
 
-    const buttonConfigs =
-      mapState === MapStatus.Start
-        ? [
-            {
-              text: 'TrafficJam',
-              onClick: () => setMapState(MapStatus.TrafficJam),
-            },
-            {
-              text: 'Start',
-              onClick: () => setMapState(MapStatus.Start),
-            },
-            {
-              text: 'ShowAccidentZhongzhengRd',
-              onClick: () => setMapState(MapStatus.ShowAccidentZhongzhengRd),
-            },
-            {
-              text: 'ShowAccidentXimenRdSec2',
-              onClick: () => setMapState(MapStatus.ShowAccidentXimenRdSec2),
-            },
-            {
-              text: 'ShowAccidentXimenRdSec1',
-              onClick: () => setMapState(MapStatus.ShowAccidentXimenRdSec1),
-            },
-            {
-              text: 'FocusZhongzhengRd',
-              onClick: () => setMapState(MapStatus.FocusZhongzhengRd),
-            },
-            {
-              text: 'FocusXimenRdSec2',
-              onClick: () => setMapState(MapStatus.FocusXimenRdSec2),
-            },
-            {
-              text: 'FocusXimenRdSec1',
-              onClick: () => setMapState(MapStatus.FocusXimenRdSec1),
-            },
-            {
-              text: 'TrainUtilization',
-              onClick: () => setMapState(MapStatus.TrainUtilization),
-            },
-          ]
-        : [];
+    const buttonConfigs: TButton[] = [];
+    /* Buttons for debugging
+    const buttonConfigs = [
+      {
+        text: 'TrafficJam',
+        onClick: () => setMapState(MapStatus.TrafficJam),
+      },
+      {
+        text: 'Start',
+        onClick: () => setMapState(MapStatus.Start),
+      },
+      {
+        text: 'ShowAccidentZhongzhengRd',
+        onClick: () => setMapState(MapStatus.ShowAccidentZhongzhengRd),
+      },
+      {
+        text: 'ShowAccidentXimenRdSec2',
+        onClick: () => setMapState(MapStatus.ShowAccidentXimenRdSec2),
+      },
+      {
+        text: 'ShowAccidentXimenRdSec1',
+        onClick: () => setMapState(MapStatus.ShowAccidentXimenRdSec1),
+      },
+      {
+        text: 'FocusZhongzhengRd',
+        onClick: () => setMapState(MapStatus.FocusZhongzhengRd),
+      },
+      {
+        text: 'FocusXimenRdSec2',
+        onClick: () => setMapState(MapStatus.FocusXimenRdSec2),
+      },
+      {
+        text: 'FocusXimenRdSec1',
+        onClick: () => setMapState(MapStatus.FocusXimenRdSec1),
+      },
+      {
+        text: 'TrainUtilization',
+        onClick: () => setMapState(MapStatus.TrainUtilization),
+      },
+    ]; */
+
     setPanelProps(prev => ({
       ...prev,
       title,
@@ -120,23 +122,28 @@ const usePanelProps = ({
   }, [mapState]);
 
   useEffect(() => {
-    const carsAmount = transportation.filter(t => t.type === 0 && t.speed !== 0)
+    const carsAmount = transportation.filter(d => d.type === 0 && d.speed !== 0)
       .length;
     const scooterAmount = transportation.filter(
-      t => t.type === 1 && t.speed !== 0,
+      d => d.type === 1 && d.speed !== 0,
     ).length;
 
     const averageSpeed =
       transportation.reduce((prev, curr) => prev + curr.speed, 0) /
       (carsAmount + scooterAmount);
-    const averageSpeedDesc = `平均時速: ${
-      isNaN(averageSpeed) ? 0 : averageSpeed.toFixed(2)
-    } km/hr`;
-    const carsAndScootersAmountDesc = `目前城市中有 ${carsAmount} 輛汽車、${scooterAmount} 輛機車行駛`;
-    const accidentDesc = `一小時內有 1 件車禍，無人傷亡`;
-    const busDesc = `公共運輸滿載率 67%，延誤率 13%，今日平均延誤 3 分鐘`;
-
-    const trafficJamDesc = `共有 ${trafficJamCount} 處塞車，全長 ${trafficJamLength} 公尺`;
+    const averageSpeedDesc = t('panel.averageSpeed', {
+      speed: isNaN(averageSpeed) ? '0' : averageSpeed.toFixed(2),
+    });
+    const carsAndScootersAmountDesc = t('panel.carsAndScootersAmount', {
+      carsAmount,
+      scooterAmount,
+    });
+    const accidentDesc = t('panel.accident');
+    const busDesc = t('panel.bus');
+    const trafficJamDesc = t('panel.trafficJam', {
+      trafficJamCount,
+      trafficJamLength,
+    });
 
     let infos: string[] = [];
     switch (mapState) {
