@@ -67,7 +67,7 @@
     "TrainCrowded": "RAILWAY CROWDED"
   },
   "chart": {
-    "legend": "passed car per minutes",
+    "legend": "passed cars per minute",
     "accidentLabel": "car accident"
   }
 }
