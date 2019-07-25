@@ -16,9 +16,21 @@ import { initJarvisService, TJarvisAction } from './actions';
 import reducer from './reducer';
 import { ActionRouterContext } from '@/contexts/actionRouter';
 
-export type JarvisSuggestion = {
+export enum SuggestionType {
+  Info = 'info',
+  Warning = 'warning',
+  Alert = 'alert',
+}
+
+export type TJarvisSuggestion = {
+  type: SuggestionType;
+  title: string;
   message: string;
-  onClick: () => void;
+  button?: {
+    onClick: () => void;
+    onCancel?: () => void;
+    text: string;
+  };
 };
 
 type TJarvisBaseState = {
@@ -26,7 +38,7 @@ type TJarvisBaseState = {
   enabled: boolean;
   title: string;
   response: TJarvisResponse;
-  suggestions: JarvisSuggestion[];
+  suggestions: TJarvisSuggestion[];
 };
 
 export type TJarvisState = TJarvisBaseState & {

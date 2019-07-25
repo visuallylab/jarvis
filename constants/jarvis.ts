@@ -14,4 +14,12 @@ export const grammars = {
     <stop> = stop <Jarvis>*;
     <thank you> = thank you <Jarvis>*;
     `,
+
+  focus: `
+    #JSGF V1.0 utf-8 en;
+    grammar focus;
+
+    <focus> = focus <>*;
+    <number> = /100/ one | /100/ two | /100/ three;
+    `,
 };

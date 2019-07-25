@@ -24,6 +24,7 @@ const MainContainer = styled.div`
 
 const ExtraContainer = styled.div`
   flex-grow: 1;
+  min-height: 25vh;
 `;
 
 const Info = styled.p<{ large?: boolean }>`
@@ -31,8 +32,8 @@ const Info = styled.p<{ large?: boolean }>`
   padding-left: 24px;
   margin: 8px 0;
   font-weight: 100;
-  font-size: ${props => (props.large ? '48px' : '18px')};
-  max-width: 40vw;
+  font-size: ${props => (props.large ? '2.5em' : '18px')};
+  max-width: 35vw;
 `;
 
 const VerticalLayoutWrapper = styled.div`

@@ -16,6 +16,8 @@ export enum TemplateType {
   // Specific
   T_Realtime = 'T_REALTIME',
   T_Statistics = 'T_STATISTICS',
+  E_Realtime = 'E_REALTIME',
+  E_Statistics = 'E_STATISTICS',
   Home = 'HOME',
 }
 

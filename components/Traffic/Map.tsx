@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import DeckGL from '@deck.gl/react';
 import { ViewState, FlyToInterpolator, StaticMap } from 'react-map-gl';
@@ -6,12 +7,6 @@ import useLineLayer from '@/hooks/useLineLayer';
 import useTripLayers from '@/hooks/useTripLayers';
 import useAccidentLayers from '@/hooks/useAccidentLayer';
 import useTransportationData from '@/hooks/useTransportationData';
-
-import 'mapbox-gl/dist/mapbox-gl.css';
-import traffic from 'static/traffic.json';
-import accidents from 'static/accidents.json';
-import Panel, { TTrafficFlow } from './Panel';
-import Tooltip from './Tooltip';
 import {
   getBuildingLayer,
   getLightEffect,
@@ -21,7 +16,15 @@ import { TrafficStatus, i18nNamespace } from '@/constants';
 import usePanelProps from '@/hooks/usePanelProps';
 import useTrainStatusLayers from '@/hooks/useTrainStatusLayers';
 import notify from '@/utils/notify';
-import { useTranslation } from 'react-i18next';
+import { JarvisContext, SuggestionType } from '@/contexts/jarvis';
+import { jarvisNotifications, setSuccess } from '@/contexts/jarvis/actions';
+
+import 'mapbox-gl/dist/mapbox-gl.css';
+import traffic from 'static/traffic.json';
+import accidents from 'static/accidents.json';
+import Panel, { TTrafficFlow } from './Panel';
+import Tooltip from './Tooltip';
+import systemStatus, { NotifyEventType } from '@/constants/system';
 
 export enum MapStatus {
   Start,
@@ -60,6 +63,7 @@ const trafficJamCenters = {
 };
 
 const Map = () => {
+  const { dispatch } = useContext(JarvisContext);
   const { t } = useTranslation(i18nNamespace.TrafficMap);
   const buildingLayer = getBuildingLayer();
   const lightingEffect = getLightEffect();
@@ -131,31 +135,84 @@ const Map = () => {
   };
 
   const triggerTrafficJamEvent = () => {
-    const showTrafficJamPrompt = () => {
-      notify({
-        msg: t('events.trafficJam.detailXimenRdSec1.msg'),
-        action: () => setMapState(MapStatus.FocusXimenRdSec1),
-        btnText: t('events.trafficJam.detailXimenRdSec1.btnText'),
-      });
-      notify({
-        msg: t('events.trafficJam.detailXimenRdSec2.msg'),
-        action: () => setMapState(MapStatus.FocusXimenRdSec2),
-        btnText: t('events.trafficJam.detailXimenRdSec2.btnText'),
-      });
-      notify({
-        msg: t('events.trafficJam.detailZhongzhengRd.msg'),
-        action: () => setMapState(MapStatus.FocusZhongzhengRd),
-        btnText: t('events.trafficJam.detailZhongzhengRd.btnText'),
-      });
+    const action = () => {
+      systemStatus.type = NotifyEventType.FocusTrafficJam;
+
+      systemStatus.notifications = [
+        {
+          action: () => setMapState(MapStatus.FocusXimenRdSec1),
+        },
+        {
+          action: () => setMapState(MapStatus.FocusXimenRdSec2),
+        },
+        {
+          action: () => setMapState(MapStatus.FocusZhongzhengRd),
+        },
+      ];
+      dispatch(
+        jarvisNotifications(
+          [
+            {
+              type: SuggestionType.Warning,
+              title: 'Ximen Road 1',
+              message: t('events.trafficJam.detailXimenRdSec1.msg'),
+              button: {
+                onClick: () => setMapState(MapStatus.FocusXimenRdSec1),
+                text: t('events.trafficJam.detailXimenRdSec1.btnText'),
+              },
+            },
+            {
+              type: SuggestionType.Warning,
+              title: 'Ximen Road 2',
+              message: t('events.trafficJam.detailXimenRdSec2.msg'),
+              button: {
+                onClick: () => setMapState(MapStatus.FocusXimenRdSec2),
+                text: t('events.trafficJam.detailXimenRdSec2.btnText'),
+              },
+            },
+            {
+              type: SuggestionType.Warning,
+              title: 'Zhong Zheng Road',
+              message: t('events.trafficJam.detailZhongzhengRd.msg'),
+              button: {
+                onClick: () => setMapState(MapStatus.FocusZhongzhengRd),
+                text: t('events.trafficJam.detailZhongzhengRd.btnText'),
+              },
+            },
+          ],
+          {
+            message: 'focus 1, 2, 3 ?',
+            confidence: 1,
+            isFinal: true,
+          },
+        ),
+      );
     };
-    notify({
-      msg: t('events.trafficJam.status.msg'),
-      action: () => {
-        setMapState(MapStatus.TrafficJam);
-        setTimeout(showTrafficJamPrompt, 100);
+
+    systemStatus.type = NotifyEventType.TrafficJam;
+    systemStatus.notifications = [
+      {
+        action,
+        cancel: () => setMapState(MapStatus.Start),
       },
-      btnText: t('events.trafficJam.status.btnText'),
-    });
+    ];
+
+    dispatch(
+      jarvisNotifications([
+        {
+          type: SuggestionType.Warning,
+          title: 'Rush hour',
+          message: t('events.trafficJam.status.msg'),
+          button: {
+            onClick: action,
+            onCancel: () => setMapState(MapStatus.Start),
+            text: t('events.trafficJam.status.btnText'),
+          },
+        },
+      ]),
+    );
+
+    setMapState(MapStatus.TrafficJam);
     setTrafficStatus(TrafficStatus.RoadCrowed);
   };
 
@@ -180,32 +237,83 @@ const Map = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      if (Math.random() > 0.5) {
-        triggerTrafficJamEvent();
-      } else {
-        triggerCrowdedTrainEvent();
-      }
+      // if (Math.random() > 0.5) {
+      triggerTrafficJamEvent();
+      //   } else {
+      //     triggerCrowdedTrainEvent();
+      //   }
     }, 6000);
   }, []);
 
   useEffect(() => {
     const triggerFocusPrompt = (nextState: MapStatus) => {
-      setTimeout(
-        notify({
-          msg: t('events.trafficJam.reason.msg'),
-          btnText: t('events.trafficJam.reason.btnText'),
-          action: () => {
-            setMapState(nextState);
-            setTimeout(() => {
-              notify({
-                btnText: t('events.trafficJam.suggestion.btnText'),
-                action: () => setMapState(MapStatus.Start),
-                msg: t('events.trafficJam.suggestion.msg'),
-              });
-            }, 2000);
+      const action = () => {
+        setMapState(nextState);
+
+        systemStatus.type = NotifyEventType.TrafficSuggestion;
+        systemStatus.notifications = [
+          {
+            action: () => {
+              setMapState(MapStatus.Start);
+              setTrafficStatus(TrafficStatus.Normal);
+              dispatch(setSuccess());
+            },
+            cancel: () => setMapState(MapStatus.Start),
           },
-        }),
-        1500,
+        ];
+
+        dispatch(
+          jarvisNotifications(
+            [
+              {
+                type: SuggestionType.Info,
+                title: 'Suggestion: assign a police',
+                message: t('events.trafficJam.suggestion.msg'),
+                button: {
+                  onClick: () => {
+                    setMapState(MapStatus.Start);
+                    setTrafficStatus(TrafficStatus.Normal);
+                    dispatch(setSuccess());
+                  },
+                  text: t('events.trafficJam.suggestion.btnText'),
+                },
+              },
+            ],
+            {
+              confidence: 1,
+              isFinal: true,
+              message: `${t('events.trafficJam.suggestion.btnText')} ?`,
+            },
+          ),
+        );
+      };
+
+      systemStatus.type = NotifyEventType.TrafficJamDetail;
+      systemStatus.notifications = [
+        {
+          action,
+          cancel: () => setMapState(MapStatus.Start),
+        },
+      ];
+      dispatch(
+        jarvisNotifications(
+          [
+            {
+              type: SuggestionType.Info,
+              title: 'Check Detail ?',
+              message: t('events.trafficJam.reason.msg'),
+              button: {
+                onClick: action,
+                text: t('events.trafficJam.reason.btnText'),
+              },
+            },
+          ],
+          {
+            message: `${t('events.trafficJam.reason.btnText')} ?`,
+            confidence: 1,
+            isFinal: true,
+          },
+        ),
       );
     };
     if (mapState === MapStatus.TrainUtilization) {
@@ -251,10 +359,10 @@ const Map = () => {
       triggerFocusPrompt(MapStatus.ShowAccidentZhongzhengRd);
     } else if (mapState === MapStatus.Start) {
       setTrafficFlowData(undefined);
-      setViewState(initialViewState);
+      setViewState({ ...initialViewState });
     } else if (mapState === MapStatus.TrafficJam) {
       setTrafficFlowData(undefined);
-      setViewState(initialViewState);
+      setViewState({ ...initialViewState });
     } else if (mapState === MapStatus.ShowAccidentXimenRdSec1) {
       setViewState({
         transitionDuration: 500,

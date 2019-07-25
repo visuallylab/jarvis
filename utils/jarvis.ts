@@ -29,6 +29,10 @@ export function getActionType(action: string | null) {
 export function getTemplateType(data: string | null): TemplateType | '' {
   let templateType: TemplateType | '' = '';
   switch (data) {
+    case 'home': {
+      templateType = TemplateType.Home;
+      break;
+    }
     case 'status': {
       templateType = TemplateType.Realtime;
       break;
@@ -39,6 +43,10 @@ export function getTemplateType(data: string | null): TemplateType | '' {
     }
     case 'traffic status': {
       templateType = TemplateType.T_Realtime;
+      break;
+    }
+    case 'electricity status': {
+      templateType = TemplateType.E_Realtime;
       break;
     }
     case 'traffic statistics': {

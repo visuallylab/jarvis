@@ -10,7 +10,12 @@ import {
 } from 'react-icons/gi';
 import { WiSolarEclipse } from 'react-icons/wi';
 import { FaLeaf, FaFireAlt } from 'react-icons/fa';
-import { IoIosNuclear } from 'react-icons/io';
+import {
+  IoIosNuclear,
+  IoMdWarning,
+  IoMdAlert,
+  IoMdInformationCircle,
+} from 'react-icons/io';
 
 type TIconMap = {
   [key: string]: IconType;
@@ -36,4 +41,9 @@ export const iconMap: TIconMap = {
   // nuclear
   nuclear1: GiNuclear,
   nuclear2: GiNuclear,
+
+  // notify
+  info: IoMdInformationCircle,
+  warning: IoMdWarning,
+  alert: IoMdAlert,
 };

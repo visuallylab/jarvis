@@ -2,10 +2,17 @@ import { useEffect, useContext, useRef, useCallback } from 'react';
 import { animated } from 'react-spring';
 import styled from 'styled-components';
 import SiriWave from 'siriwave';
+
 import useJarvisSpringProps from '@/hooks/useJarvisSpringProps';
 import { JarvisStatus } from '@/services/JarvisService';
-import { setListening, resetIdle } from '@/contexts/jarvis/actions';
+import {
+  setListening,
+  resetIdle,
+  setResponse,
+} from '@/contexts/jarvis/actions';
 import { JarvisContext } from '@/contexts/jarvis';
+import systemStatus from '@/constants/system';
+import Suggestion from './Suggestion';
 
 type TProps = {
   size?: number;
@@ -15,44 +22,66 @@ const Container = styled.div<{ size: number }>`
   position: absolute;
   top: 0;
   right: 0;
-  margin: 24px ${props => props.size * 2}px;
-  width: ${props => props.size * 5}px;
-  height: ${props => props.size * 1.5}px;
+  padding: 12px ${props => props.size}px;
+  width: ${props => props.size * 18}px;
+  height: 50vh;
+  z-index: ${p => p.theme.z.high};
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 `;
 
 const AnimatedWrapper = styled(animated.div)`
+  font-size: ${p => p.theme.fontSize.smaller};
   display: flex;
-  top: 0;
-  right: 0;
-  bottom: 0;
   flex-direction: column;
   align-items: center;
-  position: absolute;
+  background: rgb(35, 35, 35, 0.95);
+  border: solid 1px ${p => p.theme.colors.boxBorder};
+  border-radius: ${p => p.theme.borderRadius};
+  box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.1) inset;
+  padding: 8px;
+  overflow: hidden;
 `;
 
-const Wrapper = styled.div`
-  padding: 0;
-  border: none;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+const Title = styled.p`
+  font-weight: 500;
+`;
+
+const Message = styled.p`
+  white-space: pre-line;
+`;
+
+const Wrapper = styled.div<{ size: number }>`
   position: absolute;
+  border: none;
+  padding: 0;
+  top: 24px;
+  left: 50%;
+  right: 0;
+  width: ${props => props.size * 5}px;
+  height: ${props => props.size * 1.5}px;
+  transform: translate3d(-50%, 0, 0);
   display: flex;
   align-items: center;
   background: none;
 `;
 
 const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
-  const { status, jarvis, enabled, dispatch, title, response } = useContext(
-    JarvisContext,
-  );
+  const {
+    status,
+    jarvis,
+    enabled,
+    dispatch,
+    title,
+    response,
+    suggestions,
+  } = useContext(JarvisContext);
   const { circleProps, siriProps } = useJarvisSpringProps({
     size,
     status,
   });
 
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const jarvisWave = useRef<any>(null);
 
   const startWave = useCallback(() => {
@@ -73,8 +102,22 @@ const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
         case JarvisStatus.Active: {
           // when show up animation over, let user know they can speak
           setTimeout(() => {
-            startWave();
-            dispatch(setListening());
+            if (systemStatus.notifications.length) {
+              dispatch(
+                setResponse(
+                  {
+                    message: 'Yes or No ?',
+                    confidence: 1,
+                    isFinal: true,
+                  },
+                  JarvisStatus.Listening,
+                ),
+              );
+              startWave();
+            } else {
+              startWave();
+              dispatch(setListening());
+            }
           }, 1300);
           return;
         }
@@ -100,33 +143,35 @@ const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
   }, [status]);
 
   useEffect(() => {
-    if (wrapperRef.current) {
-      jarvisWave.current = new SiriWave({
-        container: document.getElementById('jarvis-wave'),
-        width: wrapperRef.current.offsetWidth * 0.8,
-        height: 40,
-        style: 'ios9',
-        amplitude: 3,
-        autostart: true,
-      });
+    jarvisWave.current = new SiriWave({
+      container: document.getElementById('jarvis-wave'),
+      width: size * 18 * 0.8,
+      height: 40,
+      style: 'ios9',
+      amplitude: 3,
+      autostart: true,
+    });
 
-      // siriwave.js has some bug,
-      // so we need to autostart then stop immediately
-      jarvisWave.current.stop();
-      jarvisWave.current.setAmplitude(3);
-    }
+    // siriwave.js has some bug,
+    // so we need to autostart then stop immediately
+    jarvisWave.current.stop();
+    jarvisWave.current.setAmplitude(3);
   }, []);
 
   return (
     <Container size={size}>
-      <AnimatedWrapper style={siriProps} ref={wrapperRef}>
-        <p>
-          <b>{title}</b>
-        </p>
+      <AnimatedWrapper style={siriProps}>
+        <Title>{title}</Title>
         <div id="jarvis-wave" />
-        <p>{response.message}</p>
+        <Message>{response.message}</Message>
+        <div style={{ margin: '1em 0', width: '100%' }}>
+          {suggestions.map(s => (
+            <Suggestion key={s.title + s.message} item={s} />
+          ))}
+        </div>
       </AnimatedWrapper>
       <Wrapper
+        size={size}
         onClick={() =>
           enabled ? jarvis && jarvis.disable() : jarvis && jarvis.enable()
         }

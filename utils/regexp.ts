@@ -9,9 +9,23 @@ const regexp = {
   PARSE_DATA: /backup capacity|electricity usage|electricity generated value|electricity transfer value/gi,
   PARSE_TIME: /(this|last) (year|month)|from (June|A) to (July|B)/i,
   PARSE_STATUS: /alert|report|max value|minimum value/i,
+
+  YES: /yes|show|check|okay|ok/i,
+  NO: /no/i,
+  FOCUS1: /focus (one|1|what|why|white)/i,
+  FOCUS2: /focus (two|2|to)/i,
+  FOCUS3: /focus (three|3|green)/i,
 };
 
 export const matchStop = (transcript: string) => regexp.STOP.exec(transcript);
+export const matchYes = (transcript: string) => regexp.YES.exec(transcript);
+export const matchNo = (transcript: string) => regexp.NO.exec(transcript);
+export const matchFocus1 = (transcript: string) =>
+  regexp.FOCUS1.exec(transcript);
+export const matchFocus2 = (transcript: string) =>
+  regexp.FOCUS2.exec(transcript);
+export const matchFocus3 = (transcript: string) =>
+  regexp.FOCUS3.exec(transcript);
 
 export const matchHeyJarvis = (transcript: string) =>
   regexp.HEY_JARVIS.exec(transcript);
