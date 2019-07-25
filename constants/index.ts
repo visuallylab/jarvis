@@ -9,7 +9,7 @@ export const LARGE_ICON_PATH = getRelativePath('/static/large-icon.png');
 export const NAV_TITLE = 'nav title';
 
 /* Traffic animation config */
-export const frames = 10;
+export const frames = 30;
 export const accidentFrames = 15;
 
 export enum TrafficStatus {

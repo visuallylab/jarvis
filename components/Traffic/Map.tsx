@@ -73,7 +73,12 @@ const Map = () => {
     hoverData,
     count: trafficJamCount,
     length: trafficJamLength,
-  } = useLineLayer(mapState === MapStatus.TrafficJam);
+  } = useLineLayer(
+    mapState === MapStatus.TrafficJam ||
+      mapState === MapStatus.FocusXimenRdSec1 ||
+      mapState === MapStatus.FocusXimenRdSec2 ||
+      mapState === MapStatus.FocusZhongzhengRd,
+  );
   const { timestamps, transportation } = useTransportationData(true, traffic);
   const [trafficFlowData, setTrafficFlowData] = useState<TTrafficFlow>();
   const { panelProps } = usePanelProps({
@@ -83,7 +88,15 @@ const Map = () => {
     trafficJamCount,
     trafficJamLength,
   });
-  const tripLayers = useTripLayers(traffic as TransporationItem[], timestamps);
+  const tripLayers = useTripLayers(
+    mapState === MapStatus.Start ||
+      mapState === MapStatus.FocusXimenRdSec1 ||
+      mapState === MapStatus.FocusXimenRdSec2 ||
+      mapState === MapStatus.FocusZhongzhengRd ||
+      mapState === MapStatus.TrafficJam,
+    traffic as TransporationItem[],
+    timestamps,
+  );
   const accidentLayer = useAccidentLayers(
     mapState === MapStatus.ShowAccidentXimenRdSec1 ||
       mapState === MapStatus.ShowAccidentXimenRdSec2 ||

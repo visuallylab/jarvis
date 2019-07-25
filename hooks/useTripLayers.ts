@@ -1,12 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { geoInterpolate } from 'd3-geo';
 import { frames } from '../constants';
 import { TripsLayer } from '@deck.gl/geo-layers';
+import useAnimationController from './useAnimationController';
+import { Timer } from 'd3-timer';
 
-const useTripLayers = (traffic: TransporationItem[], timestamps: number[]) => {
+const useTripLayers = (
+  enable: boolean,
+  traffic: TransporationItem[],
+  timestamps: number[],
+) => {
   const [trip, setTrip] = useState<Array<Array<[number, number, number]>>>([]);
   const [tripLayers, setTripLayers] = useState<any[]>([]);
+  const maxTimestamp = useRef(0);
+  const timer = useRef<Timer>();
+  const [currentTime, setCurrentTime] = useState(0);
   useEffect(() => {
     const tmpTrips: Array<Array<[number, number, number]>> = [];
     traffic
@@ -37,7 +46,12 @@ const useTripLayers = (traffic: TransporationItem[], timestamps: number[]) => {
         tmpTrips.push(tmpTrip);
       });
     setTrip(tmpTrips);
+    maxTimestamp.current = Math.max(...tmpTrips.map(d => d.length));
   }, [traffic]);
+
+  useAnimationController(enable, timer, () => {
+    setCurrentTime(prev => (prev + 1 === maxTimestamp.current ? 0 : prev + 1));
+  });
 
   useEffect(() => {
     setTripLayers(
@@ -49,8 +63,8 @@ const useTripLayers = (traffic: TransporationItem[], timestamps: number[]) => {
         opacity: 0.5,
         widthMinPixels: 2,
         rounded: true,
-        trailLength: 20,
-        currentTime: timestamps[0],
+        trailLength: 60,
+        currentTime,
       }),
     );
   }, [timestamps, trip]);
