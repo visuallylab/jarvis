@@ -6,17 +6,30 @@ export enum SystemPage {
   Home = 'HOME',
 }
 
-export enum NotifyEvent {
-  ShowAccidentXimenRdSec1,
+export enum NotifyEventType {
+  // Traffic
+  TrafficJam,
+  TrafficJamDetail,
+  TrafficSuggestion,
+  FocusTrafficJam,
+
+  // Electricity
   LowBackupStatus,
 }
 
+type TNotification = {
+  action: () => void;
+  cancel?: () => void;
+};
+
 const systemStatus: {
+  type: NotifyEventType | '';
   page: SystemPage;
-  notifyEvent: NotifyEvent | null;
+  notifications: TNotification[];
 } = {
+  type: '',
   page: SystemPage.Home,
-  notifyEvent: null,
+  notifications: [],
 };
 
 export default systemStatus;

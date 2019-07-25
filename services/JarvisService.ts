@@ -10,13 +10,14 @@ import {
   setError,
   setSuccess,
   setListening,
+  jarvisNotifications,
 } from '@/contexts/jarvis/actions';
 import {
   TActionRouterAction,
   pushRoute,
   backRoute,
 } from '@/contexts/actionRouter/actions';
-import { JarvisSuggestion } from '@/contexts/jarvis';
+import { TJarvisSuggestion } from '@/contexts/jarvis';
 import { ActionType, TemplateType, DataType } from '@/constants/actionRouter';
 import { grammars } from '@/constants/jarvis';
 import {
@@ -27,6 +28,11 @@ import {
   matchTimes,
   matchStatus,
   matchTemplate,
+  matchYes,
+  matchNo,
+  matchFocus1,
+  matchFocus2,
+  matchFocus3,
 } from '@/utils/regexp';
 
 import {
@@ -36,6 +42,7 @@ import {
   getDataTypes,
 } from '@/utils/jarvis';
 import { Time, Focus, TActionRoute } from '@/contexts/actionRouter';
+import systemStatus, { NotifyEventType } from '@/constants/system';
 
 export enum JarvisStatus {
   Idle = 'IDLE', // hide
@@ -43,7 +50,7 @@ export enum JarvisStatus {
   Listening = 'LISTENING', // start listening (start wave animation)
   Recognizing = 'RECOGNIZING',
   Success = 'SUCCESS',
-  Error = 'Error',
+  Error = 'ERROR',
 }
 
 export type TJarvisResponse = {
@@ -136,32 +143,74 @@ export default class JarvisService {
 
         case JarvisStatus.Listening: {
           if (target.isFinal) {
-            dispatch(
-              setResponse(response, JarvisStatus.Recognizing, 'Recognizing...'),
-            );
+            console.log(systemStatus);
+            if (systemStatus.type !== '') {
+              console.log(
+                'do systemStatus',
+                systemStatus.type,
+                target[0].transcript,
+              );
+              switch (systemStatus.type) {
+                case NotifyEventType.TrafficJamDetail:
+                case NotifyEventType.TrafficSuggestion:
+                case NotifyEventType.TrafficJam: {
+                  if (matchYes(target[0].transcript)) {
+                    systemStatus.notifications[0].action();
+                  } else if (matchNo(target[0].transcript)) {
+                    if (systemStatus.notifications[0].cancel) {
+                      systemStatus.notifications[0].cancel();
+                    } else {
+                      dispatch(jarvisNotifications([]));
+                    }
+                  } else {
+                    dispatch(setError());
+                  }
+                  break;
+                }
 
-            // back route
-            if (target[0].transcript.trim() === 'back') {
-              actionRouterDispatch(backRoute());
-              dispatch(setListening());
-              break;
-            }
+                case NotifyEventType.FocusTrafficJam: {
+                  if (matchFocus1(target[0].transcript)) {
+                    systemStatus.notifications[0].action();
+                  } else if (matchFocus2(target[0].transcript)) {
+                    systemStatus.notifications[1].action();
+                  } else if (matchFocus3(target[0].transcript)) {
+                    systemStatus.notifications[2].action();
+                  }
+                  break;
+                }
+              }
+            } else {
+              dispatch(
+                setResponse(
+                  response,
+                  JarvisStatus.Recognizing,
+                  'Recognizing...',
+                ),
+              );
 
-            const encoded = this.encoded(target[0]);
-            if (!encoded.actionType) {
-              const isStatistics =
-                encoded.templateType === TemplateType.Statistics;
-              if (encoded.templateType) {
+              // back route
+              if (target[0].transcript.trim() === 'back') {
+                actionRouterDispatch(backRoute());
+                dispatch(setListening());
+                break;
+              }
+
+              const encoded = this.encoded(target[0]);
+              if (!encoded.actionType) {
+                const isStatistics =
+                  encoded.templateType === TemplateType.Statistics;
+                if (encoded.templateType) {
+                  actionRouterDispatch(pushRoute(encoded as TActionRoute));
+                  dispatch(setSuccess());
+                } else if (isStatistics && !encoded.dataTypes.length) {
+                  dispatch(setError());
+                }
+              } else if (encoded.suggestions.length) {
+                dispatch(setSuggestions(encoded.suggestions));
+              } else {
                 actionRouterDispatch(pushRoute(encoded as TActionRoute));
                 dispatch(setSuccess());
-              } else if (isStatistics && !encoded.dataTypes.length) {
-                dispatch(setError());
               }
-            } else if (encoded.suggestions.length) {
-              dispatch(setSuggestions(encoded.suggestions));
-            } else {
-              actionRouterDispatch(pushRoute(encoded as TActionRoute));
-              dispatch(setSuccess());
             }
           } else {
             dispatch(setResponse(response));
@@ -199,7 +248,7 @@ export default class JarvisService {
     dataTypes: DataType[];
     times: Time[];
     focus: Focus[];
-    suggestions: JarvisSuggestion[];
+    suggestions: TJarvisSuggestion[];
     extraProps: { [key: string]: any };
   } {
     const { action, template, data, times, status } = this.parseTranscript(
@@ -210,7 +259,7 @@ export default class JarvisService {
     const dataTypes = getDataTypes(data);
     const focus = getFocus(status);
 
-    const suggestions: JarvisSuggestion[] = [];
+    const suggestions: TJarvisSuggestion[] = [];
     const extraProps = {};
 
     return {

@@ -192,11 +192,22 @@ const useJarvisSpringProps = ({ status, size = 60 }: TProps) => {
         // @ts-ignore
         setCircleProps(index => ({
           config: config.default,
-          to: {
-            ...preset[status],
-            left: getSpreadingOffset(1, index),
-            transform: getBloomingTransform(false, 0, index) + getScale(1),
-            background: getBackground(CircleBackgroundOption.Compound, index),
+          to: async (next: any) => {
+            await next({
+              ...preset[status],
+              left: getSpreadingOffset(1, index),
+              transform: getBloomingTransform(false, 0, index) + getScale(1),
+              background: getBackground(CircleBackgroundOption.Compound, index),
+            });
+            next({
+              ...preset[JarvisStatus.Listening],
+            });
+            // @ts-ignore
+            setSiriProps({
+              transform: 'translateX(150%)',
+              opacity: 1,
+              filter: 'blur(0px)',
+            });
           },
         }));
         break;

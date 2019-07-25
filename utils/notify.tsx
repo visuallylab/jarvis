@@ -20,5 +20,7 @@ export default ({ msg, action, btnText }: TNotifyProps) =>
     bar: {
       size: '0px',
     },
-    renderIcon: () => <Button>{btnText}</Button>,
+    renderIcon: () => (
+      <Button color={'rgba(0, 217, 255, 0.8)'}>{btnText}</Button>
+    ),
   });

@@ -3,7 +3,7 @@ import JarvisService, {
   TJarvisResponse,
 } from '@/services/JarvisService';
 
-import { JarvisSuggestion } from './index';
+import { TJarvisSuggestion } from './index';
 
 enum Actions {
   InitJarvisService = 'INIT_JARVIS_SERVICE',
@@ -14,6 +14,7 @@ enum Actions {
   SetSuggestion = 'SET_SUGGESTION',
   ResetIdle = 'RESET_IDLE',
   ActiveJarvis = 'ACTIVE_JARVIS',
+  JarvisNotifications = 'JARVIS_NOTIFICATIONS',
 }
 
 export type TJarvisAction =
@@ -27,9 +28,10 @@ export type TJarvisAction =
   | IAction<Actions.SetStatus, { status: JarvisStatus; title?: string }>
   | IAction<
       Actions.SetSuggestion,
-      { suggestions: JarvisSuggestion[]; status?: JarvisStatus }
+      { suggestions: TJarvisSuggestion[]; status?: JarvisStatus }
     >
   | IAction<Actions.ResetIdle, { title?: string }>
+  | IAction<Actions.JarvisNotifications, { suggestions: TJarvisSuggestion[] }>
   | IAction<Actions.ActiveJarvis>;
 
 export const initJarvisService = (jarvis: JarvisService): TJarvisAction => ({
@@ -80,7 +82,7 @@ export const setStatus = (
 });
 
 export const setSuggestions = (
-  suggestions: JarvisSuggestion[],
+  suggestions: TJarvisSuggestion[],
   status?: JarvisStatus,
 ): TJarvisAction => ({
   type: Actions.SetSuggestion,
@@ -126,5 +128,14 @@ export const setListening = (): TJarvisAction =>
     JarvisStatus.Listening,
     "I'm listening...",
   );
+
+export const jarvisNotifications = (
+  suggestions: TJarvisSuggestion[],
+): TJarvisAction => ({
+  type: Actions.JarvisNotifications,
+  payload: {
+    suggestions,
+  },
+});
 
 export default Actions;

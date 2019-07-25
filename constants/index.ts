@@ -24,5 +24,6 @@ export enum IndicatorColor {
 }
 
 export enum i18nNamespace {
+  Common = 'common',
   TrafficMap = 'TrafficMap',
 }

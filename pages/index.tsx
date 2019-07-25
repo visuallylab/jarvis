@@ -2,6 +2,7 @@ import { NextFC } from 'next';
 import { useContext, FC } from 'react';
 import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import MainLayout from '@/layouts/Main';
 import { SITE_TITLE, i18nNamespace } from '@/constants';
@@ -9,7 +10,6 @@ import { ActionRouterContext } from '@/contexts/actionRouter';
 import { TemplateType } from '@/constants/actionRouter';
 import Map from '@/components/Traffic/Map';
 import Realtime from '@/components/Electricity/Realtime';
-
 import system, { SystemPage } from '@/constants/system';
 
 const AnimatedWrapper = styled(animated.div)`
