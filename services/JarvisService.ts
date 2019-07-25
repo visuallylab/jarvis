@@ -143,13 +143,7 @@ export default class JarvisService {
 
         case JarvisStatus.Listening: {
           if (target.isFinal) {
-            console.log(systemStatus);
             if (systemStatus.type !== '') {
-              console.log(
-                'do systemStatus',
-                systemStatus.type,
-                target[0].transcript,
-              );
               switch (systemStatus.type) {
                 case NotifyEventType.TrafficJamDetail:
                 case NotifyEventType.TrafficSuggestion:

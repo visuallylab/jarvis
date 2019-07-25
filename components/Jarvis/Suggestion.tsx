@@ -1,13 +1,8 @@
 import styled from 'styled-components';
 import { useSpring, animated } from 'react-spring';
-import { FC, useContext } from 'react';
+import { FC } from 'react';
 import { iconMap } from '@/constants/icon';
-import {
-  SuggestionType,
-  TJarvisSuggestion,
-  JarvisContext,
-} from '@/contexts/jarvis';
-import { JarvisStatus } from '@/services/JarvisService';
+import { SuggestionType, TJarvisSuggestion } from '@/contexts/jarvis';
 import theme from '@/themes/theme';
 import Button from '@/components/Button';
 

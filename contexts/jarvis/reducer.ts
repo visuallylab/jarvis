@@ -79,10 +79,14 @@ const reducer: TJarvisReducer = (state, action) => {
       if (state.status.current === JarvisStatus.Idle) {
         state.status.current = JarvisStatus.Active;
       }
+
       return {
         ...state,
         title: `New notification (${action.payload.suggestions.length})`,
         suggestions: action.payload.suggestions,
+        response: action.payload.response
+          ? action.payload.response
+          : state.response,
       };
     }
 

@@ -2,7 +2,6 @@ import { NextFC } from 'next';
 import { useContext, FC } from 'react';
 import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 
 import MainLayout from '@/layouts/Main';
 import { SITE_TITLE, i18nNamespace } from '@/constants';

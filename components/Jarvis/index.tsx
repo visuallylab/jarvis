@@ -157,7 +157,7 @@ const Jarvis: React.FC<TProps> = ({ size = 60 }) => {
     jarvisWave.current.stop();
     jarvisWave.current.setAmplitude(3);
   }, []);
-  console.log(status);
+
   return (
     <Container size={size}>
       <AnimatedWrapper style={siriProps}>

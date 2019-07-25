@@ -10,9 +10,9 @@ const regexp = {
   PARSE_TIME: /(this|last) (year|month)|from (June|A) to (July|B)/i,
   PARSE_STATUS: /alert|report|max value|minimum value/i,
 
-  YES: /yes|show|check/i,
+  YES: /yes|show|check|okay|ok/i,
   NO: /no/i,
-  FOCUS1: /focus (one|1|what|why)/i,
+  FOCUS1: /focus (one|1|what|why|white)/i,
   FOCUS2: /focus (two|2|to)/i,
   FOCUS3: /focus (three|3|green)/i,
 };

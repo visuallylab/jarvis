@@ -31,7 +31,10 @@ export type TJarvisAction =
       { suggestions: TJarvisSuggestion[]; status?: JarvisStatus }
     >
   | IAction<Actions.ResetIdle, { title?: string }>
-  | IAction<Actions.JarvisNotifications, { suggestions: TJarvisSuggestion[] }>
+  | IAction<
+      Actions.JarvisNotifications,
+      { suggestions: TJarvisSuggestion[]; response?: TJarvisResponse }
+    >
   | IAction<Actions.ActiveJarvis>;
 
 export const initJarvisService = (jarvis: JarvisService): TJarvisAction => ({
@@ -131,10 +134,12 @@ export const setListening = (): TJarvisAction =>
 
 export const jarvisNotifications = (
   suggestions: TJarvisSuggestion[],
+  response?: TJarvisResponse,
 ): TJarvisAction => ({
   type: Actions.JarvisNotifications,
   payload: {
     suggestions,
+    response,
   },
 });
 
