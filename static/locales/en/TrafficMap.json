@@ -2,8 +2,8 @@
   "events": {
     "trafficJam": {
       "status": {
-        "msg": "Currently on rush hour, found three traffic jams",
-        "btnText": "show info"
+        "msg": "found three traffic jams",
+        "btnText": "show"
       },
       "detailXimenRdSec1": {
         "msg": "There is a traffic jam on Ximen Road Section 1",
@@ -18,12 +18,12 @@
         "btnText": "check"
       },
       "reason": {
-        "msg": "The traffic jam may be caused by an accident",
-        "btnText": "show detail"
+        "msg": "may be caused by an accident",
+        "btnText": "check"
       },
       "suggestion": {
         "msg": "Suggest assign a police here to clear traffic",
-        "btnText": "Okay!"
+        "btnText": "okay"
       }
     },
     "crowedTrain": {
