@@ -1,6 +1,6 @@
 import MainLayout from '@/layouts/Main';
 import Realtime from '@/components/Electricity/Realtime';
-import { SITE_TITLE } from '@/constants';
+import { SITE_TITLE, i18nNamespace } from '@/constants';
 
 const Electricity = () => {
   return (
@@ -9,5 +9,9 @@ const Electricity = () => {
     </MainLayout>
   );
 };
+
+Electricity.getInitialProps = () => ({
+  namespacesRequired: Object.values(i18nNamespace),
+});
 
 export default Electricity;
