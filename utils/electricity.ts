@@ -1,25 +1,7 @@
 import dayjs from 'dayjs';
-import { TEnergy } from '@/components/Electricity/PowerBox';
+import cloneDeep from 'lodash/cloneDeep';
 
 export const MAX_PROVIDE = 2800 + Math.floor(Math.random() * 1200) + 1000;
-
-export type TEnergyData = {
-  hour: number;
-  minute: number;
-  sec: number;
-  energy: TEnergy;
-  total: number;
-};
-
-export type TUsageData = {
-  hour: number;
-  minute: number;
-  sec: number;
-  useValue: number;
-  estimatedHigh: number;
-  maxProvide: number;
-  backupCapacity: number;
-};
 
 const createBase: () => TEnergy = () => ({
   green: {
@@ -37,7 +19,7 @@ const createBase: () => TEnergy = () => ({
   fire: {
     data: {
       oil: 37.2,
-      coal: 1240.6,
+      coal: 1100.6,
       lng: 848.2,
     },
     goal: {
@@ -123,11 +105,16 @@ export const createCurrentData = () => {
       );
 
       const estimatedHigh = total + random;
-
+      const hourStr = hour < 10 ? `0${hour}` : String(hour);
+      const minStr = minute < 10 ? `0${minute}` : String(minute);
+      const secStr = sec < 10 ? `0${sec}` : String(sec);
       usageData.push({
         hour,
         minute,
         sec,
+        hourStr,
+        minStr,
+        secStr,
         useValue: total,
         estimatedHigh,
         maxProvide: MAX_PROVIDE,
@@ -135,19 +122,24 @@ export const createCurrentData = () => {
       });
 
       energyData.push({
+        hourStr,
+        minStr,
+        secStr,
         hour,
         minute,
         sec,
-        energy: current,
+        energy: cloneDeep(current),
         total,
       });
 
       nextUseSeconds = i + Math.ceil(Math.random() * 30 + 1) * 1000;
     }
   }
+
+  const currentHour = dayjs().hour();
   return {
-    usageData,
-    energyData,
-    hours,
+    usageData: usageData.filter(d => d.hour > currentHour - 6),
+    energyData: energyData.filter(d => d.hour > currentHour - 6),
+    hours: hours.filter(h => h > currentHour - 6),
   };
 };

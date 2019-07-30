@@ -11,7 +11,6 @@ const Title = styled.p`
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  margin: 0.5em 0 1.5em;
 `;
 
 const AnimatedPercentNumber = styled(animated.p)`
@@ -143,7 +142,6 @@ const CurrentUsage: FC<TProps> = ({
               outerRadius="150%"
               paddingAngle={0}
               stroke="none"
-              label={src => src.label}
             >
               {data.map((_, index) => (
                 <Cell key={index} fill={COLORS[index % COLORS.length]} />

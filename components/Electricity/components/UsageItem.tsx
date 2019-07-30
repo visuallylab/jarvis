@@ -4,7 +4,7 @@ import { animated, useSpring } from 'react-spring';
 
 import H3 from '@/components/H3';
 
-import { TData } from './UsageBox';
+import { TData } from '../UsageBox';
 
 type TItemProps = { itemKey: keyof TData; item: TData };
 

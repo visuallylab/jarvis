@@ -78,6 +78,9 @@ const Realtime: FC = () => {
 
         const usageData = [...d.usageData];
         const energyData = [...d.energyData];
+        const hourStr = hour < 10 ? `0${hour}` : String(hour);
+        const minStr = minute < 10 ? `0${minute}` : String(minute);
+        const secStr = sec < 10 ? `0${sec}` : String(sec);
         usageData.push({
           hour,
           minute,
@@ -86,6 +89,9 @@ const Realtime: FC = () => {
           estimatedHigh,
           maxProvide: MAX_PROVIDE,
           backupCapacity: MAX_PROVIDE - estimatedHigh,
+          hourStr,
+          minStr,
+          secStr,
         });
         energyData.push({
           hour,
@@ -93,6 +99,9 @@ const Realtime: FC = () => {
           sec,
           energy: current,
           total,
+          hourStr,
+          minStr,
+          secStr,
         });
         return {
           hours,

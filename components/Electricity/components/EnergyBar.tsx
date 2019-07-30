@@ -10,6 +10,10 @@ import Category, { TCategory } from './Category';
 const OuterWrapper = styled.div`
   width: 100%;
   padding-top: 1em;
+
+  &:first-child {
+    padding-top: 0;
+  }
 `;
 
 const InnerWrapper = styled.div`

@@ -4,8 +4,7 @@ import styled from 'styled-components';
 import theme from '@/themes/theme';
 import { iconMap } from '@/constants/icon';
 
-import EnergyBar from './components/EnergyBar';
-import { TEnergy } from './PowerBox';
+import EnergyBar from './EnergyBar';
 
 const Title = styled.p`
   font-weight: 500;
@@ -13,7 +12,7 @@ const Title = styled.p`
 `;
 
 const Wrapper = styled.div`
-  margin: 0.5em 0 1.5em;
+  margin: 0.5em 0 1em;
 `;
 
 const EnergyIcon = styled.div<{ color: string }>`
