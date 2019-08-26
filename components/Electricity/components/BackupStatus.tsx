@@ -10,9 +10,7 @@ const Title = styled.p`
   margin-bottom: 0.5em;
 `;
 
-const Wrapper = styled.div`
-  margin: 0.5em 0 1.5em;
-`;
+const Wrapper = styled.div``;
 
 const StatusWrapper = styled.div`
   display: flex;

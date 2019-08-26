@@ -83,7 +83,7 @@ export default class JarvisService {
     this.initialize();
 
     // DEFAULT: enable jarvis service
-    this.enable();
+    // this.enable();
   }
 
   initialize() {
