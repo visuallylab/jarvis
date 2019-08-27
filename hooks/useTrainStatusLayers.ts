@@ -1,5 +1,5 @@
 import { ScatterplotLayer, TextLayer } from '@deck.gl/layers';
-import tainanStations from 'static/tainanStations.json';
+import tainanStations from 'static/data/traffic/tainanStations.json';
 import { useState, useRef, useCallback } from 'react';
 import { Timer } from 'd3-timer';
 import useAnimationController from './useAnimationController';
@@ -162,7 +162,7 @@ const useTrainStatusLayers = (enable: boolean) => {
     }),
     new TextLayer({
       id: 'station-label-layer',
-      data: 'static/tainanStations.json',
+      data: 'static/data/traffic/tainanStations.json',
       pickable: true,
       sizeUnits: 'meters',
       getText: (d: any) => `${d.StationName.En} Station`,

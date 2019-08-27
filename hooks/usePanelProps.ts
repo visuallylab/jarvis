@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { TButton, TTrafficFlow } from '../components/Traffic/Panel';
-import { MapStatus } from '@/components/Traffic/Map';
-import { i18nNamespace } from '@/constants';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
+import { MapStatus } from '@/components/demo/Traffic/Map';
+import { i18nNamespace } from '@/constants';
+import { TButton, TTrafficFlow } from '../components/demo/Traffic/Panel';
 
 type TProps = {
   mapState: MapStatus;

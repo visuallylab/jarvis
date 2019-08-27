@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import styled from 'styled-components';
 
-import Jarvis from '@/components/Jarvis';
+import Jarvis from '@/components/demo/Jarvis';
 import GlobalStyles from '@/themes/GlobalStyles';
 import NormalizeStyles from '@/themes/NormalizeStyles';
 import { SITE_TITLE } from '@/constants';

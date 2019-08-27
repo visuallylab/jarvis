@@ -4,7 +4,7 @@ import { Timer } from 'd3-timer';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 import { registerLoaders } from '@loaders.gl/core';
-import staticTraffic from 'static/traffic.json';
+import staticTraffic from 'static/data/traffic/traffic.json';
 import { GLTFScenegraphLoader } from '@luma.gl/addons';
 import { getRhumbLineBearing, getDistance } from 'geolib';
 import useAnimationController from './useAnimationController';

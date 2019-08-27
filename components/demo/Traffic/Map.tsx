@@ -20,8 +20,8 @@ import { JarvisContext, SuggestionType } from '@/contexts/jarvis';
 import { jarvisNotifications, setSuccess } from '@/contexts/jarvis/actions';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
-import traffic from 'static/traffic.json';
-import accidents from 'static/accidents.json';
+import traffic from 'static/data/traffic/traffic.json';
+import accidents from 'static/data/traffic/accidents.json';
 import Panel, { TTrafficFlow } from './Panel';
 import Tooltip from './Tooltip';
 import systemStatus, { NotifyEventType } from '@/constants/system';

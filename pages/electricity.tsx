@@ -1,5 +1,5 @@
 import MainLayout from '@/layouts/Main';
-import Realtime from '@/components/Electricity/Realtime';
+import Realtime from '@/components/demo/Electricity/Realtime';
 import { SITE_TITLE, i18nNamespace } from '@/constants';
 
 const Electricity = () => {

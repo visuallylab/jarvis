@@ -1,6 +1,6 @@
 import { PolygonLayer } from '@deck.gl/layers';
 import { PhongMaterial } from '@luma.gl/core';
-import buildings from 'static/building.json';
+import buildings from 'static/data/traffic/building.json';
 import { AmbientLight, PointLight, LightingEffect } from '@deck.gl/core';
 
 const layerConfig = {
