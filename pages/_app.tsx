@@ -1,4 +1,4 @@
-import App, { Container } from 'next/app';
+import App from 'next/app';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { appWithTranslation } from '@/i18n';
@@ -20,13 +20,11 @@ class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <Container>
-        <ThemeProvider theme={theme}>
-          <GlobalStateProvider>
-            <Component {...pageProps} />
-          </GlobalStateProvider>
-        </ThemeProvider>
-      </Container>
+      <ThemeProvider theme={theme}>
+        <GlobalStateProvider>
+          <Component {...pageProps} />
+        </GlobalStateProvider>
+      </ThemeProvider>
     );
   }
 }
