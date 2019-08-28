@@ -1,7 +1,12 @@
 import { Theme } from '@/typings/styled';
 
 const theme: Theme = {
+  color: '#4a4a4a',
+  backgroundColor: '#ffffff',
   colors: {
+    black: '#000000',
+    white: '#ffffff',
+    lightBlack: '#4a4a4a',
     smokyBlack: '#070707',
     smokyWhite: '#F4F7F7',
     spaceGray: '#46494c',

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import Jarvis from '@/components/demo/Jarvis';
 import GlobalStyles from '@/themes/GlobalStyles';
+import DemoThemeProvider from '@/themes/DemoThemeProvider';
 import NormalizeStyles from '@/themes/NormalizeStyles';
 import { SITE_TITLE } from '@/constants';
 
@@ -18,21 +19,23 @@ type TProps = {
   children: React.ReactNode;
 };
 
-const MainLayout: React.FunctionComponent<TProps> = ({
+const DemoLayout: React.FunctionComponent<TProps> = ({
   children,
   title = SITE_TITLE,
 }) => {
   return (
-    <Main>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <Jarvis size={20} />
-      {children}
-      <NormalizeStyles />
-      <GlobalStyles />
-    </Main>
+    <DemoThemeProvider>
+      <Main>
+        <Head>
+          <title>{title}</title>
+        </Head>
+        <Jarvis size={20} />
+        {children}
+        <NormalizeStyles />
+        <GlobalStyles />
+      </Main>
+    </DemoThemeProvider>
   );
 };
 
-export default MainLayout;
+export default DemoLayout;

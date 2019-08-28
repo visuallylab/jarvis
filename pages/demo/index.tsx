@@ -3,7 +3,7 @@ import { useContext, FC } from 'react';
 import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
 
-import MainLayout from '@/layouts/Main';
+import DemoLayout from '@/layouts/Demo';
 import { SITE_TITLE, i18nNamespace } from '@/constants';
 import { ActionRouterContext } from '@/contexts/actionRouter';
 import { TemplateType } from '@/constants/actionRouter';
@@ -71,12 +71,12 @@ const Index: NextPage = () => {
   );
 
   return (
-    <MainLayout title={'Smart City Dashboard |' + SITE_TITLE}>
+    <DemoLayout title={'Smart City Dashboard |' + SITE_TITLE}>
       {transitions.map(({ item, props, key }) => {
         const Page = getPage(item);
         return <Page key={key} style={props} />;
       })}
-    </MainLayout>
+    </DemoLayout>
   );
 };
 
