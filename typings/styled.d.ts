@@ -4,6 +4,8 @@ export interface Theme {
   color: string;
   backgroundColor: string;
   colors: {
+    primary: string;
+    lightGrey: string;
     white: string;
     black: string;
     lightBlack: string;
@@ -33,8 +35,7 @@ export interface Theme {
 
   fontSize: {
     h1: string;
-    h2: string;
-    h3: string;
+    big: string;
     bigger: string;
     smaller: string;
     small: string;

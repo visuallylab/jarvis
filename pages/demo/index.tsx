@@ -58,7 +58,7 @@ const getPage = (item: TemplateType) => {
   );
 };
 
-const Index: NextPage = () => {
+const Demo: NextPage = () => {
   const { currentIndex, history } = useContext(ActionRouterContext);
   const transitions = useTransition(
     history[currentIndex].templateType,
@@ -80,8 +80,8 @@ const Index: NextPage = () => {
   );
 };
 
-Index.getInitialProps = async () => ({
+Demo.getInitialProps = async () => ({
   namespacesRequired: Object.values(i18nNamespace),
 });
 
-export default Index;
+export default Demo;

@@ -1,5 +1,5 @@
 import cogoToast from 'cogo-toast';
-import Button from '@/components/Button';
+import Button from '@/components/demo/Button';
 import './toast.css';
 
 type TNotifyProps = {

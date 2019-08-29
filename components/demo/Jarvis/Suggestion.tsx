@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { iconMap } from '@/constants/icon';
 import { SuggestionType, TJarvisSuggestion } from '@/contexts/jarvis';
 import theme from '@/themes/theme';
-import Button from '@/components/Button';
+import Button from '@/components/demo/Button';
 
 const AnimatedWrapper = styled(animated.div)`
   width: 100%;

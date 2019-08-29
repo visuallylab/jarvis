@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { TrafficStatus, IndicatorColor, i18nNamespace } from '@/constants';
 import Indicator from './Indicator';
-import Button from '../../Button';
+import Button from '../Button';
 import LineChart from './LineChart';
 import { MapStatus } from './Map';
 

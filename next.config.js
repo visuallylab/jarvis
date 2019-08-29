@@ -16,11 +16,15 @@ console.log('Environment:', process.env.NODE_ENV);
 
 module.exports = withCSS(
   withBundleAnalyzer({
-    // exportPathMap: function() {
-    //   return {
-    //     '/': { page: '/' },
-    //   };
-    // },
+    exportPathMap: function() {
+      return {
+        '/': { page: '/' },
+        '/demo/index': { page: '/demo' },
+        '/demo/traffic': { page: '/demo/traffic' },
+        '/demo/electricity': { page: '/demo/electricity' },
+        '/service': { page: '/service' },
+      };
+    },
     assetPrefix: GITHUB ? `/${PROJ_NAME}/` : '',
     analyzeServer: ['server', 'both'].includes(process.env.BUNDLE_ANALYZE),
     analyzeBrowser: ['browser', 'both'].includes(process.env.BUNDLE_ANALYZE),

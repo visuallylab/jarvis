@@ -4,6 +4,9 @@ const theme: Theme = {
   color: '#4a4a4a',
   backgroundColor: '#ffffff',
   colors: {
+    primary: '#3562ad',
+    grey: '#cccccc',
+    lightGrey: '#fbfbfb',
     black: '#000000',
     white: '#ffffff',
     lightBlack: '#4a4a4a',
@@ -12,7 +15,6 @@ const theme: Theme = {
     spaceGray: '#46494c',
     boxBackground: 'rgba(70, 73, 76, .2)',
     boxBorder: 'rgba(70, 73, 76, .5)',
-    grey: '#dcdcdd',
     success: '#52c41a',
     warning: '#fa8c16',
     error: '#f5222d',
@@ -24,8 +26,7 @@ const theme: Theme = {
 
   fontSize: {
     h1: '2.25rem',
-    h2: '1.8rem',
-    h3: '1.4rem',
+    big: '1.5rem',
     bigger: '1.2rem',
     smaller: '.875rem',
     small: '.75rem',
