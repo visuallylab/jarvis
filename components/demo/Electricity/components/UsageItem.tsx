@@ -2,7 +2,7 @@ import { FC } from 'react';
 import styled from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 
-import H3 from '@/components/H3';
+import H3 from '@/components/demo/H3';
 
 import { TData } from '../UsageBox';
 

@@ -3,6 +3,10 @@ import { NextPage } from 'next';
 import HomeLayout from '@/layouts/Home';
 import Landing from '@/components/home/Landing';
 import Design from '@/components/home/Design';
+import Experience from '@/components/home/Experience';
+import Platform from '@/components/home/Platform';
+import Collaboration from '@/components/home/Collaboration';
+import Team from '@/components/home/Team';
 import { i18nNamespace } from '@/constants';
 
 const Index: NextPage = () => {
@@ -10,6 +14,10 @@ const Index: NextPage = () => {
     <HomeLayout mode="light">
       <Landing />
       <Design />
+      <Experience />
+      <Platform />
+      <Collaboration />
+      <Team />
     </HomeLayout>
   );
 };

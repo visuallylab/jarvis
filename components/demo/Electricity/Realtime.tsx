@@ -2,7 +2,7 @@ import { FC, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 
-import H1 from '@/components/H1';
+import H1 from '@/components/demo/H1';
 import { createCurrentData, MAX_PROVIDE } from '@/utils/electricity';
 import UsageBox from './UsageBox';
 import PowerBox from './PowerBox';
