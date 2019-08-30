@@ -5,7 +5,7 @@ import SubTitle from '../SubTitle';
 import Description from '../Description';
 import ContactUsButton from '../ContactUsButton';
 
-const BackgroundImg = styled.img`
+const Video = styled.video`
   max-width: 100%;
   object-fit: contain;
   opacity: 0.4;
@@ -34,8 +34,8 @@ const StyledDescription = styled(Description)`
 `;
 
 export default () => (
-  <Section style={{ position: 'relative' }}>
-    <BackgroundImg srcSet="/static/images/dashboard.png 1x, /static/images/dashboard@2x.png 2x, /static/images/dashboard@3x.png 3x" />
+  <Section style={{ position: 'relative', marginBottom: '250px' }}>
+    <Video src="/static/videos/dashboard.mp4" autoPlay={true} muted={true} />
     <ContentWrapper>
       <SubTitle>管理者的省時最愛</SubTitle>
       <StyledTitle>資料管理看板</StyledTitle>

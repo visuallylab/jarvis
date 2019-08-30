@@ -5,7 +5,7 @@ import SubTitle from '../SubTitle';
 import Description from '../Description';
 import ContactUsButton from '../ContactUsButton';
 
-const BackgroundImg = styled.img`
+const Video = styled.video`
   width: 100%;
   object-fit: contain;
   opacity: 0.4;
@@ -34,8 +34,11 @@ const StyledDescription = styled(Description)`
 `;
 
 export default () => (
-  <Section fullscreen={true}>
-    <BackgroundImg srcSet="/static/images/fake-demo-jarvis.png 1x, /static/images/fake-demo-jarvis@2x.png 2x, /static/images/fake-demo-jarvis@3x.png 3x" />
+  <Section
+    fullscreen={true}
+    style={{ position: 'relative', marginBottom: '250px' }}
+  >
+    <Video src="/static/videos/jarvis.mp4" autoPlay={true} muted={true} />
     <ContentWrapper>
       <SubTitle>語音智能助理</SubTitle>
       <StyledTitle>語音解決方案：Hey! Jarvis!</StyledTitle>

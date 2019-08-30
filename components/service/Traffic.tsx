@@ -7,15 +7,21 @@ import ContactUsButton from '../ContactUsButton';
 
 const Video = styled.video`
   max-width: 1326px;
+  object-fit: contain;
+  opacity: 0.6;
 `;
 
 const ContentWrapper = styled.div`
   position: absolute;
-  top: 104px;
-  left: 66px;
+  max-width: 1326px;
+  width: 100%;
+  top: 0;
+  padding-top: 104px;
+  padding-left: 66px;
 `;
 
 const StyledTitle = styled(Title)`
+  position: relative;
   width: 400px;
   font-family: PingFangTC;
   font-size: 48px;
@@ -32,8 +38,11 @@ const StyledDescription = styled(Description)`
 `;
 
 export default () => (
-  <Section style={{ position: 'relative' }} fullscreen={true}>
-    <Video />
+  <Section
+    style={{ position: 'relative', marginBottom: '250px' }}
+    fullscreen={true}
+  >
+    <Video src="/static/videos/traffic.mp4" autoPlay={true} muted={true} />
     <ContentWrapper>
       <SubTitle>自動化系統處理與回報</SubTitle>
       <StyledTitle>即時動態分析， 掌握最新狀況。</StyledTitle>
