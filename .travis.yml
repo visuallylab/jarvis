@@ -16,7 +16,7 @@ script:
 - yarn export
 - touch out/.nojekyll
 env:
-- NODE_OPTIONS=–max_old_space_size=4096 DEPLOY_ENV=github PROJ_NAME=jarvis
+- NODE_OPTIONS="--max_old_space_size=4096" DEPLOY_ENV=github PROJ_NAME=jarvis
 deploy:
   provider: pages
   skip_cleanup: true
