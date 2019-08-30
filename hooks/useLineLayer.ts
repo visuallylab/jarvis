@@ -56,6 +56,7 @@ const useLineLayer = (enable: boolean) => {
   return {
     lineLayer: new LineLayer({
       id: 'LineLayer',
+      // @ts-ignore
       data: trafficJamData,
       getSourcePosition: (d: number[][]) => d[0],
       getTargetPosition: (d: number[][]) => d[1],
@@ -66,6 +67,7 @@ const useLineLayer = (enable: boolean) => {
       filled: false,
       pickable: true,
       getWidth: 40,
+      // @ts-ignore
       getColor: color(shingTime),
       widthUnits: 'meters',
     }),
