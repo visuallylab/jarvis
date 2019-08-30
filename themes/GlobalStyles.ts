@@ -36,4 +36,8 @@ export default createGlobalStyle`
       outline: none;
     }
   }
+  
+  a {
+    color: inherit;
+  }
 `;

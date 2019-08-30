@@ -7,6 +7,7 @@ import LightThemeProvider from '@/themes/LightThemeProvider';
 import NormalizeStyles from '@/themes/NormalizeStyles';
 import { SITE_TITLE } from '@/constants';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const Main = styled.main`
   width: 100vw;
@@ -34,6 +35,7 @@ const HomeLayout: React.FunctionComponent<TProps> = ({
         </Head>
         <Header />
         {children}
+        <Footer />
         <NormalizeStyles />
         <GlobalStyles />
       </Main>

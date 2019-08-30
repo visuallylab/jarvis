@@ -7,6 +7,7 @@ import Experience from '@/components/home/Experience';
 import Platform from '@/components/home/Platform';
 import Collaboration from '@/components/home/Collaboration';
 import Team from '@/components/home/Team';
+import Show from '@/components/home/Show';
 import { i18nNamespace } from '@/constants';
 
 const Index: NextPage = () => {
@@ -18,6 +19,7 @@ const Index: NextPage = () => {
       <Platform />
       <Collaboration />
       <Team />
+      <Show />
     </HomeLayout>
   );
 };
