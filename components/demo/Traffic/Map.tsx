@@ -15,7 +15,7 @@ import {
 import { TrafficStatus, i18nNamespace } from '@/constants';
 import usePanelProps from '@/hooks/usePanelProps';
 import useTrainStatusLayers from '@/hooks/useTrainStatusLayers';
-import notify from '@/utils/notify';
+// import notify from '@/utils/notify';
 import { JarvisContext, SuggestionType } from '@/contexts/jarvis';
 import { jarvisNotifications, setSuccess } from '@/contexts/jarvis/actions';
 
@@ -216,32 +216,33 @@ const Map = () => {
     setTrafficStatus(TrafficStatus.RoadCrowed);
   };
 
-  const triggerCrowdedTrainEvent = () => {
-    notify({
-      msg: t('events.crowedTrain.status.msg'),
-      action: () => {
-        setMapState(MapStatus.TrainUtilization);
-        setTimeout(() => {
-          notify({
-            msg: t('events.crowedTrain.suggestion.msg'),
-            action: () => setMapState(MapStatus.Start),
-            btnText: t('events.crowedTrain.suggestion.btnText'),
-          });
-        }, 3000);
-      },
-      btnText: t('events.crowedTrain.status.btnText'),
-    });
+  // const triggerCrowdedTrainEvent = () => {
+  //   notify({
+  //     msg: t('events.crowedTrain.status.msg'),
+  //     action: () => {
+  //       setMapState(MapStatus.TrainUtilization);
+  //       setTimeout(() => {
+  //         notify({
+  //           msg: t('events.crowedTrain.suggestion.msg'),
+  //           action: () => setMapState(MapStatus.Start),
+  //           btnText: t('events.crowedTrain.suggestion.btnText'),
+  //         });
+  //       }, 3000);
+  //     },
+  //     btnText: t('events.crowedTrain.status.btnText'),
+  //   });
 
-    setTrafficStatus(TrafficStatus.TrainCrowed);
-  };
+  //   setTrafficStatus(TrafficStatus.TrainCrowed);
+  // };
 
   useEffect(() => {
     setTimeout(() => {
-      // if (Math.random() > 0.5) {
       triggerTrafficJamEvent();
-      //   } else {
-      //     triggerCrowdedTrainEvent();
-      //   }
+      // if (Math.random() > 0.5) {
+      //   triggerTrafficJamEvent();
+      // } else {
+      //   triggerCrowdedTrainEvent();
+      // }
     }, 6000);
   }, []);
 
