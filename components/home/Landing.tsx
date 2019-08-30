@@ -16,6 +16,11 @@ const Title = styled.h1`
   font-size: 5rem;
   letter-spacing: 4px;
   font-weight: bold;
+  background-image: ${p =>
+    `linear-gradient(to right, ${p.theme.colors.primary}, #cfdef5);`};
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 const Description = styled.p`

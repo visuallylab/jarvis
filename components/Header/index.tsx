@@ -1,13 +1,14 @@
-import { SFC } from 'react';
+import { SFC, useMemo } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import Button from '@/components/Button';
 import { media } from '@/utils/theme';
-import { Router } from '@/i18n';
 
 import LogoTitle from './LogoTitle';
+import useWindowScroll from '@/hooks/useWindowScroll';
 
-const Container = styled.header`
+const Container = styled.header<{ hideUp: boolean }>`
+  will-change: transform;
   position: fixed;
   z-index: ${p => p.theme.z.high};
   top: 0;
@@ -20,6 +21,8 @@ const Container = styled.header`
   justify-content: space-between;
   border-bottom: solid 0.5px #979797;
   background-color: ${p => p.theme.backgroundColor};
+  transition: all 0.3s ease-in;
+  transform: ${p => (p.hideUp ? 'translateY(-100%)' : 'none')};
 
   ${media('desktop')} {
     height: 54px;
@@ -44,18 +47,26 @@ const Section = styled.li`
   }
 `;
 
-const Header: SFC = () => (
-  <Container>
-    <LogoTitle />
-    <RightWrapper>
-      <Link href="/service">
-        <Section>智慧商業決策方案</Section>
-      </Link>
-      <Link href="/demo">
-        <Button>體驗</Button>
-      </Link>
-    </RightWrapper>
-  </Container>
-);
+const Header: SFC = () => {
+  const { y, oldY } = useWindowScroll();
+  const MemoHeader = useMemo(
+    () => (
+      <Container hideUp={y > 0 && y > oldY}>
+        <LogoTitle />
+        <RightWrapper>
+          <Link href="/service">
+            <Section>智慧商業決策方案</Section>
+          </Link>
+          <Link href="/demo">
+            <Button>體驗</Button>
+          </Link>
+        </RightWrapper>
+      </Container>
+    ),
+    [y > 0 && y > oldY],
+  );
+
+  return MemoHeader;
+};
 
 export default Header;
