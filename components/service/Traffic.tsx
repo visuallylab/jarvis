@@ -4,6 +4,7 @@ import Title from '../Title';
 import SubTitle from '../SubTitle';
 import Description from '../Description';
 import ContactUsButton from '../ContactUsButton';
+import { useVideController } from '../../hooks/useVideController';
 
 const Video = styled.video`
   max-width: 1326px;
@@ -37,19 +38,28 @@ const StyledDescription = styled(Description)`
   max-width: 486px;
 `;
 
-export default () => (
-  <Section
-    style={{ position: 'relative', marginBottom: '250px' }}
-    fullscreen={true}
-  >
-    <Video src="/static/videos/traffic.mp4" autoPlay={true} muted={true} />
-    <ContentWrapper>
-      <SubTitle>自動化系統處理與回報</SubTitle>
-      <StyledTitle>即時動態分析， 掌握最新狀況。</StyledTitle>
-      <StyledDescription>
-        即時、動態式資料分析呈現，系統自動回報警示，協助企業在第一時間掌握情況。
-      </StyledDescription>
-      <ContactUsButton />
-    </ContentWrapper>
-  </Section>
-);
+const Traffic: React.FC = () => {
+  const { isPlaying, container, player } = useVideController();
+  return (
+    <Section
+      ref={container}
+      style={{ position: 'relative', marginBottom: '250px' }}
+      fullscreen={true}
+      focus={isPlaying}
+    >
+      <Video ref={player} src="/static/videos/traffic.mp4" muted={true} />
+      <ContentWrapper>
+        <SubTitle focus={isPlaying}>自動化系統處理與回報</SubTitle>
+        <StyledTitle focus={isPlaying}>
+          即時動態分析， 掌握最新狀況。
+        </StyledTitle>
+        <StyledDescription focus={isPlaying}>
+          即時、動態式資料分析呈現，系統自動回報警示，協助企業在第一時間掌握情況。
+        </StyledDescription>
+        <ContactUsButton />
+      </ContentWrapper>
+    </Section>
+  );
+};
+
+export default Traffic;

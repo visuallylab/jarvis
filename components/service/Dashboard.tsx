@@ -4,6 +4,7 @@ import Title from '../Title';
 import SubTitle from '../SubTitle';
 import Description from '../Description';
 import ContactUsButton from '../ContactUsButton';
+import { useVideController } from '@/hooks/useVideController';
 
 const Video = styled.video`
   max-width: 100%;
@@ -33,16 +34,30 @@ const StyledDescription = styled(Description)`
   max-width: 500px;
 `;
 
-export default () => (
-  <Section style={{ position: 'relative', marginBottom: '250px' }}>
-    <Video src="/static/videos/dashboard.mp4" autoPlay={true} muted={true} />
-    <ContentWrapper>
-      <SubTitle>管理者的省時最愛</SubTitle>
-      <StyledTitle>資料管理看板</StyledTitle>
-      <StyledDescription>
-        處理企業內部的數據，使之成為一個統一的看板，只呈現重要資訊，隨時監控、定時回報。
-      </StyledDescription>
-      <ContactUsButton />
-    </ContentWrapper>
-  </Section>
-);
+const Dashboard: React.FC = () => {
+  const { isPlaying, container, player } = useVideController();
+  return (
+    <Section
+      style={{ position: 'relative', marginBottom: '250px' }}
+      ref={container}
+      focus={isPlaying}
+    >
+      <Video
+        ref={player}
+        src="/static/videos/dashboard.mp4"
+        autoPlay={true}
+        muted={true}
+      />
+      <ContentWrapper>
+        <SubTitle focus={isPlaying}>管理者的省時最愛</SubTitle>
+        <StyledTitle focus={isPlaying}>資料管理看板</StyledTitle>
+        <StyledDescription focus={isPlaying}>
+          處理企業內部的數據，使之成為一個統一的看板，只呈現重要資訊，隨時監控、定時回報。
+        </StyledDescription>
+        <ContactUsButton />
+      </ContentWrapper>
+    </Section>
+  );
+};
+
+export default Dashboard;
