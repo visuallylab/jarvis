@@ -57,8 +57,8 @@ const useLineLayer = (enable: boolean) => {
     lineLayer: new LineLayer({
       id: 'LineLayer',
       data: trafficJamData,
-      getSourcePosition: (d: number[][]) => d[0],
-      getTargetPosition: (d: number[][]) => d[1],
+      getSourcePosition: (d: any) => d[0],
+      getTargetPosition: (d: any) => d[1],
       onHover: (props: { x: number; y: number; object: any }) =>
         setHoverData(props),
       opacity: 0.7,
