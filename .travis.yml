@@ -11,13 +11,12 @@ notifications:
   slack:
     on_success: always
 before_script:
-- export NODE_OPTIONS=–max_old_space_size=4096
 - yarn clean
 script:
 - yarn export
 - touch out/.nojekyll
 env:
-- DEPLOY_ENV=github PROJ_NAME=jarvis
+- NODE_OPTIONS=–max_old_space_size=4096 DEPLOY_ENV=github PROJ_NAME=jarvis
 deploy:
   provider: pages
   skip_cleanup: true
