@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
-import { useContext, FC, ComponentType } from 'react';
+import { useContext, ComponentType } from 'react';
 import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
 
