@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
-import { useContext, FC } from 'react';
+import dynamic from 'next/dynamic';
+import { useContext, FC, ComponentType } from 'react';
 import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
 
@@ -7,8 +8,6 @@ import DemoLayout from '@/layouts/Demo';
 import { SITE_TITLE, i18nNamespace } from '@/constants';
 import { ActionRouterContext } from '@/contexts/actionRouter';
 import { TemplateType } from '@/constants/actionRouter';
-import Map from '@/components/demo/Traffic/Map';
-import Realtime from '@/components/demo/Electricity/Realtime';
 import system, { SystemPage } from '@/constants/system';
 
 const AnimatedWrapper = styled(animated.div)`
@@ -25,7 +24,7 @@ const IntroWrapper = styled.div`
 `;
 
 const getPage = (item: TemplateType) => {
-  let Component: FC<any>;
+  let Component: ComponentType<any>;
   switch (item) {
     default:
     case TemplateType.Home: {
@@ -41,13 +40,15 @@ const getPage = (item: TemplateType) => {
     }
     case TemplateType.T_Realtime: {
       system.page = SystemPage.Traffic;
-      Component = Map;
+      Component = dynamic(() => import('@/components/demo/Traffic/Map'));
       break;
     }
 
     case TemplateType.E_Realtime: {
       system.page = SystemPage.Electricity;
-      Component = Realtime;
+      Component = dynamic(() =>
+        import('@/components/demo/Electricity/Realtime'),
+      );
       break;
     }
   }
