@@ -53,13 +53,10 @@ module.exports = withCSS(
       // react-icons issue @see https://github.com/react-icons/react-icons/issues/154#issuecomment-412774515
       config.resolve.extensions = ['.mjs', ...config.resolve.extensions];
 
-      // disable typeguard in development
+      // disable typeguard
       // @see https://github.com/zeit/next.js/issues/7687#issuecomment-506440999
       config.plugins = config.plugins.filter(plugin => {
-        if (
-          plugin.constructor.name === 'ForkTsCheckerWebpackPlugin' &&
-          DEVELOPMENT
-        )
+        if (plugin.constructor.name === 'ForkTsCheckerWebpackPlugin')
           return false;
         return true;
       });
