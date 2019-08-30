@@ -79,5 +79,8 @@ export function getDataTypes(data: string[]) {
 }
 
 export function getFocus(status: string | null): Focus[] {
+  if (status) {
+    return [];
+  }
   return [];
 }

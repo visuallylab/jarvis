@@ -1,4 +1,3 @@
-import { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Section from '@/components/Section';
 import Title from '../Title';

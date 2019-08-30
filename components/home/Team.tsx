@@ -1,11 +1,8 @@
 import styled from 'styled-components';
 import Section from '@/components/Section';
-import ContactUsButton from '@/components/ContactUsButton';
 import { getRelativePath } from '@/utils';
-import theme from '@/themes/theme';
-import Title from '../Title';
-import Description from '../Description';
 import { media } from '@/utils/theme';
+import Title from '../Title';
 import Member, { TMember } from './Member';
 
 const Wrapper = styled.div`

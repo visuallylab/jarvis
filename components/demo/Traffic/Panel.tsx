@@ -72,7 +72,7 @@ export type TProps = {
 
 const Panel: React.FC<TProps> = ({
   title,
-  infos,
+  // infos,
   buttonConfigs,
   status,
   trafficFlowData,
