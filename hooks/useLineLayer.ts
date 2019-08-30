@@ -67,6 +67,7 @@ const useLineLayer = (enable: boolean) => {
       filled: false,
       pickable: true,
       getWidth: 40,
+      // @ts-ignore
       getColor: color(shingTime),
       widthUnits: 'meters',
     }),
