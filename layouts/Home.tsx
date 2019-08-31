@@ -33,9 +33,9 @@ const HomeLayout: React.FunctionComponent<TProps> = ({
         <Head>
           <title>{title}</title>
         </Head>
-        <Header />
+        <Header mode={mode} />
         {children}
-        <Footer />
+        <Footer mode={mode} />
         <NormalizeStyles />
         <GlobalStyles />
       </Main>

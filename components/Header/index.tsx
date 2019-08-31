@@ -32,31 +32,42 @@ const Container = styled.header<{ hideUp: boolean }>`
   }
 `;
 
-const RightWrapper = styled.ul`
+const RightWrapper = styled.ul<{ mode: 'light' | 'dark' }>`
   display: flex;
   align-items: center;
+  color: ${p =>
+    p.mode === 'light' ? p.theme.colors.primary : p.theme.colors.white};
 `;
 
-const Section = styled.li`
+const Li = styled.li`
   cursor: pointer;
-  margin-right: 0.5rem;
-  color: ${p => p.theme.colors.primary};
+  margin-right: 1rem;
   letter-spacing: 0.51px;
   &:hover {
     font-weight: 400;
   }
+
+  > a {
+    text-decoration: none;
+  }
 `;
 
-const Header: SFC = () => {
+type TProps = {
+  mode?: 'dark' | 'light';
+};
+
+const Header: SFC<TProps> = ({ mode = 'light' }) => {
   const { y, oldY } = useWindowScroll();
   const MemoHeader = useMemo(
     () => (
       <Container hideUp={y > 0 && y > oldY}>
-        <LogoTitle />
-        <RightWrapper>
-          <Link href="/service">
-            <Section>智慧商業決策方案</Section>
-          </Link>
+        <LogoTitle mode={mode} />
+        <RightWrapper mode={mode}>
+          <Li>
+            <Link href="/service">
+              <a>智慧商業決策方案</a>
+            </Link>
+          </Li>
           <Link href="/demo">
             <Button>體驗</Button>
           </Link>
