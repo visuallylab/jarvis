@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { FC } from 'react';
 import { getRelativePath } from '@/utils';
 import { Router } from '@/i18n';
+import Link from 'next/link';
 
 const Wrapper = styled.div`
   cursor: pointer;
@@ -30,14 +31,16 @@ type TProps = {
 
 const LogoTitle: FC<TProps> = ({ title = 'VISUALLYLAB', mode }) => {
   return (
-    <Wrapper onClick={() => Router.push('/')}>
-      <Logo
-        src={getRelativePath(
-          `/static/logo${mode === 'light' ? '' : '-white'}.svg`,
-        )}
-      />
-      <Title mode={mode}>{title}</Title>
-    </Wrapper>
+    <Link href="/">
+      <Wrapper>
+        <Logo
+          src={getRelativePath(
+            `/static/logo${mode === 'light' ? '' : '-white'}.svg`,
+          )}
+        />
+        <Title mode={mode}>{title}</Title>
+      </Wrapper>
+    </Link>
   );
 };
 export default LogoTitle;

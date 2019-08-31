@@ -6,6 +6,7 @@ import SubTitle from './SubTitle';
 import ContactUsButton from './ContactUsButton';
 import { getRelativePath } from '@/utils';
 import { media } from '@/utils/theme';
+import ScrollAnimation from 'react-animate-on-scroll';
 
 const StyledSection = styled(Section)`
   background-color: ${p => p.theme.backgroundColor};
@@ -20,7 +21,7 @@ const Ul = styled.ul`
   margin-top: 3rem;
 `;
 
-const Li = styled.li`
+const Li = styled(ScrollAnimation)`
   font-size: ${p => p.theme.fontSize.bigger};
   font-weight: 400;
   letter-spacing: 0.51px;
@@ -78,24 +79,26 @@ const Footer: FC<{ mode: 'light' | 'dark' }> = ({ mode }) => {
       }
     >
       {isLight && <Mask />}
-      <Title>我們期許自己打造的是更貼近人心的產品</Title>
-      <StyledSubTitle>
-        我們的技術將用來傳遞更多溫暖、更多價值，打造人性化的科技產品。
-      </StyledSubTitle>
+      <ScrollAnimation animateIn="fadeInUp" style={{ textAlign: 'center' }}>
+        <Title>我們期許自己打造的是更貼近人心的產品</Title>
+        <StyledSubTitle>
+          我們的技術將用來傳遞更多溫暖、更多價值，打造人性化的科技產品。
+        </StyledSubTitle>
+      </ScrollAnimation>
       <Ul>
-        <Li>
+        <Li animateIn="fadeInUp" delay={300}>
           <IconWrapper>
             <img src={getRelativePath('/static/images/home.svg')} />
           </IconWrapper>
           <p>台北市基隆路一段186號3樓之6</p>
         </Li>
-        <Li>
+        <Li animateIn="fadeInUp" delay={500}>
           <IconWrapper>
             <img src={getRelativePath('/static/images/mail.svg')} />
           </IconWrapper>
           <a href="contact@visuallylab.com">contact@visuallylab.com</a>
         </Li>
-        <Li>
+        <Li animateIn="fadeInUp" delay={700}>
           <IconWrapper>
             <img src={getRelativePath('/static/images/fb.svg')} />
           </IconWrapper>
@@ -104,7 +107,9 @@ const Footer: FC<{ mode: 'light' | 'dark' }> = ({ mode }) => {
           </a>
         </Li>
       </Ul>
-      <ContactUsButton color="white" />
+      <ScrollAnimation animateIn="fadeInUp" delay={800}>
+        <ContactUsButton color="white" />
+      </ScrollAnimation>
       {!isLight && (
         <Ball src={getRelativePath('/static/images/footer-ball.svg')} />
       )}

@@ -1,9 +1,14 @@
 import styled from 'styled-components';
+import ScrollAnimation from 'react-animate-on-scroll';
 import Section from '@/components/Section';
 import { getRelativePath } from '@/utils';
 import { media } from '@/utils/theme';
 
 const Logo = styled.img`
+  height: 100%;
+`;
+
+const LogoWrapper = styled(ScrollAnimation)`
   height: 20%;
 
   ${media('pad')} {
@@ -45,9 +50,23 @@ const Landing = () => {
   return (
     <Section justifyContent="center" alignItems="center" fullscreen={true}>
       <Bg src={getRelativePath('/static/images/bg-ball-stream.svg')} />
-      <Logo src={getRelativePath('/static/images/home-logo-v.svg')} />
-      <Title>體驗，極致完美</Title>
-      <Description>利用人工智能，改善資訊設計到產品體驗</Description>
+      <LogoWrapper animateIn="fadeInUp">
+        <Logo src={getRelativePath('/static/images/home-logo-v.svg')} />
+      </LogoWrapper>
+      <ScrollAnimation
+        style={{ width: '100%', textAlign: 'center' }}
+        animateIn="fadeInUp"
+        delay={400}
+      >
+        <Title>體驗，極致完美</Title>
+      </ScrollAnimation>
+      <ScrollAnimation
+        style={{ width: '100%', textAlign: 'center' }}
+        animateIn="fadeInUp"
+        delay={800}
+      >
+        <Description>利用人工智能，改善資訊設計到產品體驗</Description>
+      </ScrollAnimation>
     </Section>
   );
 };

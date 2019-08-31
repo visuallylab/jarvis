@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import Section from '../Section';
 import { media } from '@/utils/theme';
 import { getRelativePath } from '@/utils';
@@ -27,9 +27,15 @@ const Description = styled.p`
   }
 `;
 
+const rotateKeyFrames = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
 const Img = styled.img`
   height: 45%;
   margin: 2rem 0;
+  animation: ${rotateKeyFrames} 60s infinite linear;
 `;
 
 export default () => (
