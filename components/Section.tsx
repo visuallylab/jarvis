@@ -6,18 +6,17 @@ type TSectionProps = {
   justifyContent?: 'center' | 'flex-start' | 'flex-end';
   fullscreen?: boolean;
   focus?: boolean;
-  src?: string | false;
+  src?: string;
 };
 
 export default styled.section<TSectionProps>`
   position: relative;
   width: 100%;
-  height: ${p => (p.fullscreen ? '100vh' : 'initial')};
   display: flex;
   flex-direction: ${({ row = false }) => (row ? 'row' : 'column')};
   justify-content: ${p => p.justifyContent || 'center'};
   align-items: ${p => p.alignItems || 'center'};
-  min-height: ${p => (p.fullscreen ? '100vh' : 'initial')};
+  height: ${p => (p.fullscreen ? '100vh' : 'initial')};
   transition: 0.5s;
   transform: ${props => (props.focus ? 'scale(1.05)' : 'inital')};
   ${p =>

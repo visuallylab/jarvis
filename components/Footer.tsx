@@ -73,7 +73,9 @@ const Footer: FC<{ mode: 'light' | 'dark' }> = ({ mode }) => {
     <StyledSection
       fullscreen={true}
       as="footer"
-      src={isLight && getRelativePath('/static/images/bg-footer.jpg')}
+      src={
+        isLight ? getRelativePath('/static/images/bg-footer.jpg') : undefined
+      }
     >
       {isLight && <Mask />}
       <Title>我們期許自己打造的是更貼近人心的產品</Title>

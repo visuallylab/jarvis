@@ -4,10 +4,10 @@ import { getRelativePath } from '@/utils';
 import { media } from '@/utils/theme';
 
 const Logo = styled.img`
-  width: 50%;
+  height: 20%;
 
   ${media('pad')} {
-    height: 20%;
+    height: 25%;
   }
 `;
 

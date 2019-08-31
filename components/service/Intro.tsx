@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import Section from '../Section';
 import { media } from '@/utils/theme';
+import { getRelativePath } from '@/utils';
 
 const Title = styled.h1`
-  margin: 2rem 0 1rem;
+  margin: 4rem 0 2rem;
   font-size: 5rem;
   letter-spacing: 4px;
   font-weight: bold;
@@ -12,7 +13,6 @@ const Title = styled.h1`
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
-  line-height: normal;
 `;
 
 const Description = styled.p`
@@ -28,16 +28,13 @@ const Description = styled.p`
 `;
 
 const Img = styled.img`
-  max-width: 548px;
-  height: 454px;
-  object-fit: contain;
-  margin-top: 46px;
-  margin-bottom: 257px;
+  height: 45%;
+  margin: 2rem 0;
 `;
 
 export default () => (
-  <Section>
-    <Title style={{ marginTop: '114px' }}>
+  <Section fullscreen={true}>
+    <Title>
       體驗
       <br />
       數據流動的極致美好
@@ -45,6 +42,6 @@ export default () => (
     <Description>
       結合人工智慧與大數據分析，協助企業打造流動式的數據解決方案，精準呈現必要資訊，快速做出決策。
     </Description>
-    <Img srcSet="/static/images/service-intro.png 1x, /static/images/service-intro@2x.png 2x, /static/images/service-intro@3x.png 3x" />
+    <Img src={getRelativePath('/static/images/service-intro.svg')} />
   </Section>
 );
