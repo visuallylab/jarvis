@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { FC } from 'react';
 import { getRelativePath } from '@/utils';
-import { Router } from '@/i18n';
 import Link from 'next/link';
 
 const Wrapper = styled.div`
