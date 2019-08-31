@@ -6,7 +6,7 @@ type TSectionProps = {
   justifyContent?: 'center' | 'flex-start' | 'flex-end';
   fullscreen?: boolean;
   focus?: boolean;
-  src?: string;
+  src?: string | false;
 };
 
 export default styled.section<TSectionProps>`

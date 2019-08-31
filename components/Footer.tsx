@@ -5,8 +5,10 @@ import Title from './Title';
 import SubTitle from './SubTitle';
 import ContactUsButton from './ContactUsButton';
 import { getRelativePath } from '@/utils';
+import { media } from '@/utils/theme';
 
 const StyledSection = styled(Section)`
+  background-color: ${p => p.theme.backgroundColor};
   color: ${p => p.theme.colors.white};
 `;
 
@@ -54,41 +56,58 @@ const Mask = styled.div`
   z-index: -1;
 `;
 
-const Footer: FC = () => (
-  <StyledSection
-    fullscreen={true}
-    as="footer"
-    src={getRelativePath('/static/images/bg-footer.jpg')}
-  >
-    <Mask />
-    <Title>我們期許自己打造的是更貼近人心的產品</Title>
-    <StyledSubTitle>
-      我們的技術將用來傳遞更多溫暖、更多價值，打造人性化的科技產品。
-    </StyledSubTitle>
-    <Ul>
-      <Li>
-        <IconWrapper>
-          <img src={getRelativePath('/static/images/home.svg')} />
-        </IconWrapper>
-        <p>台北市基隆路一段186號3樓之6</p>
-      </Li>
-      <Li>
-        <IconWrapper>
-          <img src={getRelativePath('/static/images/mail.svg')} />
-        </IconWrapper>
-        <a href="contact@visuallylab.com">contact@visuallylab.com</a>
-      </Li>
-      <Li>
-        <IconWrapper>
-          <img src={getRelativePath('/static/images/fb.svg')} />
-        </IconWrapper>
-        <a href="https://www.facebook.com/visuallylab/" target="_blank">
-          @visuallylab
-        </a>
-      </Li>
-    </Ul>
-    <ContactUsButton color="white" />
-  </StyledSection>
-);
+const Ball = styled.img`
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  ${media('desktop')} {
+    width: 474px;
+  }
+`;
+
+const Footer: FC<{ mode: 'light' | 'dark' }> = ({ mode }) => {
+  const isLight = mode === 'light';
+  return (
+    <StyledSection
+      fullscreen={true}
+      as="footer"
+      src={isLight && getRelativePath('/static/images/bg-footer.jpg')}
+    >
+      {isLight && <Mask />}
+      <Title>我們期許自己打造的是更貼近人心的產品</Title>
+      <StyledSubTitle>
+        我們的技術將用來傳遞更多溫暖、更多價值，打造人性化的科技產品。
+      </StyledSubTitle>
+      <Ul>
+        <Li>
+          <IconWrapper>
+            <img src={getRelativePath('/static/images/home.svg')} />
+          </IconWrapper>
+          <p>台北市基隆路一段186號3樓之6</p>
+        </Li>
+        <Li>
+          <IconWrapper>
+            <img src={getRelativePath('/static/images/mail.svg')} />
+          </IconWrapper>
+          <a href="contact@visuallylab.com">contact@visuallylab.com</a>
+        </Li>
+        <Li>
+          <IconWrapper>
+            <img src={getRelativePath('/static/images/fb.svg')} />
+          </IconWrapper>
+          <a href="https://www.facebook.com/visuallylab/" target="_blank">
+            @visuallylab
+          </a>
+        </Li>
+      </Ul>
+      <ContactUsButton color="white" />
+      {!isLight && (
+        <Ball src={getRelativePath('/static/images/footer-ball.svg')} />
+      )}
+    </StyledSection>
+  );
+};
 
 export default Footer;
