@@ -7,7 +7,7 @@ import { media } from '@/utils/theme';
 import LogoTitle from './LogoTitle';
 import useWindowScroll from '@/hooks/useWindowScroll';
 
-const Container = styled.header<{ hideUp: boolean }>`
+const Container = styled.header<{ hideUp: boolean; mode: 'light' | 'dark' }>`
   will-change: transform;
   position: fixed;
   z-index: ${p => p.theme.z.high};
@@ -19,7 +19,8 @@ const Container = styled.header<{ hideUp: boolean }>`
   padding: 5px 4%;
   align-items: center;
   justify-content: space-between;
-  border-bottom: solid 0.5px #979797;
+  border-bottom: solid 0.5px
+    ${p => (p.mode === 'dark' ? 'rgba(255,255,255,.4)' : 'rgba(0,0,0,.4)')};
   background-color: ${p => p.theme.backgroundColor};
   transition: all 0.3s ease-in;
   transform: ${p => (p.hideUp ? 'translateY(-100%)' : 'none')};
@@ -60,7 +61,7 @@ const Header: SFC<TProps> = ({ mode = 'light' }) => {
   const { y, oldY } = useWindowScroll();
   const MemoHeader = useMemo(
     () => (
-      <Container hideUp={y > 0 && y > oldY}>
+      <Container hideUp={y > 0 && y > oldY} mode={mode}>
         <LogoTitle mode={mode} />
         <RightWrapper mode={mode}>
           <Li>

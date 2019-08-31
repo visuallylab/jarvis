@@ -1,5 +1,8 @@
 import useWindowScroll from '@/hooks/useWindowScroll';
 import { useRef, useEffect, useState } from 'react';
+
+const OFFSET = 50;
+
 export const useVideController = () => {
   const { y } = useWindowScroll();
   const container = useRef<HTMLDivElement>(null);
@@ -8,12 +11,17 @@ export const useVideController = () => {
   useEffect(() => {
     if (container.current && player.current) {
       if (
-        y > container.current.offsetTop - container.current.offsetHeight / 2 &&
-        y < container.current.offsetTop + container.current.offsetHeight / 2
+        !isPlaying &&
+        y > container.current.offsetTop - OFFSET &&
+        y < container.current.offsetTop + container.current.offsetHeight
       ) {
         player.current.play();
         setIsPlaying(true);
-      } else {
+      } else if (
+        isPlaying &&
+        (y < container.current.offsetTop - OFFSET ||
+          y > container.current.offsetTop + container.current.offsetHeight)
+      ) {
         player.current.pause();
         setIsPlaying(false);
       }
