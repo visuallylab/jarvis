@@ -7,7 +7,7 @@ import { media } from '@/utils/theme';
 import LogoTitle from './LogoTitle';
 import useWindowScroll from '@/hooks/useWindowScroll';
 
-const Container = styled.header<{ hideUp: boolean }>`
+const Container = styled.header<{ hideUp: boolean; mode: 'light' | 'dark' }>`
   will-change: transform;
   position: fixed;
   z-index: ${p => p.theme.z.high};
@@ -19,7 +19,8 @@ const Container = styled.header<{ hideUp: boolean }>`
   padding: 5px 4%;
   align-items: center;
   justify-content: space-between;
-  border-bottom: solid 0.5px #979797;
+  border-bottom: solid 0.5px
+    ${p => (p.mode === 'dark' ? 'rgba(255,255,255,.4)' : 'rgba(0,0,0,.4)')};
   background-color: ${p => p.theme.backgroundColor};
   transition: all 0.3s ease-in;
   transform: ${p => (p.hideUp ? 'translateY(-100%)' : 'none')};
@@ -32,31 +33,42 @@ const Container = styled.header<{ hideUp: boolean }>`
   }
 `;
 
-const RightWrapper = styled.ul`
+const RightWrapper = styled.ul<{ mode: 'light' | 'dark' }>`
   display: flex;
   align-items: center;
+  color: ${p =>
+    p.mode === 'light' ? p.theme.colors.primary : p.theme.colors.white};
 `;
 
-const Section = styled.li`
+const Li = styled.li`
   cursor: pointer;
-  margin-right: 0.5rem;
-  color: ${p => p.theme.colors.primary};
+  margin-right: 1rem;
   letter-spacing: 0.51px;
   &:hover {
     font-weight: 400;
   }
+
+  > a {
+    text-decoration: none;
+  }
 `;
 
-const Header: SFC = () => {
+type TProps = {
+  mode?: 'dark' | 'light';
+};
+
+const Header: SFC<TProps> = ({ mode = 'light' }) => {
   const { y, oldY } = useWindowScroll();
   const MemoHeader = useMemo(
     () => (
-      <Container hideUp={y > 0 && y > oldY}>
-        <LogoTitle />
-        <RightWrapper>
-          <Link href="/service">
-            <Section>智慧商業決策方案</Section>
-          </Link>
+      <Container hideUp={y > 0 && y > oldY} mode={mode}>
+        <LogoTitle mode={mode} />
+        <RightWrapper mode={mode}>
+          <Li>
+            <Link href="/service">
+              <a>智慧商業決策方案</a>
+            </Link>
+          </Li>
           <Link href="/demo">
             <Button>體驗</Button>
           </Link>

@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { useSpring, animated } from 'react-spring';
+import useScrollOnElement from '@/hooks/useScrollOnElement';
 import Section from '@/components/Section';
 import ContactUsButton from '@/components/ContactUsButton';
 import { getRelativePath } from '@/utils';
@@ -6,12 +8,13 @@ import Title from '../Title';
 import SubTitle from '../SubTitle';
 import Description from '../Description';
 
-const Wrapper = styled.div<{ src: string }>`
+const Wrapper = styled.div<{ src: string; focus: boolean }>`
   position: relative;
-  width: 92%;
-  height: 90%;
+  width: ${p => (p.focus ? '100%' : '92%')};
+  height: ${p => (p.focus ? '100%' : '90%')};
   background: url(${p => p.src}) no-repeat center/cover;
   color: white;
+  transition: all 0.5s linear;
 `;
 
 const Mask = styled.div`
@@ -33,21 +36,38 @@ const InfoWrapper = styled.div`
 `;
 
 const Design = () => {
+  const { elementRef, isScrolledOn } = useScrollOnElement();
+  const buttonStyle = useSpring({
+    opacity: isScrolledOn ? 1 : 0,
+    transform: isScrolledOn ? 'translateY(0px)' : 'translateY(30px)',
+    config: { duration: 1000 },
+    delay: 300,
+  });
   return (
-    <Section justifyContent="center" alignItems="center" fullscreen={true}>
-      <Wrapper src={getRelativePath('/static/images/bg-design.jpg')}>
+    <Section
+      ref={elementRef}
+      justifyContent="center"
+      alignItems="center"
+      fullscreen={true}
+    >
+      <Wrapper
+        src={getRelativePath('/static/images/bg-design.jpg')}
+        focus={isScrolledOn}
+      >
         <Mask />
         <InfoWrapper>
-          <SubTitle>資訊脈絡設計</SubTitle>
-          <Title>
+          <SubTitle focus={isScrolledOn}>資訊脈絡設計</SubTitle>
+          <Title focus={isScrolledOn}>
             規劃資訊脈絡圖，
             <br />
             幫助您精準呈現訊息。
           </Title>
-          <Description>
+          <Description focus={isScrolledOn}>
             討論前期，我們將會與您一起思考，確定策略與目標客群。然後以此基礎來規劃、構思產品的資訊脈絡圖，清楚了解每一項設計與產品的邏輯脈絡。精準呈現所有必要資訊。
           </Description>
-          <ContactUsButton />
+          <animated.div style={buttonStyle}>
+            <ContactUsButton />
+          </animated.div>
         </InfoWrapper>
       </Wrapper>
     </Section>

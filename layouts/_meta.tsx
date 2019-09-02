@@ -5,6 +5,7 @@ import {
   LARGE_ICON_PATH,
   SITE_URL,
 } from '@/constants';
+import { getRelativePath } from '@/utils';
 
 export default () => (
   <>
@@ -21,5 +22,10 @@ export default () => (
     <meta property="og:image" content={LARGE_ICON_PATH} />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href={getRelativePath('/static/css/animate.min.css')}
+    />
   </>
 );

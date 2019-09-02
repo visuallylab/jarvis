@@ -8,18 +8,20 @@ import Dashboard from '@/components/service/Dashboard';
 import Slogan from '@/components/service/Slogan';
 import Projects from '@/components/service/Projects';
 import Solutions from '@/components/service/Solutions';
-import Footer from '@/components/service/Footer';
+import ScrollInfo from '@/components/SrollInfo';
 
 const Service: NextPage = () => {
   return (
     <HomeLayout mode="dark">
       <Intro />
+      <ScrollInfo />
       <Traffic />
+      <ScrollInfo />
       <Dashboard />
+      <ScrollInfo />
       <Slogan />
       <Projects />
       <Solutions />
-      <Footer />
     </HomeLayout>
   );
 };
