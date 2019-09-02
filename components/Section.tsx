@@ -17,6 +17,7 @@ export default styled.section<TSectionProps>`
   justify-content: ${p => p.justifyContent || 'center'};
   align-items: ${p => p.alignItems || 'center'};
   height: ${p => (p.fullscreen ? '100vh' : 'initial')};
+  overflow: ${p => (p.fullscreen ? 'hidden' : 'scroll')};
   transition: 0.5s;
   transform: ${props => (props.focus ? 'scale(1.05)' : 'inital')};
   ${p =>

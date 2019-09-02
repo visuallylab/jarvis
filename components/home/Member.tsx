@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { FC } from 'react';
+import ScrollAnimation from 'react-animate-on-scroll';
 
-const Wrapper = styled.div`
+const Wrapper = styled(ScrollAnimation)`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -64,11 +65,12 @@ export type TMember = {
 
 type TProps = {
   item: TMember;
+  index: number;
 };
 
-const Member: FC<TProps> = ({ item }) => {
+const Member: FC<TProps> = ({ item, index }) => {
   return (
-    <Wrapper>
+    <Wrapper animateIn="fadeInUp" delay={index * 300} animateOnce={true}>
       <Avatar src="https://unsplash.it/500/500?search=face" />
       <Title>{item.title}</Title>
       <Name>{item.name}</Name>

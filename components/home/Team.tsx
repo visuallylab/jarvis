@@ -80,8 +80,8 @@ const Team = () => {
           <StyledTitle>專業團隊</StyledTitle>
         </TitleWrapper>
         <InfoWrapper>
-          {team.map(m => (
-            <Member key={m.name} item={m} />
+          {team.map((m, i) => (
+            <Member key={m.name} item={m} index={i} />
           ))}
         </InfoWrapper>
       </Wrapper>

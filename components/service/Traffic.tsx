@@ -49,11 +49,7 @@ const Traffic: React.FC = () => {
   });
   return (
     <>
-      <Section
-        style={{ minHeight: '100vh', height: 'auto' }}
-        ref={container}
-        focus={isPlaying}
-      >
+      <Section fullscreen={true} ref={container} focus={isPlaying}>
         <VideoWrapper playing={isPlaying}>
           {isPlaying && <Mask />}
           <Video
