@@ -5,6 +5,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 2rem 0;
 `;
 
 const Bar = styled.div`

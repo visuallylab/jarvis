@@ -7,7 +7,6 @@ import SubTitle from '../SubTitle';
 import Description from '../Description';
 import ContactUsButton from '../ContactUsButton';
 import { useVideController } from '../../hooks/useVideController';
-import ScrollInfo from '../SrollInfo';
 import Video from './Video';
 
 const ContentWrapper = styled.div`
@@ -48,33 +47,30 @@ const Traffic: React.FC = () => {
     delay: 300,
   });
   return (
-    <>
-      <Section fullscreen={true} ref={container} focus={isPlaying}>
-        <VideoWrapper playing={isPlaying}>
-          {isPlaying && <Mask />}
-          <Video
-            ref={player}
-            src={getRelativePath('/static/videos/traffic.mp4')}
-            muted={true}
-          />
-        </VideoWrapper>
-        <ContentWrapper>
-          <SubTitle focus={isPlaying}>自動化系統處理與回報</SubTitle>
-          <Title focus={isPlaying}>
-            即時動態分析
-            <br />
-            掌握最新狀況。
-          </Title>
-          <StyledDescription focus={isPlaying}>
-            即時、動態式資料分析呈現，系統自動回報警示，協助企業在第一時間掌握情況。
-          </StyledDescription>
-          <animated.div style={buttonStyle}>
-            <ContactUsButton />
-          </animated.div>
-        </ContentWrapper>
-      </Section>
-      <ScrollInfo />
-    </>
+    <Section fullscreen={true} ref={container} focus={isPlaying}>
+      <VideoWrapper playing={isPlaying}>
+        {isPlaying && <Mask />}
+        <Video
+          ref={player}
+          src={getRelativePath('/static/videos/traffic.mp4')}
+          muted={true}
+        />
+      </VideoWrapper>
+      <ContentWrapper>
+        <SubTitle focus={isPlaying}>自動化系統處理與回報</SubTitle>
+        <Title focus={isPlaying}>
+          即時動態分析
+          <br />
+          掌握最新狀況。
+        </Title>
+        <StyledDescription focus={isPlaying}>
+          即時、動態式資料分析呈現，系統自動回報警示，協助企業在第一時間掌握情況。
+        </StyledDescription>
+        <animated.div style={buttonStyle}>
+          <ContactUsButton />
+        </animated.div>
+      </ContentWrapper>
+    </Section>
   );
 };
 
