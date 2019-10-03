@@ -63,7 +63,7 @@ const Landing = () => {
       <ScrollAnimation
         style={{ width: '100%', textAlign: 'center' }}
         animateIn="fadeInUp"
-        delay={800}
+        delay={600}
       >
         <Description>利用人工智能，改善資訊設計到產品體驗</Description>
       </ScrollAnimation>

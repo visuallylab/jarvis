@@ -18,12 +18,14 @@ type TProps = {
   mode?: 'light' | 'dark';
   title?: string;
   children: React.ReactNode;
+  footer?: boolean;
 };
 
 const HomeLayout: React.FunctionComponent<TProps> = ({
   mode = 'light',
   children,
   title = SITE_TITLE,
+  footer = true,
 }) => {
   const ThemeProvider =
     mode === 'light' ? LightThemeProvider : DarkThemeProvider;
@@ -35,7 +37,7 @@ const HomeLayout: React.FunctionComponent<TProps> = ({
         </Head>
         <Header mode={mode} />
         {children}
-        <Footer mode={mode} />
+        {footer && <Footer mode={mode} />}
         <NormalizeStyles />
         <GlobalStyles />
       </Main>

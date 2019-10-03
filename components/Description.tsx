@@ -8,7 +8,7 @@ export default styled.p<TProps>`
   font-size: ${p => p.theme.fontSize.big};
   letter-spacing: 1px;
   line-height: normal;
-  transition: 1.5s 0.6s;
+  transition: 1.5s 0.4s;
   ${p =>
     p.focus !== undefined &&
     css`

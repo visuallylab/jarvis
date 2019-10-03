@@ -12,7 +12,7 @@ export default styled.h2<TProps>`
   margin-bottom: 1rem;
   letter-spacing: 2.4px;
   line-height: 1.3;
-  transition: 1.5s 0.3s;
+  transition: 1.5s 0.2s;
   ${p =>
     p.focus !== undefined &&
     css`
