@@ -71,7 +71,7 @@ type TProps = {
 const Member: FC<TProps> = ({ item, index }) => {
   return (
     <Wrapper animateIn="fadeInUp" delay={index * 300} animateOnce={true}>
-      <Avatar src="https://unsplash.it/500/500?search=face" />
+      <Avatar src={item.avatar} />
       <Title>{item.title}</Title>
       <Name>{item.name}</Name>
       <JobDes>{item.jobDescription}</JobDes>

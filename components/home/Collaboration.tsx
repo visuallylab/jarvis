@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-  width: 22.5%;
+  width: 21%;
   display: flex;
   justify-content: center;
 `;
@@ -37,13 +37,13 @@ const Collaboration = () => {
     <StyledSection>
       <Title>合作夥伴</Title>
       <Wrapper>
-        <LogoWrapper>
+        {/* <LogoWrapper>
           <Logo src={getRelativePath('/static/images/logo-ncku.png')} />
-        </LogoWrapper>
+        </LogoWrapper> */}
         <LogoWrapper>
           <Logo
-            src={getRelativePath('/static/images/logo-zoetech.png')}
-            scale={0.7}
+            src={getRelativePath('/static/images/logo-sense-life.svg')}
+            scale={0.6}
           />
         </LogoWrapper>
         <LogoWrapper>
@@ -56,6 +56,12 @@ const Collaboration = () => {
           <Logo
             src={getRelativePath('/static/images/logo-poseidonnetwork.png')}
             scale={1.25}
+          />
+        </LogoWrapper>
+        <LogoWrapper>
+          <Logo
+            src={getRelativePath('/static/images/logo-zoetech.png')}
+            scale={0.7}
           />
         </LogoWrapper>
       </Wrapper>

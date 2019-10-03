@@ -53,20 +53,20 @@ const InfoWrapper = styled.div`
 const team: TMember[] = [
   {
     name: '杭孟澤',
-    avatar: 'https://unsplash.it/500/500?search=face',
+    avatar: getRelativePath('/static/images/mengtse.jpg'),
     title: '共同創辦人暨營運長',
     jobDescription: '專注使用體驗設計 / 資訊內容分析與策略 / 產品開發',
   },
   {
     name: '黃啟軒',
-    avatar: 'https://unsplash.it/500/500?search=face',
+    avatar: 'https://avatars2.githubusercontent.com/u/4344253?s=400&v=4',
     title: '共同創辦人暨執行長',
     jobDescription:
       '資深產品開發經驗 / 雲端大架構式解決服務 / 軟體開發流程管理',
   },
   {
     name: '李至青',
-    avatar: 'https://unsplash.it/500/500?search=face',
+    avatar: getRelativePath('/static/images/jhincing.jpg'),
     title: '共同創辦人暨\n資深產品經理',
     jobDescription: '擅於產品脈絡設計 / 軟體開發流程管理 / 資深軟體工程師',
   },
