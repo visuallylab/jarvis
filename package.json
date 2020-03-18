@@ -80,8 +80,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn tsc"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
